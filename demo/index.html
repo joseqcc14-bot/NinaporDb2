@@ -6,864 +6,1095 @@
 <title>Cuerpo variabilístico</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@500;600&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@600&family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* Lámina de atlas: parámetros a la izquierda como un instrumento, figura al centro, lecturas a la derecha; en móvil se apilan. */
+/* Visor de atlas 3D: escenario oscuro a pantalla completa; sistemas a la izquierda, ficha a la derecha, individuo abajo. En móvil, una hoja inferior con pestañas. */
 :root {
-  --bg: #f2f5f4;
-  --surface: #ffffff;
-  --ink: #1b2422;
-  --muted: #59675f;
-  --rule: #d3dbd8;
-  --accent: #0c6a62;
-  --accent-soft: #dcecea;
-  --body: #ebe2da;
-  --body-edge: #c9b9ac;
-  --fat: #d9a42f;
-  --visceral: #b46d18;
-  --liver: #85382c;
-  --organ-pink: #d99a95;
-  --organ-red: #a8433c;
-  --organ-tan: #d4a787;
-  --organ-plum: #8f4660;
-  --increase: #b0524a;
-  --decrease: #3d7c98;
-  --ok: #2f7a4e;
-  --warn: #a5521a;
-  --font-display: "Spectral", Georgia, "Times New Roman", serif;
-  --font-body: "Public Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #101715;
-    --surface: #18201e;
-    --ink: #e1e8e5;
-    --muted: #97a59f;
-    --rule: #2a3431;
-    --accent: #5bbcaf;
-    --accent-soft: #1b3330;
-    --body: #2e2824;
-    --body-edge: #4b413a;
-    --fat: #e0b448;
-    --visceral: #d08b34;
-    --liver: #b65547;
-    --organ-pink: #c98682;
-    --organ-red: #cc6158;
-    --organ-tan: #c09272;
-    --organ-plum: #b5698a;
-    --increase: #d47c72;
-    --decrease: #6fa9c4;
-    --ok: #63b385;
-    --warn: #e08b4c;
-    color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #101715;
-  --surface: #18201e;
-  --ink: #e1e8e5;
-  --muted: #97a59f;
-  --rule: #2a3431;
-  --accent: #5bbcaf;
-  --accent-soft: #1b3330;
-  --body: #2e2824;
-  --body-edge: #4b413a;
-  --fat: #e0b448;
-  --visceral: #d08b34;
-  --liver: #b65547;
-  --organ-pink: #c98682;
-  --organ-red: #cc6158;
-  --organ-tan: #c09272;
-  --organ-plum: #b5698a;
-  --increase: #d47c72;
-  --decrease: #6fa9c4;
-  --ok: #63b385;
-  --warn: #e08b4c;
+  --stage-center: #2a3138;
+  --stage-edge: #0b0e11;
+  --panel: rgba(17, 22, 27, 0.88);
+  --panel-solid: #151b21;
+  --line: #2b353e;
+  --text: #e8edf0;
+  --muted: #8f9ca6;
+  --faint: #5f6c76;
+  --accent: #39c6b5;
+  --accent-soft: rgba(57, 198, 181, 0.16);
+  --warn: #eba05a;
+  --ok: #6fc690;
+  --increase: #e07a6f;
+  --decrease: #6fb0d6;
+  --font-title: "Spectral", Georgia, serif;
+  --font-ui: "Figtree", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
   color-scheme: dark;
 }
-
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { height: 100%; }
 body {
   margin: 0;
-  background: var(--bg);
-  color: var(--ink);
-  font-family: var(--font-body);
-  font-size: 15px;
-  line-height: 1.5;
+  background: var(--stage-edge);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  line-height: 1.45;
+  overflow: hidden;
 }
-.page {
-  max-width: 1320px;
-  margin: 0 auto;
-  padding-inline: 20px;
-  padding-block: 28px 40px;
-  display: grid;
-  gap: 24px;
-}
-h1, h2, h3 { font-family: var(--font-display); font-weight: 600; text-wrap: balance; margin: 0; }
-h1 { font-size: clamp(2rem, 4vw, 2.75rem); line-height: 1.1; letter-spacing: -0.01em; }
-h2 { font-size: 1.2rem; line-height: 1.25; }
-h3 { font-size: 1rem; }
-p { margin: 0; }
-a { color: var(--accent); }
+button, input { font: inherit; color: inherit; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.mono { font-family: var(--font-mono); font-size: 0.85em; }
+.mono { font-family: var(--font-mono); font-size: 0.82em; }
 .num { font-variant-numeric: tabular-nums; }
-.eyebrow {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
+.eyebrow { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+a { color: var(--accent); }
 
-/* Cabecera */
-.masthead { display: grid; gap: 12px; }
-.lede { max-width: 68ch; color: var(--muted); }
-.meta { display: flex; flex-wrap: wrap; gap: 6px 14px; }
-.presets { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-.presets .eyebrow { margin-right: 4px; }
-.preset {
-  font: inherit;
-  font-size: 0.875rem;
-  padding: 6px 12px;
+.app {
+  position: relative;
+  height: 100%;
+  background: radial-gradient(ellipse at 50% 42%, var(--stage-center) 0%, #161b20 48%, var(--stage-edge) 100%);
+}
+#scene { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+
+/* Barra superior */
+.topbar {
+  position: absolute;
+  top: 12px;
+  left: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  pointer-events: none;
+}
+.topbar > * { pointer-events: auto; }
+.brand { display: grid; line-height: 1.1; margin-right: auto; }
+.brand h1 { font-family: var(--font-title); font-weight: 600; font-size: 1.35rem; margin: 0; letter-spacing: 0.005em; }
+.brand span { font-size: 0.72rem; color: var(--muted); }
+.segmented { display: inline-flex; background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 3px; }
+.segmented button {
+  border: 0;
+  background: transparent;
+  padding: 5px 14px;
   border-radius: 999px;
-  border: 1px solid var(--rule);
-  background: var(--surface);
-  color: var(--ink);
   cursor: pointer;
+  color: var(--muted);
+  font-weight: 600;
 }
-.preset:hover { border-color: var(--accent); }
-.preset[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+.segmented button[aria-pressed="true"] { background: var(--accent); color: #07211e; }
+.views { display: inline-flex; gap: 4px; background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 3px; }
+.views button { border: 0; background: transparent; padding: 5px 10px; border-radius: 999px; cursor: pointer; color: var(--muted); }
+.views button:hover { color: var(--text); background: rgba(255, 255, 255, 0.06); }
 
-/* Lámina principal */
-.plate {
-  display: grid;
-  gap: 20px;
-  grid-template-columns: minmax(260px, 300px) minmax(0, 1fr) minmax(300px, 360px);
-  align-items: start;
-}
+/* Paneles */
 .panel {
-  background: var(--surface);
-  border: 1px solid var(--rule);
-  border-radius: 6px;
-  padding: 18px;
+  position: absolute;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   display: grid;
-  gap: 16px;
+  gap: 12px;
+  padding: 14px;
   min-width: 0;
 }
-.panel-head { display: grid; gap: 2px; }
+.panel h2 { font-size: 0.95rem; margin: 0; font-weight: 700; }
+.systems { top: 70px; left: 16px; width: 236px; max-height: calc(100% - 300px); overflow: auto; }
+.inspector { top: 70px; right: 16px; width: 300px; max-height: calc(100% - 96px); overflow: auto; }
+.individual { left: 16px; bottom: 34px; width: 236px; max-height: 212px; overflow: auto; }
+.individual.expanded { width: min(560px, calc(100% - 360px)); max-height: calc(100% - 120px); z-index: 5; }
 
-/* Parámetros */
-.field { display: grid; gap: 6px; }
-.field-row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
-.field label, .field .label { font-weight: 500; }
-.field output { font-variant-numeric: tabular-nums; color: var(--ink); }
-.field input[type="range"] { width: 100%; accent-color: var(--accent); }
-.field input[type="range"]:disabled { opacity: 0.45; }
-.field .hint { font-size: 0.8rem; color: var(--muted); }
-.measured {
-  display: inline-flex;
+.layer-list { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; }
+.layer {
+  display: grid;
+  grid-template-columns: 12px 1fr auto;
   align-items: center;
-  gap: 6px;
-  font-size: 0.85rem;
-  color: var(--muted);
+  gap: 9px;
+  width: 100%;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
   cursor: pointer;
+  text-align: left;
 }
+.layer:hover { background: rgba(255, 255, 255, 0.05); }
+.layer .dot { width: 12px; height: 12px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.35); }
+.layer .count { font-size: 0.75rem; color: var(--faint); font-variant-numeric: tabular-nums; }
+.layer[aria-pressed="false"] { color: var(--faint); }
+.layer[aria-pressed="false"] .dot { opacity: 0.25; }
+.skin-opacity { display: grid; gap: 4px; padding: 0 8px 6px 29px; }
+.skin-opacity label { font-size: 0.75rem; color: var(--muted); display: flex; justify-content: space-between; }
+input[type="range"] { width: 100%; accent-color: var(--accent); }
+.search input {
+  width: 100%;
+  padding: 7px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: rgba(0, 0, 0, 0.25);
+}
+.actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.btn {
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.04);
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.82rem;
+}
+.btn:hover { border-color: var(--accent); }
+.btn:disabled { opacity: 0.4; cursor: default; }
+.btn[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+
+/* Ficha */
+.card-title { display: grid; gap: 2px; }
+.card-title h2 { font-size: 1.15rem; font-family: var(--font-title); font-weight: 600; text-wrap: balance; }
+.card-title .sub { color: var(--muted); font-size: 0.82rem; }
+.chip { display: inline-flex; align-items: center; gap: 6px; font-size: 0.72rem; font-weight: 600; color: var(--muted); }
+.chip i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.facts { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 5px 12px; margin: 0; font-size: 0.85rem; }
+.facts dt { color: var(--muted); }
+.facts dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.mass-box { display: grid; gap: 6px; padding: 10px; border-radius: 8px; background: rgba(255, 255, 255, 0.04); border: 1px solid var(--line); }
+.mass-row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.mass-big { font-size: 1.35rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.delta { font-weight: 700; font-variant-numeric: tabular-nums; }
+.delta.up { color: var(--increase); }
+.delta.down { color: var(--decrease); }
+.note { font-size: 0.78rem; color: var(--muted); }
+.hint { color: var(--muted); font-size: 0.85rem; }
+
+/* Individuo */
+.ind-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.presets { display: flex; flex-wrap: wrap; gap: 6px; }
+.preset { border: 1px solid var(--line); background: transparent; border-radius: 999px; padding: 3px 10px; cursor: pointer; font-size: 0.78rem; color: var(--muted); }
+.preset[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px 18px; }
+.field { display: grid; gap: 3px; }
+.field-row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-size: 0.82rem; }
+.field-row output { font-variant-numeric: tabular-nums; color: var(--text); }
+.measured { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: var(--muted); cursor: pointer; }
 .measured input { accent-color: var(--accent); margin: 0; }
-.group { display: grid; gap: 14px; padding-top: 14px; border-top: 1px solid var(--rule); }
-.segmented { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
-.segmented input { position: absolute; opacity: 0; pointer-events: none; }
-.segmented label { text-align: center; padding: 7px 8px; cursor: pointer; font-weight: 500; }
-.segmented input:checked + label { background: var(--accent-soft); color: var(--accent); }
-.segmented input:focus-visible + label { outline: 2px solid var(--accent); outline-offset: -2px; }
-.status { font-size: 0.875rem; color: var(--warn); border-left: 3px solid var(--warn); padding-left: 10px; }
-
-/* Figura */
-.figure-wrap { display: grid; justify-items: center; gap: 12px; }
-.figure-wrap svg { width: 100%; max-width: 360px; height: auto; display: block; }
-svg .shape { cursor: pointer; }
-svg .shape:focus { outline: none; }
-svg .halo { fill: var(--fat); stroke: var(--fat); }
-svg .skin { fill: var(--body); stroke: var(--body-edge); }
-svg .limb { fill: none; }
-svg .skin.limb { stroke: var(--body); }
-svg .blob { stroke: var(--surface); stroke-width: 1px; }
-svg .line { fill: none; stroke: var(--organ-tan); }
-svg .behind { stroke-dasharray: 3 2; }
-svg .blob.selected, svg .blob:focus-visible { stroke: var(--accent); stroke-width: 2.5px; }
-svg .line.selected, svg .line:focus-visible { stroke: var(--accent); }
-svg .halo.selected, svg .halo:focus-visible { stroke: color-mix(in srgb, var(--accent) 55%, var(--fat)); }
-svg .skin.selected, svg .skin:focus-visible { fill: var(--accent-soft); }
-svg .skin.limb.selected, svg .skin.limb:focus-visible { fill: none; stroke: var(--accent-soft); }
-.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 0.8rem; color: var(--muted); justify-content: center; }
-.swatch { display: inline-block; width: 11px; height: 11px; border-radius: 50%; vertical-align: -1px; margin-right: 5px; }
-.figure-note { font-size: 0.8rem; color: var(--muted); text-align: center; max-width: 46ch; }
-
-/* Lecturas */
-.readings { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; margin: 0; }
-.readings div { display: grid; gap: 1px; min-width: 0; }
-.readings dt { font-size: 0.8rem; color: var(--muted); }
-.readings dd { margin: 0; font-size: 1.15rem; font-variant-numeric: tabular-nums; }
-.chip {
-  display: inline-block;
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  padding: 1px 6px;
-  border-radius: 3px;
-  border: 1px solid var(--rule);
-  color: var(--muted);
-  vertical-align: 2px;
-  margin-left: 4px;
-}
-.chip.is-measured { border-color: var(--accent); color: var(--accent); }
-.stack { display: flex; height: 14px; border-radius: 3px; overflow: hidden; background: var(--rule); }
-.stack span { display: block; height: 100%; transition: width 0.25s; }
-.fat-legend { display: grid; gap: 4px; font-size: 0.85rem; }
-.fat-legend div { display: flex; justify-content: space-between; gap: 8px; }
-.gauge { position: relative; height: 30px; margin-top: 4px; }
-.gauge-track { position: absolute; left: 0; right: 0; top: 8px; height: 6px; border-radius: 3px; background: linear-gradient(to right, var(--liver), var(--fat)); opacity: 0.85; }
-.gauge-mark { position: absolute; top: 3px; width: 2px; height: 16px; background: var(--ink); }
-.gauge-dot { position: absolute; top: 4px; width: 14px; height: 14px; margin-left: -7px; border-radius: 50%; background: var(--surface); border: 3px solid var(--ink); transition: left 0.25s; }
-.gauge-labels { position: absolute; top: 20px; left: 0; right: 0; font-size: 0.72rem; color: var(--muted); }
-.gauge-labels span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
-.pill { display: inline-block; font-size: 0.8rem; font-weight: 600; padding: 2px 10px; border-radius: 999px; white-space: nowrap; }
+.readouts { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; }
+.readout { display: grid; gap: 1px; }
+.readout span { font-size: 0.72rem; color: var(--muted); }
+.readout strong { font-size: 1rem; font-variant-numeric: tabular-nums; font-weight: 600; }
+.tag-chip { font-family: var(--font-mono); font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.04em; padding: 0 5px; border-radius: 3px; border: 1px solid var(--line); color: var(--muted); }
+.tag-chip.on { border-color: var(--accent); color: var(--accent); }
+.stack { display: flex; height: 10px; border-radius: 3px; overflow: hidden; background: var(--line); }
+.stack span { display: block; height: 100%; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 0.75rem; color: var(--muted); }
+.legend i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; }
+.pill { display: inline-block; font-size: 0.75rem; font-weight: 700; padding: 1px 9px; border-radius: 999px; white-space: nowrap; }
 .pill.ok { color: var(--ok); border: 1px solid var(--ok); }
 .pill.warn { color: var(--warn); border: 1px solid var(--warn); }
-.balance { font-size: 0.85rem; color: var(--muted); }
-.stale { opacity: 0.45; }
+.status { font-size: 0.8rem; color: var(--warn); border-left: 3px solid var(--warn); padding-left: 8px; }
+.compact-only { display: none; }
+.compact-only.readouts { grid-template-columns: 1fr 1fr; }
+.compact-only.readouts .readout:first-child { grid-column: 1 / -1; }
+.individual:not(.expanded) .full-only { display: none; }
+.individual:not(.expanded) .compact-only { display: grid; }
+details { border-top: 1px solid var(--line); padding-top: 8px; }
+summary { cursor: pointer; color: var(--muted); font-size: 0.82rem; }
+.mass-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; margin-top: 6px; }
+.mass-table th, .mass-table td { text-align: left; padding: 3px 6px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.mass-table td.n, .mass-table th.n { text-align: right; font-variant-numeric: tabular-nums; }
+.table-wrap { overflow-x: auto; }
 
-/* Ficha de la estructura */
-.detail { display: grid; gap: 10px; }
-.detail-path { font-size: 0.8rem; color: var(--muted); }
-.detail dl { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; margin: 0; font-size: 0.875rem; }
-.detail dt { color: var(--muted); }
-.detail dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
-.definition { font-size: 0.85rem; color: var(--muted); font-style: italic; }
-
-/* Tabla */
-.table-section { display: grid; gap: 12px; }
-.table-scroll { overflow-x: auto; background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; }
-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
-th, td { padding: 7px 12px; text-align: left; border-bottom: 1px solid var(--rule); white-space: nowrap; }
-thead th { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
-td.num, th.num { text-align: right; }
-tr.group-row th { font-family: var(--font-display); font-size: 0.95rem; text-transform: none; letter-spacing: 0; color: var(--ink); background: var(--bg); padding-top: 10px; }
-tbody tr.organ-row { cursor: pointer; }
-tbody tr.organ-row:hover td { background: var(--accent-soft); }
-tbody tr.organ-row.selected td { background: var(--accent-soft); }
-tbody tr.organ-row.selected td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
-sup.pending { color: var(--warn); font-weight: 600; }
-.delta { display: flex; align-items: center; gap: 10px; }
-.delta-bar { position: relative; width: 120px; height: 10px; flex: none; }
-.delta-bar::before { content: ""; position: absolute; left: 50%; top: -2px; bottom: -2px; width: 1px; background: var(--muted); }
-.delta-bar span { position: absolute; top: 0; height: 100%; border-radius: 2px; }
-.delta-text { min-width: 4.5ch; text-align: right; font-variant-numeric: tabular-nums; }
-.table-note { font-size: 0.8rem; color: var(--muted); }
-
-footer { display: grid; gap: 6px; font-size: 0.8rem; color: var(--muted); border-top: 1px solid var(--rule); padding-top: 16px; }
-footer p { max-width: 110ch; }
-
-@media (max-width: 1120px) {
-  .plate { grid-template-columns: minmax(250px, 300px) minmax(0, 1fr); }
-  .readouts { grid-column: 1 / -1; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+/* Etiqueta flotante y carga */
+.tag {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  transform: translate(-50%, -100%);
+  display: grid;
+  justify-items: center;
 }
-@media (max-width: 700px) {
-  .page { padding-inline: 16px; padding-block: 20px 32px; }
-  .plate { grid-template-columns: minmax(0, 1fr); }
-  .readouts { grid-template-columns: minmax(0, 1fr); }
+.tag span {
+  background: var(--panel-solid);
+  border: 1px solid var(--accent);
+  color: var(--text);
+  padding: 3px 9px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+.tag i { width: 1px; height: 22px; background: var(--accent); }
+.tag b { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); margin-top: -1px; }
+.tip { position: absolute; pointer-events: none; padding: 2px 8px; border-radius: 4px; background: rgba(0, 0, 0, 0.7); font-size: 0.78rem; white-space: nowrap; transform: translate(12px, 12px); }
+.loading {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  color: var(--muted);
+  text-align: center;
+}
+.loading .bar { width: 200px; height: 3px; background: var(--line); border-radius: 2px; overflow: hidden; }
+.loading .bar span { display: block; height: 100%; width: 0; background: var(--accent); transition: width 0.2s; }
+.credits {
+  position: absolute;
+  bottom: 8px;
+  left: 16px;
+  right: 16px;
+  font-size: 0.68rem;
+  color: var(--faint);
+  pointer-events: none;
+  text-align: center;
+}
+.credits a { pointer-events: auto; color: var(--muted); }
+.tabs { display: none; }
+
+/* Móvil: hoja inferior con pestañas */
+@media (max-width: 760px) {
+  .topbar { top: 8px; gap: 6px; }
+  .brand h1 { font-size: 1.05rem; }
+  .brand span { display: none; }
+  .segmented button { padding: 4px 10px; }
+  .views { order: 3; width: 100%; justify-content: space-between; }
+  .views button { padding: 4px 8px; font-size: 0.8rem; }
+  .panel { border-radius: 12px 12px 0 0; left: 0; right: 0; bottom: 0; top: auto; width: auto; max-height: 42%; padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px)); }
+  .individual, .individual.expanded { left: 0; right: 0; width: auto; bottom: 0; max-height: 42%; }
+  .systems, .inspector, .individual { display: none; }
+  .app[data-tab="sistemas"] .systems,
+  .app[data-tab="estructura"] .inspector,
+  .app[data-tab="individuo"] .individual { display: grid; }
+  .individual .compact-only { display: none !important; }
+  .individual .full-only { display: grid !important; }
+  .tabs {
+    display: flex;
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: calc(42% + 8px);
+    gap: 6px;
+    justify-content: center;
+  }
+  .tabs button { border: 1px solid var(--line); background: var(--panel); border-radius: 999px; padding: 5px 12px; cursor: pointer; color: var(--muted); font-weight: 600; font-size: 0.82rem; }
+  .tabs button[aria-pressed="true"] { color: #07211e; background: var(--accent); border-color: var(--accent); }
+  .credits { display: none; }
+  .ind-toggle { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  svg .shape, .stack span, .gauge-dot { transition: none; }
+  .loading .bar span { transition: none; }
 }
 </style>
 </head>
 <body>
-<div class="page">
-  <header class="masthead">
-    <span class="eyebrow">bodysim · fase 1: anatomía enlazada</span>
-    <h1>Cuerpo variabilístico</h1>
-    <p class="lede">Cambia las variables independientes de una persona y mira cómo responde su anatomía. Cada estructura está identificada en UBERON y, cuando existe, enlazada a su modelo 3D del Human Reference Atlas. Los cálculos son los mismos que los del paquete Python.</p>
-    <div class="meta eyebrow" id="meta"></div>
-    <div class="presets" role="group" aria-label="Ejemplos">
-      <span class="eyebrow">Ejemplos</span>
-      <span id="presets" class="presets"></span>
+<div class="app" id="app" data-tab="estructura">
+  <canvas id="scene" aria-label="Cuerpo humano en 3D: arrastra para girar, rueda o pellizco para acercar, toca una estructura para ver su ficha"></canvas>
+  <div class="loading" id="loading">
+    <span id="loading-text">Cargando anatomía 3D…</span>
+    <div class="bar"><span id="loading-bar"></span></div>
+  </div>
+  <div class="tag" id="tag" hidden><span id="tag-text"></span><i></i><b></b></div>
+  <div class="tip" id="tip" hidden></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <h1>Cuerpo variabilístico</h1>
+      <span>bodysim · anatomía 3D enlazada a UBERON</span>
+    </div>
+    <div class="segmented" role="group" aria-label="Sexo">
+      <button type="button" id="sex-male" aria-pressed="true">Hombre</button>
+      <button type="button" id="sex-female" aria-pressed="false">Mujer</button>
+    </div>
+    <div class="views" role="group" aria-label="Vistas">
+      <button type="button" data-view="front">Frente</button>
+      <button type="button" data-view="back">Espalda</button>
+      <button type="button" data-view="left">Izquierda</button>
+      <button type="button" data-view="right">Derecha</button>
+      <button type="button" data-view="reset" title="Restablecer la vista">↺</button>
     </div>
   </header>
 
-  <main class="plate">
-    <section class="panel params" aria-labelledby="params-title">
-      <div class="panel-head">
-        <span class="eyebrow">Variables independientes</span>
-        <h2 id="params-title">Individuo</h2>
-      </div>
-      <div class="field">
-        <span class="label" id="sex-label">Sexo</span>
-        <div class="segmented" role="radiogroup" aria-labelledby="sex-label">
-          <input type="radio" name="sex" id="sex-male" value="male"><label for="sex-male">Hombre</label>
-          <input type="radio" name="sex" id="sex-female" value="female"><label for="sex-female">Mujer</label>
-        </div>
-      </div>
-      <div class="field">
-        <div class="field-row"><label for="age">Edad</label><output id="age-out" for="age"></output></div>
-        <input type="range" id="age" min="18" max="100" step="1">
-      </div>
-      <div class="field">
-        <div class="field-row"><label for="height">Talla</label><output id="height-out" for="height"></output></div>
-        <input type="range" id="height" min="140" max="210" step="1">
-      </div>
-      <div class="field">
-        <div class="field-row"><label for="weight">Peso</label><output id="weight-out" for="weight"></output></div>
-        <input type="range" id="weight" min="35" max="200" step="0.5">
-      </div>
+  <aside class="panel systems" aria-labelledby="systems-title">
+    <h2 id="systems-title">Sistemas</h2>
+    <ul class="layer-list" id="layers"></ul>
+    <div class="search">
+      <input id="search" list="structure-names" placeholder="Buscar estructura…" aria-label="Buscar estructura">
+      <datalist id="structure-names"></datalist>
+    </div>
+    <div class="actions">
+      <button type="button" class="btn" id="show-all">Mostrar todo</button>
+    </div>
+  </aside>
 
-      <div class="group">
-        <span class="eyebrow">Grasa: medida o estimada</span>
-        <div class="field">
-          <div class="field-row"><label for="bf">Grasa corporal</label><output id="bf-out" for="bf"></output></div>
-          <input type="range" id="bf" min="3" max="70" step="0.5">
-          <label class="measured"><input type="checkbox" id="bf-on"> Medida (DXA, bioimpedancia, pliegues)</label>
-        </div>
-        <div class="field">
-          <div class="field-row"><label for="vat">Grasa visceral</label><output id="vat-out" for="vat"></output></div>
-          <input type="range" id="vat" min="0.1" max="10" step="0.1">
-          <label class="measured"><input type="checkbox" id="vat-on"> Medida (DXA, TC o RM)</label>
-        </div>
-        <div class="field">
-          <div class="field-row"><label for="liver">Grasa del hígado</label><output id="liver-out" for="liver"></output></div>
-          <input type="range" id="liver" min="0" max="50" step="0.5">
-          <label class="measured"><input type="checkbox" id="liver-on"> Medida por RM (PDFF)</label>
-        </div>
+  <aside class="panel inspector" id="inspector" aria-live="polite"></aside>
+
+  <section class="panel individual" id="individual" aria-labelledby="ind-title">
+    <div class="ind-head">
+      <h2 id="ind-title">Individuo</h2>
+      <button type="button" class="btn ind-toggle" id="ind-toggle" aria-expanded="false">Ajustar</button>
+    </div>
+    <div class="compact-only readouts" id="compact-readouts"></div>
+    <div class="full-only" style="gap: 12px;">
+      <div class="presets" id="presets" role="group" aria-label="Ejemplos"></div>
+      <div class="controls">
+        <div class="field"><div class="field-row"><label for="age">Edad</label><output id="age-out" for="age"></output></div><input type="range" id="age" min="18" max="100" step="1"></div>
+        <div class="field"><div class="field-row"><label for="height">Talla</label><output id="height-out" for="height"></output></div><input type="range" id="height" min="140" max="210" step="1"></div>
+        <div class="field"><div class="field-row"><label for="weight">Peso</label><output id="weight-out" for="weight"></output></div><input type="range" id="weight" min="35" max="200" step="0.5"></div>
+        <div class="field"><div class="field-row"><label for="bf">Grasa corporal</label><output id="bf-out" for="bf"></output></div><input type="range" id="bf" min="3" max="70" step="0.5"><label class="measured"><input type="checkbox" id="bf-on"> Medida (DXA, bioimpedancia)</label></div>
+        <div class="field"><div class="field-row"><label for="vat">Grasa visceral</label><output id="vat-out" for="vat"></output></div><input type="range" id="vat" min="0.1" max="10" step="0.1"><label class="measured"><input type="checkbox" id="vat-on"> Medida (DXA, TC o RM)</label></div>
+        <div class="field"><div class="field-row"><label for="liver">Grasa del hígado</label><output id="liver-out" for="liver"></output></div><input type="range" id="liver" min="0" max="50" step="0.5"><label class="measured"><input type="checkbox" id="liver-on"> Medida por RM (PDFF)</label></div>
       </div>
       <p class="status" id="status" role="status" hidden></p>
-    </section>
-
-    <section class="panel figure" aria-labelledby="figure-title">
-      <div class="panel-head">
-        <span class="eyebrow">Lámina</span>
-        <h2 id="figure-title">Anatomía de este individuo</h2>
+      <div class="readouts" id="readouts"></div>
+      <div style="display: grid; gap: 6px;">
+        <div class="field-row"><span class="eyebrow">Distribución de la grasa</span><span id="liver-pill"></span></div>
+        <div class="stack" id="fat-stack" aria-hidden="true"></div>
+        <div class="legend" id="fat-legend"></div>
       </div>
-      <div class="figure-wrap" id="figure-wrap">
-        <svg id="figure" viewBox="0 0 320 630" role="group" aria-label="Figura del cuerpo: el tamaño de cada órgano sigue su masa"></svg>
-        <div class="legend">
-          <span><i class="swatch" style="background: var(--fat)"></i>grasa subcutánea (contorno)</span>
-          <span><i class="swatch" style="background: var(--visceral)"></i>grasa visceral</span>
-          <span><i class="swatch" style="background: var(--liver)"></i>hígado (amarillea con la grasa)</span>
-        </div>
-        <p class="figure-note">El área de cada órgano es proporcional a su masa respecto del adulto de referencia del mismo sexo. Toca un órgano para ver su ficha.</p>
-      </div>
-    </section>
-
-    <section class="panel readouts" aria-label="Lecturas">
-      <div class="readout-block" id="composition-block">
-        <div class="panel-head">
-          <span class="eyebrow">Composición corporal</span>
-        </div>
-        <dl class="readings" id="readings"></dl>
-      </div>
-      <div class="readout-block" id="fat-block">
-        <div class="panel-head">
-          <span class="eyebrow">Distribución de la grasa</span>
-        </div>
-        <div style="display: grid; gap: 10px;">
-          <div class="stack" id="fat-stack" aria-hidden="true"></div>
-          <div class="fat-legend" id="fat-legend"></div>
-          <div>
-            <div class="field-row" style="display: flex; justify-content: space-between; gap: 8px; align-items: baseline;">
-              <span style="font-size: 0.85rem;">Grasa del hígado <span id="liver-chip"></span></span>
-              <span id="liver-pill"></span>
-            </div>
-            <div class="gauge" id="gauge" aria-hidden="true">
-              <div class="gauge-track"></div>
-              <div class="gauge-mark" id="gauge-mark"></div>
-              <div class="gauge-dot" id="gauge-dot"></div>
-              <div class="gauge-labels" id="gauge-labels"></div>
-            </div>
-          </div>
-          <p class="balance" id="balance"></p>
-        </div>
-      </div>
-      <div class="readout-block detail" id="detail" aria-live="polite"></div>
-    </section>
-  </main>
-
-  <section class="table-section" aria-labelledby="table-title">
-    <div class="panel-head">
-      <span class="eyebrow">Masas por estructura</span>
-      <h2 id="table-title">Referencia frente a este individuo</h2>
+      <details>
+        <summary>Tabla de masas de este individuo</summary>
+        <div class="table-wrap"><table class="mass-table"><thead><tr><th>Estructura</th><th class="n">Referencia</th><th class="n">Individuo</th><th class="n">Cambio</th></tr></thead><tbody id="mass-body"></tbody></table></div>
+        <p class="note">* Masa de referencia de ICRP 89 pendiente de contrastar con la tabla original.</p>
+      </details>
     </div>
-    <div class="table-scroll" id="table-scroll">
-      <table>
-        <thead>
-          <tr><th>Estructura</th><th class="num">Referencia</th><th class="num">Individuo</th><th>Cambio</th><th>UBERON</th></tr>
-        </thead>
-        <tbody id="table-body"></tbody>
-      </table>
-    </div>
-    <p class="table-note"><sup class="pending">*</sup> Masa de referencia transcrita de ICRP 89 y pendiente de contrastar con la tabla original. Las demás están contrastadas con una fuente secundaria.</p>
   </section>
 
-  <footer>
-    <p id="sources"></p>
-    <p>Herramienta de investigación y desarrollo. No es un dispositivo médico ni sirve para diagnosticar.</p>
-  </footer>
+  <nav class="tabs" role="group" aria-label="Paneles">
+    <button type="button" data-tab="sistemas" aria-pressed="false">Sistemas</button>
+    <button type="button" data-tab="estructura" aria-pressed="true">Estructura</button>
+    <button type="button" data-tab="individuo" aria-pressed="false">Individuo</button>
+  </nav>
+
+  <p class="credits">Modelos 3D: Human Reference Atlas (HuBMAP), órganos de referencia "united" v2.0, datos del Visible Human Project, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>. Masas: ICRP 89. Herramienta de investigación, no es un dispositivo médico.</p>
 </div>
 
 <script src="model-data.js"></script>
 <script src="bodysim.js"></script>
-<script>
-(function () {
-  "use strict";
-  const D = window.BODYSIM_DATA;
-  const model = window.Bodysim.model;
-  const byId = new Map(D.structures.map((s) => [s.id, s]));
-  const ROOT = D.structures.find((s) => s.parent === null).id;
-  const FAT = D.fat.ids;
-  const ID = {
-    brain: "UBERON:0000955", pituitary: "UBERON:0000007", tongue: "UBERON:0001723", salivary: "UBERON:0001044",
-    thyroid: "UBERON:0002046", thymus: "UBERON:0002370", lung: "UBERON:0002048", heart: "UBERON:0000948",
-    breast: "UBERON:0000310", esophagus: "UBERON:0001043", liver: FAT.liver, gallbladder: "UBERON:0002110",
-    stomach: "UBERON:0000945", spleen: "UBERON:0002106", pancreas: "UBERON:0001264", adrenal: "UBERON:0002369",
-    kidney: "UBERON:0002113", smallIntestine: "UBERON:0002108", largeIntestine: "UBERON:0000059",
-    bladder: "UBERON:0001255", uterus: "UBERON:0000995", ovary: "UBERON:0000992", prostate: "UBERON:0002367",
-    testis: "UBERON:0000473", spinalCord: "UBERON:0002240", skin: "UBERON:0002097",
-    subcutaneous: FAT.subcutaneous, visceral: FAT.visceral,
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+
+const D = window.BODYSIM_DATA;
+const model = window.Bodysim.model;
+const byId = new Map(D.structures.map((s) => [s.id, s]));
+const FAT = D.fat.ids;
+const el = (id) => document.getElementById(id);
+
+// ---------- Formato ----------
+const formatters = new Map();
+function nf(digits) {
+  if (!formatters.has(digits)) formatters.set(digits, new Intl.NumberFormat("es-ES", { minimumFractionDigits: digits, maximumFractionDigits: digits }));
+  return formatters.get(digits);
+}
+function mass(g) {
+  if (g < 10) return nf(1).format(g) + " g";
+  if (g < 1000) return nf(0).format(g) + " g";
+  if (g < 10000) return nf(2).format(g / 1000) + " kg";
+  return nf(1).format(g / 1000) + " kg";
+}
+const pct = (x, d = 0) => nf(d).format(x * 100) + " %";
+function signed(x) {
+  const v = Math.round(x * 100);
+  return (v > 0 ? "+" : v < 0 ? "−" : "±") + Math.abs(v) + " %";
+}
+const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+function escapeHtml(text) {
+  return String(text).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+}
+const uberonUrl = (id) => "http://purl.obolibrary.org/obo/" + id.replace(":", "_");
+
+// ---------- Capas y colores ----------
+const LAYERS = [
+  { key: "piel", name: "Piel", color: "#d8a589" },
+  { key: "esqueleto", name: "Esqueleto", color: "#e6dcc6" },
+  { key: "musculos", name: "Músculos", color: "#b0473d" },
+  { key: "nervioso", name: "Sistema nervioso", color: "#efd88f" },
+  { key: "cardiovascular", name: "Cardiovascular", color: "#c4302b" },
+  { key: "respiratorio", name: "Respiratorio", color: "#e3a3a0" },
+  { key: "digestivo", name: "Digestivo", color: "#c98a5e" },
+  { key: "urinario", name: "Urinario", color: "#d9b06a" },
+  { key: "reproductor", name: "Reproductor", color: "#d48aa0" },
+  { key: "linfatico", name: "Linfático", color: "#8e4a68" },
+  { key: "grasa", name: "Grasa visceral (esquema)", color: "#e7b84a" },
+];
+const layerByKey = new Map(LAYERS.map((l) => [l.key, l]));
+const COLORS = [
+  [/^skin$/, "#d8a589"],
+  [/__arterias$/, "#c4302b"],
+  [/__venas$/, "#2f5fb3"],
+  [/vertebra|sacrum|coccyx|pubis|ilium|ischium|hyoid|lower_limb/, "#e6dcc6"],
+  [/^Allen_brain/i, "#e7b7ab"],
+  [/spinal_cord|optic_chiasm/, "#f1dd9c"],
+  [/^eye_/, "#f3f1ea"],
+  [/muscles/, "#a8443b"],
+  [/^heart$/, "#a3262a"],
+  [/lungs/, "#e3a3a0"],
+  [/larynx|trachea|bronchi/, "#e8cbb4"],
+  [/^liver$/, "#7d2b22"],
+  [/gallbladder/, "#4d7d3a"],
+  [/biliary/, "#6f9a45"],
+  [/pancreas/, "#e6bd92"],
+  [/small_intestine/, "#e0a493"],
+  [/^colon$/, "#c98a73"],
+  [/tonsil/, "#d88c8c"],
+  [/kidney/, "#8c2d27"],
+  [/renal_pelvis|ureter|urethra/, "#e0bfa3"],
+  [/bladder/, "#dba98d"],
+  [/spleen/, "#6b2a40"],
+  [/thymus/, "#e4baa2"],
+  [/prostate/, "#b8697c"],
+  [/genital_duct/, "#d7a7a3"],
+  [/uterus/, "#c97e8f"],
+  [/ovary/, "#e6b9a6"],
+  [/fallopian/, "#dc9eaa"],
+  [/vagina/, "#c8838f"],
+  [/ligaments/, "#dcc0b0"],
+  [/mammary/, "#e9c3a8"],
+];
+const colorFor = (key) => (COLORS.find(([re]) => re.test(key)) || [null, "#d9b8a8"])[1];
+const LIVER_COLOR = new THREE.Color("#7d2b22");
+const FAT_COLOR = new THREE.Color("#e3c25e");
+const ACCENT = new THREE.Color("#39c6b5");
+
+// ---------- Estado ----------
+const PRESETS = [
+  { key: "ref", label: "Referencia", state: (sex) => ({ age: 35, height: sex === "male" ? 176 : 163, weight: sex === "male" ? 73 : 60 }) },
+  { key: "obese", label: "Obesidad", state: (sex) => ({ age: 45, height: sex === "male" ? 175 : 163, weight: sex === "male" ? 112 : 95 }) },
+  { key: "athlete", label: "Atleta", state: (sex) => ({ age: 28, height: sex === "male" ? 180 : 168, weight: sex === "male" ? 90 : 66, bf: sex === "male" ? 11 : 19 }) },
+  { key: "fatty-liver", label: "Hígado graso", state: (sex) => ({ age: 52, height: sex === "male" ? 175 : 162, weight: sex === "male" ? 100 : 84, vat: sex === "male" ? 4 : 2.4, liver: 22 }) },
+];
+const state = { sex: "male", age: 35, height: 176, weight: 73, bfOn: false, bf: 25, vatOn: false, vat: 1.5, liverOn: false, liver: 2 };
+let activePreset = "ref";
+let report = null;
+
+function personFromState() {
+  return {
+    sex: state.sex, age_years: state.age, height_cm: state.height, weight_kg: state.weight,
+    body_fat_fraction: state.bfOn ? state.bf / 100 : null,
+    visceral_fat_kg: state.vatOn ? state.vat : null,
+    liver_fat_fraction: state.liverOn ? state.liver / 100 : null,
   };
+}
 
-  // ---------- Formato ----------
-  const formatters = new Map();
-  function nf(digits) {
-    if (!formatters.has(digits)) {
-      formatters.set(digits, new Intl.NumberFormat("es-ES", { minimumFractionDigits: digits, maximumFractionDigits: digits }));
-    }
-    return formatters.get(digits);
-  }
-  function mass(g) {
-    if (g < 10) return nf(1).format(g) + " g";
-    if (g < 1000) return nf(0).format(g) + " g";
-    if (g < 10000) return nf(2).format(g / 1000) + " kg";
-    return nf(1).format(g / 1000) + " kg";
-  }
-  const pct = (x, digits = 0) => nf(digits).format(x * 100) + " %";
-  function signed(x) {
-    const v = Math.round(x * 100);
-    return (v > 0 ? "+" : v < 0 ? "−" : "±") + Math.abs(v) + " %";
-  }
-  const el = (id) => document.getElementById(id);
-  function escapeHtml(text) {
-    return String(text).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
-  }
-  const uberonUrl = (id) => "http://purl.obolibrary.org/obo/" + id.replace(":", "_");
+// ---------- Escena ----------
+const canvas = el("scene");
+let renderer;
+try {
+  renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+} catch (error) {
+  el("loading-text").textContent = "Este navegador no puede mostrar gráficos 3D (WebGL desactivado).";
+  throw error;
+}
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+const scene = new THREE.Scene();
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+scene.environmentIntensity = 0.7;
+const key = new THREE.DirectionalLight(0xffffff, 1.6);
+key.position.set(1.5, 2.5, 3);
+scene.add(key);
+const rim = new THREE.DirectionalLight(0x9fd6ff, 0.9);
+rim.position.set(-2, 1.5, -3);
+scene.add(rim);
 
-  // ---------- Estado ----------
-  const PRESETS = [
-    { key: "ref-m", label: "Hombre de referencia", state: { sex: "male", age: 35, height: 176, weight: 73 } },
-    { key: "ref-f", label: "Mujer de referencia", state: { sex: "female", age: 35, height: 163, weight: 60 } },
-    { key: "obese", label: "Mujer de 95 kg", state: { sex: "female", age: 40, height: 163, weight: 95 } },
-    { key: "athlete", label: "Atleta de 90 kg", state: { sex: "male", age: 30, height: 180, weight: 90, bf: 12 } },
-    { key: "sedentary", label: "Sedentario de 90 kg", state: { sex: "male", age: 30, height: 180, weight: 90, bf: 35 } },
-    { key: "fatty-liver", label: "Hígado graso", state: { sex: "male", age: 50, height: 175, weight: 100, vat: 4, liver: 20 } },
-  ];
-  let state = null;
-  let activePreset = null;
-  let selected = ID.liver;
-  let lastReport = null;
+const camera = new THREE.PerspectiveCamera(32, 1, 0.01, 30);
+const isMobile = () => canvas.clientWidth <= 760;
+// En móvil la cámara se aleja para que el cuerpo quepa entre la barra superior y la hoja inferior.
+const viewDistance = () => (isMobile() ? 4.9 : 3.4);
+const HOME = { position: new THREE.Vector3(0, 0.12, viewDistance()), target: new THREE.Vector3(0, 0.02, 0) };
+camera.position.copy(HOME.position);
+const controls = new OrbitControls(camera, canvas);
+controls.target.copy(HOME.target);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.minDistance = 0.2;
+controls.maxDistance = 7;
+controls.screenSpacePanning = true;
 
-  function applyPreset(preset) {
-    const s = preset.state;
-    state = {
-      sex: s.sex, age: s.age, height: s.height, weight: s.weight,
-      bfOn: s.bf != null, bf: s.bf ?? 25,
-      vatOn: s.vat != null, vat: s.vat ?? 1.5,
-      liverOn: s.liver != null, liver: s.liver ?? D.fat.healthy_liver_fat * 100,
+const bodyGroup = new THREE.Group();
+scene.add(bodyGroup);
+let units = [];
+let skinMaterial = null;
+let visceralBlob = null;
+const layerVisible = new Map(LAYERS.map((l) => [l.key, true]));
+let skinOpacity = 0.32;
+let selected = null;
+let hovered = null;
+
+function resize() {
+  const { clientWidth: w, clientHeight: h } = canvas;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  const mobile = w <= 760;
+  // En móvil la hoja inferior tapa casi la mitad: se abre el campo y se sube el cuerpo.
+  camera.fov = mobile ? 52 : w / h < 0.8 ? 40 : 32;
+  if (mobile) camera.setViewOffset(w, h, 0, h * 0.18, w, h);
+  else camera.clearViewOffset();
+  camera.updateProjectionMatrix();
+}
+window.addEventListener("resize", resize);
+
+// ---------- Carga de modelos ----------
+// models/<sexo>.json: por estructura, posiciones cuantizadas a 16 bits sobre su caja e índices, en base64.
+function decodeBase64(text) {
+  const binary = atob(text);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return bytes.buffer;
+}
+function decodeMesh(entry) {
+  const quantized = new Uint16Array(decodeBase64(entry.positions));
+  const positions = new Float32Array(quantized.length);
+  for (let i = 0; i < quantized.length; i++) positions[i] = entry.min[i % 3] + (quantized[i] / 65535) * entry.extent[i % 3];
+  const indexBuffer = decodeBase64(entry.indices);
+  const index = entry.index_bits === 32 ? new Uint32Array(indexBuffer) : new Uint16Array(indexBuffer);
+  return { positions, index };
+}
+async function fetchJson(url) {
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  const total = Number(response.headers.get("content-length")) || 0;
+  if (!response.body || !total) return response.json();
+  const reader = response.body.getReader();
+  const chunks = [];
+  let loaded = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    chunks.push(value);
+    loaded += value.length;
+    el("loading-bar").style.width = `${Math.min(100, (100 * loaded) / total)}%`;
+  }
+  const bytes = new Uint8Array(loaded);
+  let offset = 0;
+  for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.length; }
+  return JSON.parse(new TextDecoder().decode(bytes));
+}
+const cache = new Map();
+function loadBody(sex) {
+  if (!cache.has(sex)) cache.set(sex, fetchJson(`models/${sex}.json`));
+  return cache.get(sex);
+}
+
+function makeMaterial(meshKey, layer) {
+  const color = new THREE.Color(colorFor(meshKey));
+  if (layer === "piel") {
+    const material = new THREE.MeshStandardMaterial({ color, roughness: 0.55, metalness: 0, transparent: true, depthWrite: false, opacity: skinOpacity });
+    material.userData.inflate = { value: 0 };
+    material.userData.baseOpacity = skinOpacity;
+    material.onBeforeCompile = (shader) => {
+      shader.uniforms.uInflate = material.userData.inflate;
+      shader.vertexShader = shader.vertexShader
+        .replace("#include <common>", "#include <common>\nuniform float uInflate;")
+        .replace("#include <begin_vertex>", "#include <begin_vertex>\ntransformed += normalize(objectNormal) * uInflate;");
     };
-    activePreset = preset.key;
-    writeControls();
-    update();
+    return material;
   }
-
-  function personFromState(s) {
-    return {
-      sex: s.sex, age_years: s.age, height_cm: s.height, weight_kg: s.weight,
-      body_fat_fraction: s.bfOn ? s.bf / 100 : null,
-      visceral_fat_kg: s.vatOn ? s.vat : null,
-      liver_fat_fraction: s.liverOn ? s.liver / 100 : null,
-    };
-  }
-
-  // ---------- Controles ----------
-  function writeControls() {
-    el("sex-male").checked = state.sex === "male";
-    el("sex-female").checked = state.sex === "female";
-    for (const key of ["age", "height", "weight", "bf", "vat", "liver"]) el(key).value = state[key];
-    el("bf-on").checked = state.bfOn;
-    el("vat-on").checked = state.vatOn;
-    el("liver-on").checked = state.liverOn;
-    for (const button of document.querySelectorAll(".preset")) {
-      button.setAttribute("aria-pressed", String(button.dataset.key === activePreset));
-    }
-  }
-
-  function readControls(event) {
-    state.sex = el("sex-female").checked ? "female" : "male";
-    state.age = Number(el("age").value);
-    state.height = Number(el("height").value);
-    state.weight = Number(el("weight").value);
-    const target = event && event.target;
-    // Al marcar "medida", el control arranca en el valor que el modelo estaba estimando.
-    if (target === el("bf-on") && target.checked && lastReport) state.bf = round(lastReport.composition.fat_fraction * 100, 0.5);
-    if (target === el("vat-on") && target.checked && lastReport) state.vat = round(lastReport.fat.visceral_g / 1000, 0.1);
-    state.bfOn = el("bf-on").checked;
-    state.vatOn = el("vat-on").checked;
-    state.liverOn = el("liver-on").checked;
-    if (target === el("bf")) { state.bf = Number(target.value); state.bfOn = true; }
-    if (target === el("vat")) { state.vat = Number(target.value); state.vatOn = true; }
-    if (target === el("liver")) { state.liver = Number(target.value); state.liverOn = true; }
-    activePreset = null;
-    writeControls();
-    update();
-  }
-  const round = (x, step) => Math.round(x / step) * step;
-
-  function writeOutputs(report) {
-    el("age-out").textContent = state.age + " años";
-    el("height-out").textContent = state.height + " cm";
-    el("weight-out").textContent = nf(1).format(state.weight) + " kg";
-    if (report && !state.bfOn) el("bf").value = round(report.composition.fat_fraction * 100, 0.5);
-    if (report && !state.vatOn) el("vat").value = round(report.fat.visceral_g / 1000, 0.1);
-    if (!state.liverOn) el("liver").value = D.fat.healthy_liver_fat * 100;
-    el("bf-out").textContent = state.bfOn
-      ? pct(state.bf / 100, 1)
-      : report ? "estimada " + pct(report.composition.fat_fraction) : "estimada";
-    el("vat-out").textContent = state.vatOn
-      ? nf(1).format(state.vat) + " kg"
-      : report ? "típica " + nf(1).format(report.fat.visceral_g / 1000) + " kg" : "típica";
-    el("liver-out").textContent = state.liverOn ? pct(state.liver / 100, 1) : "sano (" + pct(D.fat.healthy_liver_fat) + ")";
-  }
-
-  // ---------- Figura ----------
-  const SVG_NS = "http://www.w3.org/2000/svg";
-  function svg(tag, attrs, parent) {
-    const node = document.createElementNS(SVG_NS, tag);
-    for (const [k, v] of Object.entries(attrs)) node.setAttribute(k, v);
-    if (parent) parent.appendChild(node);
-    return node;
-  }
-  const BODY_SHAPES = [
-    { tag: "ellipse", attrs: { cx: 160, cy: 68, rx: 34, ry: 42 }, head: true },
-    { tag: "path", attrs: { d: "M160 104 L160 136" }, limb: 30 },
-    { tag: "path", attrs: { d: "M100 146 C82 205 74 285 70 372" }, limb: 24 },
-    { tag: "path", attrs: { d: "M220 146 C238 205 246 285 250 372" }, limb: 24 },
-    { tag: "path", attrs: { d: "M133 380 L127 610" }, limb: 40 },
-    { tag: "path", attrs: { d: "M187 380 L193 610" }, limb: 40 },
-    { tag: "path", attrs: { d: "M98 134 Q160 116 222 134 Q234 160 230 196 Q224 250 222 290 Q232 340 224 388 L96 388 Q88 340 98 290 Q96 250 90 196 Q86 160 98 134 Z" } },
-  ];
-  // Órganos en coordenadas de la lámina; cx puede ser una lista para los pares.
-  const ORGANS = [
-    { id: ID.spinalCord, line: "M160 112 L160 334", width: 3, color: "--organ-tan", behind: true },
-    { id: ID.esophagus, line: "M160 120 C160 170 166 212 180 242", width: 5, color: "--organ-tan" },
-    { id: ID.visceral, cx: 160, cy: 318, rx: 46, ry: 40, color: "--visceral", opacity: 0.75 },
-    { id: ID.largeIntestine, line: "M130 352 L130 298 Q130 288 140 288 L180 288 Q190 288 190 298 L190 348 Q188 362 168 364", width: 9, color: "--organ-tan" },
-    { id: ID.smallIntestine, cx: 160, cy: 322, rx: 26, ry: 21, color: "--organ-tan" },
-    { id: ID.kidney, cx: [136, 184], cy: 292, rx: 9, ry: 14, color: "--organ-red", behind: true },
-    { id: ID.adrenal, cx: [136, 184], cy: 275, rx: 5, ry: 3, color: "--organ-tan" },
-    { id: ID.pancreas, cx: 168, cy: 272, rx: 20, ry: 5, color: "--organ-tan" },
-    { id: ID.liver, cx: 134, cy: 250, rx: 33, ry: 18, rotate: -8, color: "--liver" },
-    { id: ID.gallbladder, cx: 147, cy: 266, rx: 5, ry: 4, color: "--organ-plum" },
-    { id: ID.stomach, cx: 186, cy: 250, rx: 17, ry: 14, rotate: 20, color: "--organ-pink" },
-    { id: ID.spleen, cx: 212, cy: 246, rx: 7, ry: 12, color: "--organ-plum" },
-    { id: ID.lung, cx: [130, 190], cy: 188, rx: 22, ry: 40, color: "--organ-pink", opacity: 0.9 },
-    { id: ID.heart, cx: 166, cy: 206, rx: 15, ry: 18, rotate: -25, color: "--organ-red" },
-    { id: ID.thymus, cx: 160, cy: 152, rx: 8, ry: 7, color: "--organ-tan" },
-    { id: ID.breast, cx: [128, 192], cy: 186, rx: 16, ry: 14, color: "--fat", opacity: 0.45, sexScale: { male: 0.4, female: 1 } },
-    { id: ID.uterus, cx: 160, cy: 352, rx: 9, ry: 11, color: "--organ-plum" },
-    { id: ID.ovary, cx: [142, 178], cy: 350, rx: 5, ry: 4, color: "--organ-plum" },
-    { id: ID.bladder, cx: 160, cy: 373, rx: 12, ry: 8, color: "--organ-tan" },
-    { id: ID.prostate, cx: 160, cy: 386, rx: 6, ry: 5, color: "--organ-plum" },
-    { id: ID.testis, cx: [152, 168], cy: 406, rx: 6, ry: 8, color: "--organ-plum" },
-    { id: ID.thyroid, cx: 160, cy: 120, rx: 9, ry: 4, color: "--organ-red" },
-    { id: ID.brain, cx: 160, cy: 62, rx: 25, ry: 21, color: "--organ-pink" },
-    { id: ID.pituitary, cx: 160, cy: 77, rx: 3, ry: 2.5, color: "--organ-red" },
-    { id: ID.tongue, cx: 160, cy: 95, rx: 8, ry: 3.5, color: "--organ-red" },
-    { id: ID.salivary, cx: [142, 178], cy: 99, rx: 4.5, ry: 3.5, color: "--organ-tan" },
-  ];
-  const figureNodes = new Map(); // id -> [{node, spec}]
-
-  function interactive(node, id) {
-    node.classList.add("shape");
-    node.dataset.id = id;
-    node.setAttribute("tabindex", "0");
-    node.setAttribute("role", "button");
-    const title = svg("title", {}, node);
-    title.textContent = byId.get(id).name_es;
-    node.addEventListener("click", () => select(id));
-    node.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" || event.key === " ") { event.preventDefault(); select(id); }
-    });
-    if (!figureNodes.has(id)) figureNodes.set(id, []);
-    return node;
-  }
-
-  function buildFigure() {
-    const root = el("figure");
-    const fatLayer = svg("g", {}, root);
-    const bodyLayer = svg("g", {}, root);
-    for (const shape of BODY_SHAPES) {
-      const round = { "stroke-linecap": "round", "stroke-linejoin": "round" };
-      const fat = svg(shape.tag, { ...shape.attrs, ...round }, fatLayer);
-      fat.classList.add("halo");
-      const skin = svg(shape.tag, { ...shape.attrs, ...round, "stroke-width": shape.limb || 1 }, bodyLayer);
-      skin.classList.add("skin");
-      if (shape.limb) { fat.classList.add("limb"); skin.classList.add("limb"); }
-      interactive(fat, ID.subcutaneous);
-      figureNodes.get(ID.subcutaneous).push({ node: fat, spec: shape, layer: "fat" });
-      interactive(skin, ID.skin);
-      figureNodes.get(ID.skin).push({ node: skin, spec: shape, layer: "body" });
-    }
-    const organs = svg("g", {}, root);
-    for (const spec of ORGANS) {
-      if (spec.line) {
-        const node = svg("path", { d: spec.line, "stroke-linecap": "round", "stroke-width": spec.width }, organs);
-        node.classList.add("line");
-        if (spec.behind) node.classList.add("behind");
-        interactive(node, spec.id);
-        figureNodes.get(spec.id).push({ node, spec });
-        continue;
-      }
-      for (const cx of [].concat(spec.cx)) {
-        const attrs = { cx, cy: spec.cy, rx: spec.rx, ry: spec.ry, "fill-opacity": spec.opacity ?? 1 };
-        if (spec.rotate) attrs.transform = `rotate(${spec.rotate} ${cx} ${spec.cy})`;
-        const node = svg("ellipse", attrs, organs);
-        node.classList.add("blob");
-        node.style.fill = `var(${spec.color})`;
-        if (spec.behind) node.classList.add("behind");
-        interactive(node, spec.id);
-        figureNodes.get(spec.id).push({ node, spec });
-      }
-    }
-  }
-
-  function renderFigure(report) {
-    for (const [id, entries] of figureNodes) {
-      const organ = report.organs.get(id);
-      const present = Boolean(organ);
-      const ratio = present ? organ.mass_g / organ.reference_g : 1;
-      const scale = Math.min(1.9, Math.max(0.45, Math.sqrt(ratio)));
-      for (const { node, spec, layer } of entries) {
-        node.style.display = present ? "" : "none";
-        if (!present) continue;
-        node.querySelector("title").textContent = `${byId.get(id).name_es}: ${mass(organ.mass_g)} (${signed(ratio - 1)})`;
-        if (layer === "fat") {
-          // Grosor del contorno de grasa según la grasa subcutánea respecto de la referencia.
-          const halo = Math.min(22, Math.max(1.5, 7 * Math.sqrt(ratio))) * (spec.head ? 0.5 : 1);
-          node.setAttribute("stroke-width", (spec.limb || 0) + 2 * halo);
-        } else if (layer === "body") {
-          continue;
-        } else if (spec.line) {
-          node.setAttribute("stroke-width", spec.width * scale);
-        } else {
-          const base = spec.sexScale ? spec.sexScale[state.sex] : 1;
-          node.setAttribute("rx", spec.rx * scale * base);
-          node.setAttribute("ry", spec.ry * scale * base);
-        }
-      }
-    }
-    // El hígado amarillea con su grasa: mezcla de color hasta un 30 % de grasa.
-    const liverMix = Math.min(1, report.fat.liver_fat_fraction / 0.3) * 85;
-    for (const { node } of figureNodes.get(ID.liver)) {
-      node.style.fill = `color-mix(in srgb, var(--fat) ${liverMix.toFixed(0)}%, var(--liver))`;
-    }
-    for (const [id, entries] of figureNodes) {
-      for (const { node } of entries) node.classList.toggle("selected", id === selected);
-    }
-  }
-
-  // ---------- Lecturas ----------
-  function chip(measured, yes, no) {
-    return `<span class="chip${measured ? " is-measured" : ""}">${measured ? yes : no}</span>`;
-  }
-
-  function renderReadings(report) {
-    const c = report.composition;
-    const rows = [
-      ["IMC", nf(1).format(c.bmi) + " kg/m²"],
-      ["Superficie corporal", nf(2).format(c.bsa_m2) + " m²"],
-      ["Grasa corporal " + chip(c.fat_measured, "medida", "estimada"), pct(c.fat_fraction) + " · " + nf(1).format(c.fat_mass_kg) + " kg"],
-      ["Masa libre de grasa", nf(1).format(c.fat_free_mass_kg) + " kg"],
-      ["Volumen sanguíneo", nf(2).format(c.blood_volume_l) + " L"],
-      ["Agua corporal", nf(1).format(c.total_body_water_l) + " L"],
-    ];
-    el("readings").innerHTML = rows.map(([label, value]) => `<div><dt>${label}</dt><dd>${value}</dd></div>`).join("");
-  }
-
-  function renderFat(report) {
-    const f = report.fat;
-    const total = f.adipose_tissue_g;
-    const parts = [
-      ["Subcutánea", f.subcutaneous_g, "var(--fat)", ""],
-      ["Visceral", f.visceral_g, "var(--visceral)", chip(f.visceral_measured, "medida", "típica") + " " + pct(f.visceral_fraction)],
-      ["Hígado, grasa añadida", Math.max(0, f.liver_fat_excess_g), "var(--liver)", ""],
-    ];
-    el("fat-stack").innerHTML = parts
-      .map(([, g, color]) => `<span style="width: ${((100 * g) / total).toFixed(2)}%; background: ${color};"></span>`)
-      .join("");
-    el("fat-legend").innerHTML =
-      `<div><strong>Tejido adiposo total</strong><span class="num">${mass(total)}</span></div>` +
-      parts
-        .map(([label, g, color, extra]) => `<div><span><i class="swatch" style="background: ${color}"></i>${label} ${extra}</span><span class="num">${mass(g)}</span></div>`)
-        .join("");
-
-    el("liver-chip").innerHTML = chip(f.liver_fat_measured, "medida", "supuesta");
-    el("liver-pill").innerHTML = f.steatosis
-      ? `<span class="pill warn">Esteatosis · ${pct(f.liver_fat_fraction, 1)}</span>`
-      : `<span class="pill ok">Normal · ${pct(f.liver_fat_fraction, 1)}</span>`;
-    const max = D.limits.liver_fat_fraction[1];
-    const position = (x) => (100 * Math.min(max, x)) / max + "%";
-    el("gauge-mark").style.left = position(D.fat.steatosis_threshold);
-    el("gauge-dot").style.left = position(f.liver_fat_fraction);
-    el("gauge-labels").innerHTML =
-      `<span style="left: ${position(D.fat.steatosis_threshold)}; transform: translateX(-4px);">↑ límite normal ${pct(D.fat.steatosis_threshold, 2)}</span>` +
-      `<span style="left: 100%; transform: translateX(-100%);">${pct(max)}</span>`;
-
-    el("balance").textContent =
-      `Estructuras modeladas: ${nf(1).format(report.modeled_mass_g / 1000)} kg de ${nf(1).format(state.weight)} kg. ` +
-      `El resto (${nf(1).format(report.unmodeled_mass_g / 1000)} kg) son tejidos aún no modelados: ganglios, ojos, contenido digestivo…`;
-  }
-
-  function systemOf(id) {
-    let node = byId.get(id);
-    while (node.parent && node.parent !== ROOT && byId.get(node.parent).kind !== "system") node = byId.get(node.parent);
-    return node.parent && node.parent !== ROOT ? byId.get(node.parent) : node;
-  }
-
-  function renderDetail(report) {
-    const s = byId.get(selected);
-    const organ = report.organs.get(selected);
-    const path = [];
-    for (let node = s; node; node = node.parent ? byId.get(node.parent) : null) path.unshift(node.name_es);
-    const models = s.models.filter((m) => !m.sex || m.sex === state.sex);
-    const xrefs = Object.entries(s.xrefs).map(([prefix, values]) => `${prefix === "SCTID" ? "SNOMED CT" : prefix} <span class="mono">${values.map((v) => v.split(":")[1]).join(", ")}</span>`);
-    let measuredNote = "";
-    if (selected === ID.visceral) measuredNote = report.fat.visceral_measured ? "Valor medido." : "Fracción típica del tejido adiposo para el sexo (pendiente de contrastar).";
-    if (selected === ID.liver) measuredNote = `Grasa del hígado: ${pct(report.fat.liver_fat_fraction, 1)} (${report.fat.liver_fat_measured ? "medida" : "supuesto sano"}).`;
-    el("detail").innerHTML = `
-      <div class="panel-head">
-        <span class="eyebrow">Estructura seleccionada</span>
-        <h3>${escapeHtml(s.name_es)}</h3>
-        <span class="detail-path">${path.map(escapeHtml).join(" › ")}</span>
-      </div>
-      <dl>
-        <dt>Masa</dt><dd class="num">${mass(organ.mass_g)} <span style="color: var(--muted)">(referencia ${mass(organ.reference_g)}, ${signed(organ.mass_g / organ.reference_g - 1)})</span></dd>
-        <dt>UBERON</dt><dd><a class="mono" href="${uberonUrl(s.id)}" target="_blank" rel="noopener">${s.id}</a> · ${escapeHtml(s.label_en)}</dd>
-        ${xrefs.length ? `<dt>Enlaces</dt><dd>${xrefs.join(" · ")}</dd>` : ""}
-        <dt>Modelo 3D</dt><dd>${models.length ? models.map((m) => `<a href="${m.url}" target="_blank" rel="noopener">${escapeHtml(m.label)} (GLB)</a>`).join(" · ") : "sin modelo en el Human Reference Atlas"}</dd>
-      </dl>
-      ${measuredNote ? `<p style="font-size: 0.85rem;">${measuredNote}</p>` : ""}
-      ${s.definition ? `<p class="definition">${escapeHtml(s.definition)}</p>` : ""}`;
-  }
-
-  function renderTable(report) {
-    const groups = new Map();
-    for (const organ of report.organs.values()) {
-      const group = systemOf(organ.id);
-      if (!groups.has(group.id)) groups.set(group.id, { group, organs: [] });
-      groups.get(group.id).organs.push(organ);
-    }
-    const order = D.structures.map((s) => s.id);
-    const sorted = [...groups.values()].sort((a, b) => order.indexOf(a.group.id) - order.indexOf(b.group.id));
-    const rows = [];
-    for (const { group, organs } of sorted) {
-      rows.push(`<tr class="group-row"><th colspan="5">${escapeHtml(group.name_es)}</th></tr>`);
-      for (const organ of organs) {
-        const s = byId.get(organ.id);
-        const change = organ.mass_g / organ.reference_g - 1;
-        const width = Math.min(50, Math.abs(change) * 50);
-        const bar = change >= 0
-          ? `<span style="left: 50%; width: ${width}%; background: var(--increase);"></span>`
-          : `<span style="right: 50%; width: ${width}%; background: var(--decrease);"></span>`;
-        const pending = organ.verification === "pending" ? '<sup class="pending" title="Pendiente de contrastar con ICRP 89">*</sup>' : "";
-        rows.push(`<tr class="organ-row${organ.id === selected ? " selected" : ""}" data-id="${organ.id}" tabindex="0">
-          <td>${escapeHtml(s.name_es)}${pending}</td>
-          <td class="num">${mass(organ.reference_g)}</td>
-          <td class="num">${mass(organ.mass_g)}</td>
-          <td><div class="delta"><div class="delta-bar">${bar}</div><span class="delta-text">${signed(change)}</span></div></td>
-          <td><a class="mono" href="${uberonUrl(s.id)}" target="_blank" rel="noopener">${s.id}</a></td>
-        </tr>`);
-      }
-    }
-    el("table-body").innerHTML = rows.join("");
-  }
-
-  function select(id) {
-    selected = id;
-    if (lastReport) render(lastReport);
-  }
-
-  function render(report) {
-    renderFigure(report);
-    renderReadings(report);
-    renderFat(report);
-    renderDetail(report);
-    renderTable(report);
-  }
-
-  const STALE = ["figure-wrap", "readings", "fat-block", "detail", "table-scroll"];
-
-  function update() {
-    let report;
-    try {
-      report = model.organMasses(personFromState(state));
-    } catch (error) {
-      const message = String(error.message).replace(/\d+\.\d{3,}/g, (m) => nf(2).format(Number(m)));
-      el("status").textContent = "Combinación no válida: " + message + ". Se muestra el último resultado válido.";
-      el("status").hidden = false;
-      for (const id of STALE) el(id).classList.add("stale");
-      writeOutputs(null);
-      return;
-    }
-    el("status").hidden = true;
-    for (const id of STALE) el(id).classList.remove("stale");
-    if (!report.organs.has(selected)) selected = ID.liver;
-    lastReport = report;
-    writeOutputs(report);
-    render(report);
-  }
-
-  // ---------- Arranque ----------
-  el("meta").innerHTML = [
-    D.uberon_version.split("/")[0].toUpperCase() + " " + D.uberon_version.split("/")[2],
-    D.structures.length + " estructuras",
-    D.structures.reduce((n, s) => n + s.models.length, 0) + " modelos 3D",
-    "masas de referencia ICRP 89",
-  ].map((text) => `<span>${text}</span>`).join("");
-  el("sources").innerHTML =
-    "Datos: UBERON " + D.uberon_version.split("/")[2] + " (CC BY 3.0); modelos 3D del Human Reference Atlas (CC BY 4.0); " +
-    "masas de referencia de ICRP 89, Tabla 2.8. Ecuaciones: Janmahasatian 2005 (masa libre de grasa), Nadler 1962 (volemia), " +
-    "Watson 1980 y Wang 1999 (agua), Mosteller 1987 (superficie), Szczepaniak 2005 (umbral de esteatosis), Henry 1990 (límites de IMC).";
-
-  el("presets").innerHTML = PRESETS.map((p) => `<button type="button" class="preset" data-key="${p.key}" aria-pressed="false">${p.label}</button>`).join("");
-  el("presets").addEventListener("click", (event) => {
-    const button = event.target.closest(".preset");
-    if (button) applyPreset(PRESETS.find((p) => p.key === button.dataset.key));
+  const bone = layer === "esqueleto";
+  const material = new THREE.MeshPhysicalMaterial({
+    color,
+    roughness: bone ? 0.72 : 0.5,
+    metalness: 0,
+    clearcoat: bone ? 0 : 0.35,
+    clearcoatRoughness: 0.45,
   });
-  for (const id of ["sex-male", "sex-female", "age", "height", "weight", "bf", "vat", "liver", "bf-on", "vat-on", "liver-on"]) {
-    el(id).addEventListener("input", readControls);
-  }
-  el("table-body").addEventListener("click", (event) => {
-    if (event.target.closest("a")) return;
-    const row = event.target.closest("tr.organ-row");
-    if (row) select(row.dataset.id);
-  });
-  el("table-body").addEventListener("keydown", (event) => {
-    const row = event.target.closest("tr.organ-row");
-    if (row && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); select(row.dataset.id); }
-  });
+  // Las mamas son sobre todo grasa bajo la piel: translúcidas para no tapar el tórax.
+  material.userData.baseOpacity = /mammary/.test(meshKey) ? 0.55 : 1;
+  return material;
+}
 
-  buildFigure();
-  applyPreset(PRESETS[5]);
-})();
+async function showBody(sex) {
+  el("loading").hidden = false;
+  el("loading-text").textContent = "Cargando anatomía 3D…";
+  let data;
+  try {
+    data = await loadBody(sex);
+  } catch (error) {
+    cache.delete(sex);
+    el("loading-text").textContent = "No se pudo cargar el modelo 3D. Comprueba la conexión y recarga la página.";
+    return;
+  }
+  if (sex !== state.sex) return;
+  const previousKey = selected?.userData.key;
+  for (const mesh of units) {
+    mesh.geometry.dispose();
+    mesh.material.dispose();
+  }
+  bodyGroup.clear();
+  units = [];
+  for (const entry of data.meshes) {
+    const { positions, index } = decodeMesh(entry);
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    geometry.setIndex(new THREE.BufferAttribute(index, 1));
+    geometry.computeVertexNormals();
+    geometry.computeBoundingBox();
+    // Cada estructura gira y escala sobre su propio centro.
+    const center = geometry.boundingBox.getCenter(new THREE.Vector3());
+    geometry.translate(-center.x, -center.y, -center.z);
+    geometry.computeBoundingBox();
+    const { key: meshKey, name_es, label_en, uberon, model_id, layer, side } = entry;
+    const info = { key: meshKey, name_es, label_en, uberon, model_id, layer, side };
+    const mesh = new THREE.Mesh(geometry, makeMaterial(info.key, info.layer));
+    mesh.position.copy(center);
+    if (info.layer === "piel") {
+      skinMaterial = mesh.material;
+      mesh.renderOrder = 10;
+    }
+    mesh.userData = { ...info, center, baseColor: mesh.material.color.clone() };
+    bodyGroup.add(mesh);
+    units.push(mesh);
+  }
+  addVisceralBlob();
+  el("loading").hidden = true;
+  buildLayerList();
+  buildSearch();
+  selectByKey(units.some((m) => m.userData.key === previousKey) ? previousKey : "liver", false);
+  applyReport();
+  applyVisibility();
+}
+
+// Grasa visceral: no hay malla en el atlas; un elipsoide translúcido alrededor del intestino la representa.
+function addVisceralBlob() {
+  const gut = units.filter((m) => /small_intestine|^colon$/.test(m.userData.key));
+  if (!gut.length) return;
+  const box = new THREE.Box3();
+  for (const m of gut) box.union(m.geometry.boundingBox.clone().translate(m.position));
+  const size = box.getSize(new THREE.Vector3());
+  const material = new THREE.MeshStandardMaterial({ color: FAT_COLOR, roughness: 0.6, transparent: true, opacity: 0.42, depthWrite: false });
+  material.userData.baseOpacity = 0.42;
+  visceralBlob = new THREE.Mesh(new THREE.SphereGeometry(1, 48, 32), material);
+  visceralBlob.position.copy(box.getCenter(new THREE.Vector3()));
+  visceralBlob.userData = {
+    key: "visceral_fat", name_es: "grasa visceral (representación esquemática)", label_en: "visceral fat", uberon: FAT.visceral,
+    model_id: FAT.visceral, layer: "grasa", base: new THREE.Vector3(size.x * 0.62, size.y * 0.55, size.z * 0.62),
+    baseColor: FAT_COLOR.clone(), center: visceralBlob.position.clone(),
+  };
+  visceralBlob.renderOrder = 5;
+  bodyGroup.add(visceralBlob);
+  units.push(visceralBlob);
+}
+
+// ---------- Modelo -> anatomía 3D ----------
+function updateModel() {
+  try {
+    report = model.organMasses(personFromState());
+  } catch (error) {
+    const message = String(error.message).replace(/\d+\.\d{3,}/g, (m) => nf(2).format(Number(m)));
+    el("status").textContent = "Combinación no válida: " + message + ". Se mantiene el último resultado válido.";
+    el("status").hidden = false;
+    writeOutputs();
+    return;
+  }
+  el("status").hidden = true;
+  writeOutputs();
+  renderReadouts();
+  applyReport();
+  renderInspector();
+}
+
+function applyReport() {
+  if (!report || !units.length) return;
+  const reference = model.referencePerson(state.sex);
+  const referenceComposition = model.bodyComposition(reference);
+  const composition = report.composition;
+  const sy = state.height / reference.height_cm;
+  const frame = Math.sqrt((composition.fat_free_mass_kg / state.height) / (referenceComposition.fat_free_mass_kg / reference.height_cm));
+  bodyGroup.scale.set(frame, sy, frame);
+  const bodyVolume = frame * frame * sy;
+  for (const mesh of units) {
+    const info = mesh.userData;
+    if (mesh === visceralBlob) {
+      const organ = report.organs.get(FAT.visceral);
+      const s = Math.cbrt(organ.mass_g / organ.reference_g / bodyVolume);
+      mesh.scale.copy(info.base).multiplyScalar(s);
+      continue;
+    }
+    if (info.layer === "piel") continue;
+    const organ = info.model_id ? report.organs.get(info.model_id) : null;
+    // Estructuras con masa modelada: volumen proporcional a su masa. Las demás siguen al cuerpo.
+    mesh.scale.setScalar(organ ? Math.cbrt(organ.mass_g / organ.reference_g / bodyVolume) : 1);
+  }
+  // Grasa subcutánea: la piel se separa del cuerpo según su masa respecto de la referencia.
+  const sat = report.organs.get(FAT.subcutaneous);
+  if (skinMaterial) skinMaterial.userData.inflate.value = THREE.MathUtils.clamp(0.016 * (sat.mass_g / sat.reference_g - 1), -0.006, 0.06);
+  // El hígado amarillea con su grasa.
+  const liverMesh = units.find((m) => m.userData.key === "liver");
+  if (liverMesh) liverMesh.userData.baseColor.copy(LIVER_COLOR).lerp(FAT_COLOR, Math.min(1, report.fat.liver_fat_fraction / 0.3) * 0.85);
+  paint();
+}
+
+// ---------- Visibilidad, selección y color ----------
+function applyVisibility() {
+  for (const mesh of units) mesh.visible = layerVisible.get(mesh.userData.layer) && !mesh.userData.hidden;
+  if (skinMaterial) skinMaterial.userData.baseOpacity = skinOpacity;
+  for (const button of document.querySelectorAll(".layer")) button.setAttribute("aria-pressed", String(layerVisible.get(button.dataset.layer)));
+  paint();
+}
+
+// Atenuar el resto: todo salvo la estructura seleccionada se vuelve casi transparente.
+let fade = false;
+function setFade(on) {
+  fade = on;
+  el("act-fade")?.setAttribute("aria-pressed", String(fade));
+  paint();
+}
+
+function paint() {
+  for (const mesh of units) {
+    const material = mesh.material;
+    material.color.copy(mesh.userData.baseColor);
+    const glow = mesh === selected ? 0.42 : mesh === hovered ? 0.18 : 0;
+    material.emissive.copy(ACCENT).multiplyScalar(glow);
+    const base = material.userData.baseOpacity ?? 1;
+    const opacity = fade && selected && mesh !== selected ? Math.min(base, 0.1) : base;
+    material.opacity = opacity;
+    material.transparent = opacity < 1;
+    material.depthWrite = opacity >= 1;
+  }
+}
+
+function select(mesh, announce = true) {
+  selected = mesh;
+  paint();
+  renderInspector();
+  if (announce && window.matchMedia("(max-width: 760px)").matches) setTab("estructura");
+}
+function selectByKey(meshKey, announce = true) {
+  select(units.find((m) => m.userData.key === meshKey) || null, announce);
+}
+
+function displayName(info) {
+  return capitalize(info.name_es || info.label_en || info.key);
+}
+
+// ---------- Interacción con el lienzo ----------
+const raycaster = new THREE.Raycaster();
+const pointer = new THREE.Vector2();
+let downAt = null;
+function pick(event) {
+  const rect = canvas.getBoundingClientRect();
+  pointer.set(((event.clientX - rect.left) / rect.width) * 2 - 1, -((event.clientY - rect.top) / rect.height) * 2 + 1);
+  raycaster.setFromCamera(pointer, camera);
+  // Con la piel translúcida se seleccionan los órganos que hay debajo.
+  const candidates = units.filter((m) => m.visible && !(m.userData.layer === "piel" && skinOpacity < 0.75));
+  const hits = raycaster.intersectObjects(candidates, false);
+  // El elipsoide de grasa visceral envuelve el intestino: se prefiere lo que hay dentro.
+  const hit = hits[0]?.object === visceralBlob && hits[1] ? hits[1] : hits[0];
+  return hit ? hit.object : null;
+}
+canvas.addEventListener("pointerdown", (event) => { downAt = [event.clientX, event.clientY]; });
+canvas.addEventListener("pointerup", (event) => {
+  if (!downAt || Math.hypot(event.clientX - downAt[0], event.clientY - downAt[1]) > 6) return;
+  select(pick(event));
+});
+canvas.addEventListener("dblclick", (event) => {
+  const mesh = pick(event);
+  if (mesh) { select(mesh); focusOn(mesh); }
+});
+canvas.addEventListener("pointermove", (event) => {
+  if (event.pointerType !== "mouse" || event.buttons) return;
+  const mesh = pick(event);
+  if (mesh !== hovered) { hovered = mesh; paint(); }
+  const tip = el("tip");
+  tip.hidden = !mesh;
+  if (mesh) {
+    tip.textContent = displayName(mesh.userData);
+    tip.style.left = event.clientX + "px";
+    tip.style.top = event.clientY + "px";
+  }
+});
+canvas.addEventListener("pointerleave", () => { hovered = null; el("tip").hidden = true; paint(); });
+
+// ---------- Cámara ----------
+let flight = null;
+function flyTo(position, target) {
+  const duration = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 650;
+  flight = { from: camera.position.clone(), to: position, fromTarget: controls.target.clone(), toTarget: target, start: performance.now(), duration };
+}
+function worldCenter(mesh) {
+  return mesh.getWorldPosition(new THREE.Vector3());
+}
+function focusOn(mesh) {
+  const box = new THREE.Box3().setFromObject(mesh);
+  const radius = Math.max(0.06, box.getSize(new THREE.Vector3()).length() / 2);
+  const center = worldCenter(mesh);
+  const direction = camera.position.clone().sub(controls.target).normalize();
+  flyTo(center.clone().add(direction.multiplyScalar(radius * 4.2 + 0.15)), center);
+  setFade(true);
+}
+const VIEWS = { front: [0, 0.035, 1], back: [0, 0.035, -1], left: [1, 0.035, 0], right: [-1, 0.035, 0], reset: [0, 0.035, 1] };
+for (const button of document.querySelectorAll("[data-view]")) {
+  button.addEventListener("click", () => {
+    const position = new THREE.Vector3(...VIEWS[button.dataset.view]).normalize().multiplyScalar(viewDistance());
+    flyTo(position.add(HOME.target), HOME.target.clone());
+    if (button.dataset.view === "reset") setFade(false);
+  });
+}
+
+// ---------- Paneles ----------
+function buildLayerList() {
+  const counts = new Map();
+  for (const mesh of units) counts.set(mesh.userData.layer, (counts.get(mesh.userData.layer) || 0) + 1);
+  el("layers").innerHTML = LAYERS.filter((l) => counts.get(l.key)).map((l) => `
+    <li>
+      <button type="button" class="layer" data-layer="${l.key}" aria-pressed="${layerVisible.get(l.key)}">
+        <i class="dot" style="background: ${l.color}"></i><span>${l.name}</span><span class="count">${counts.get(l.key)}</span>
+      </button>
+      ${l.key === "piel" ? `<div class="skin-opacity"><label for="skin-opacity">Opacidad de la piel <output id="skin-out">${pct(skinOpacity)}</output></label><input type="range" id="skin-opacity" min="0" max="1" step="0.01" value="${skinOpacity}"></div>` : ""}
+    </li>`).join("");
+  el("skin-opacity")?.addEventListener("input", (event) => {
+    skinOpacity = Number(event.target.value);
+    el("skin-out").textContent = pct(skinOpacity);
+    applyVisibility();
+  });
+}
+el("layers").addEventListener("click", (event) => {
+  const button = event.target.closest(".layer");
+  if (!button) return;
+  layerVisible.set(button.dataset.layer, !layerVisible.get(button.dataset.layer));
+  applyVisibility();
+});
+el("show-all").addEventListener("click", () => {
+  for (const l of LAYERS) layerVisible.set(l.key, true);
+  for (const mesh of units) mesh.userData.hidden = false;
+  fade = false;
+  applyVisibility();
+  renderInspector();
+});
+
+function buildSearch() {
+  const names = [...new Set(units.map((m) => displayName(m.userData)))].sort((a, b) => a.localeCompare(b, "es"));
+  el("structure-names").innerHTML = names.map((n) => `<option value="${escapeHtml(n)}"></option>`).join("");
+}
+el("search").addEventListener("change", (event) => {
+  const query = event.target.value.trim().toLowerCase();
+  const mesh = units.find((m) => displayName(m.userData).toLowerCase() === query)
+    || units.find((m) => displayName(m.userData).toLowerCase().includes(query));
+  if (!mesh) return;
+  layerVisible.set(mesh.userData.layer, true);
+  mesh.userData.hidden = false;
+  applyVisibility();
+  select(mesh);
+  focusOn(mesh);
+  event.target.value = "";
+});
+
+function renderInspector() {
+  const box = el("inspector");
+  if (!selected) {
+    box.innerHTML = `<div class="card-title"><span class="eyebrow">Estructura</span><h2>Toca una estructura</h2></div>
+      <p class="hint">Arrastra para girar el cuerpo, usa la rueda o pellizca para acercar y toca un órgano, hueso o vaso para ver su ficha. Con doble clic la cámara se acerca a él.</p>
+      <p class="hint">Los sistemas se encienden y apagan en el panel de la izquierda; la opacidad de la piel deja ver lo que hay debajo.</p>`;
+    return;
+  }
+  const info = selected.userData;
+  const layer = layerByKey.get(info.layer);
+  const structure = info.model_id ? byId.get(info.model_id) : null;
+  const organ = report && info.model_id ? report.organs.get(info.model_id) : null;
+  let massBlock;
+  if (organ) {
+    const change = organ.mass_g / organ.reference_g - 1;
+    const paired = structure?.bilateral && !/visceral/.test(info.key);
+    const pending = organ.verification === "pending" ? ' <span title="Valor de ICRP 89 pendiente de contrastar">*</span>' : "";
+    massBlock = `<div class="mass-box">
+        <div class="mass-row"><span class="eyebrow">Masa de ${escapeHtml(structure.name_es)}${paired ? " (ambos)" : ""}</span><span class="delta ${change > 0.005 ? "up" : change < -0.005 ? "down" : ""}">${signed(change)}</span></div>
+        <div class="mass-row"><span class="mass-big">${mass(organ.mass_g)}</span><span class="note">referencia ${mass(organ.reference_g)}${pending}</span></div>
+        ${extraNote(info)}
+      </div>`;
+  } else {
+    massBlock = `<p class="note">Esta estructura todavía no tiene masa en el modelo: se dibuja y escala con el cuerpo.</p>`;
+  }
+  const ownId = info.uberon || info.model_id;
+  box.innerHTML = `
+    <div class="card-title">
+      <span class="chip"><i style="background: ${layer?.color}"></i>${escapeHtml(layer?.name || "")}</span>
+      <h2>${escapeHtml(displayName(info))}</h2>
+      ${info.label_en ? `<span class="sub">${escapeHtml(info.label_en)}</span>` : ""}
+    </div>
+    ${massBlock}
+    <dl class="facts">
+      ${ownId ? `<dt>UBERON</dt><dd><a class="mono" href="${uberonUrl(ownId)}" target="_blank" rel="noopener">${ownId}</a></dd>` : ""}
+      ${structure ? `<dt>En bodysim</dt><dd>${escapeHtml(structure.name_es)} <span class="mono">${structure.id}</span></dd>` : ""}
+      <dt>Origen 3D</dt><dd>${info.key === "visceral_fat" ? "esquema del modelo (no es una malla anatómica)" : "Human Reference Atlas, CC BY 4.0"}</dd>
+    </dl>
+    <div class="actions">
+      <button type="button" class="btn" id="act-focus">Enfocar</button>
+      <button type="button" class="btn" id="act-fade" aria-pressed="${fade}">Atenuar el resto</button>
+      <button type="button" class="btn" id="act-hide">Ocultar</button>
+      <button type="button" class="btn" id="act-isolate">Aislar</button>
+    </div>`;
+  el("act-focus").onclick = () => focusOn(selected);
+  el("act-fade").onclick = () => setFade(!fade);
+  el("act-hide").onclick = () => { selected.userData.hidden = true; applyVisibility(); select(null, false); };
+  el("act-isolate").onclick = () => {
+    for (const mesh of units) mesh.userData.hidden = mesh !== selected;
+    applyVisibility();
+    focusOn(selected);
+  };
+}
+
+function extraNote(info) {
+  if (!report) return "";
+  const f = report.fat;
+  if (info.key === "liver") return `<span class="note">Grasa del hígado ${pct(f.liver_fat_fraction, 1)} (${f.liver_fat_measured ? "medida" : "supuesto sano"})${f.steatosis ? " · esteatosis" : ""}.</span>`;
+  if (info.key === "visceral_fat") return `<span class="note">${f.visceral_measured ? "Medida" : "Fracción típica para el sexo"} · ${pct(f.visceral_fraction)} del tejido adiposo.</span>`;
+  if (info.layer === "piel") {
+    const sat = report.organs.get(FAT.subcutaneous);
+    return `<span class="note">Grasa subcutánea bajo la piel: ${mass(sat.mass_g)} (${signed(sat.mass_g / sat.reference_g - 1)}).</span>`;
+  }
+  return "";
+}
+
+// ---------- Panel del individuo ----------
+const round = (x, step) => Math.round(x / step) * step;
+function writeControls() {
+  el("sex-male").setAttribute("aria-pressed", String(state.sex === "male"));
+  el("sex-female").setAttribute("aria-pressed", String(state.sex === "female"));
+  for (const k of ["age", "height", "weight", "bf", "vat", "liver"]) el(k).value = state[k];
+  el("bf-on").checked = state.bfOn;
+  el("vat-on").checked = state.vatOn;
+  el("liver-on").checked = state.liverOn;
+  for (const button of document.querySelectorAll(".preset")) button.setAttribute("aria-pressed", String(button.dataset.key === activePreset));
+}
+function writeOutputs() {
+  el("age-out").textContent = state.age + " años";
+  el("height-out").textContent = state.height + " cm";
+  el("weight-out").textContent = nf(1).format(state.weight) + " kg";
+  if (report && !state.bfOn) el("bf").value = round(report.composition.fat_fraction * 100, 0.5);
+  if (report && !state.vatOn) el("vat").value = round(report.fat.visceral_g / 1000, 0.1);
+  if (!state.liverOn) el("liver").value = D.fat.healthy_liver_fat * 100;
+  el("bf-out").textContent = state.bfOn ? pct(state.bf / 100, 1) : report ? "estimada " + pct(report.composition.fat_fraction) : "estimada";
+  el("vat-out").textContent = state.vatOn ? nf(1).format(state.vat) + " kg" : report ? "típica " + nf(1).format(report.fat.visceral_g / 1000) + " kg" : "típica";
+  el("liver-out").textContent = state.liverOn ? pct(state.liver / 100, 1) : "sano (" + pct(D.fat.healthy_liver_fat) + ")";
+}
+function readouts() {
+  const c = report.composition;
+  return [
+    ["IMC", nf(1).format(c.bmi)],
+    [`Grasa <span class="tag-chip${c.fat_measured ? " on" : ""}">${c.fat_measured ? "medida" : "estimada"}</span>`, pct(c.fat_fraction)],
+    ["Masa libre de grasa", nf(1).format(c.fat_free_mass_kg) + " kg"],
+    ["Volemia", nf(2).format(c.blood_volume_l) + " L"],
+  ].map(([label, value]) => `<div class="readout"><span>${label}</span><strong>${value}</strong></div>`).join("");
+}
+function renderReadouts() {
+  el("readouts").innerHTML = readouts();
+  el("compact-readouts").innerHTML =
+    `<div class="readout"><span>${state.sex === "male" ? "Hombre" : "Mujer"}, ${state.age} años</span><strong>${state.height} cm · ${nf(1).format(state.weight)} kg</strong></div>` + readouts();
+  const f = report.fat;
+  const total = f.adipose_tissue_g;
+  const parts = [["Subcutánea", f.subcutaneous_g, "#e3c25e"], ["Visceral", f.visceral_g, "#c98a2e"], ["Hígado", Math.max(0, f.liver_fat_excess_g), "#7d2b22"]];
+  el("fat-stack").innerHTML = parts.map(([, g, color]) => `<span style="width: ${((100 * g) / total).toFixed(2)}%; background: ${color};"></span>`).join("");
+  el("fat-legend").innerHTML = parts.map(([label, g, color]) => `<span><i style="background: ${color}"></i>${label} ${mass(g)}</span>`).join("");
+  el("liver-pill").innerHTML = f.steatosis ? `<span class="pill warn">Esteatosis ${pct(f.liver_fat_fraction, 1)}</span>` : `<span class="pill ok">Hígado sano</span>`;
+  el("mass-body").innerHTML = [...report.organs.values()].map((organ) => {
+    const s = byId.get(organ.id);
+    const pending = organ.verification === "pending" ? "*" : "";
+    return `<tr><td>${escapeHtml(s.name_es)}${pending}</td><td class="n">${mass(organ.reference_g)}</td><td class="n">${mass(organ.mass_g)}</td><td class="n">${signed(organ.mass_g / organ.reference_g - 1)}</td></tr>`;
+  }).join("");
+}
+function readControls(event) {
+  const target = event.target;
+  state.age = Number(el("age").value);
+  state.height = Number(el("height").value);
+  state.weight = Number(el("weight").value);
+  if (target === el("bf-on") && target.checked && report) state.bf = round(report.composition.fat_fraction * 100, 0.5);
+  if (target === el("vat-on") && target.checked && report) state.vat = round(report.fat.visceral_g / 1000, 0.1);
+  state.bfOn = el("bf-on").checked;
+  state.vatOn = el("vat-on").checked;
+  state.liverOn = el("liver-on").checked;
+  if (target === el("bf")) { state.bf = Number(target.value); state.bfOn = true; }
+  if (target === el("vat")) { state.vat = Number(target.value); state.vatOn = true; }
+  if (target === el("liver")) { state.liver = Number(target.value); state.liverOn = true; }
+  activePreset = null;
+  writeControls();
+  updateModel();
+}
+for (const id of ["age", "height", "weight", "bf", "vat", "liver", "bf-on", "vat-on", "liver-on"]) el(id).addEventListener("input", readControls);
+
+function applyPreset(presetKey) {
+  const preset = PRESETS.find((p) => p.key === presetKey);
+  const s = preset.state(state.sex);
+  Object.assign(state, {
+    age: s.age, height: s.height, weight: s.weight,
+    bfOn: s.bf != null, bf: s.bf ?? state.bf,
+    vatOn: s.vat != null, vat: s.vat ?? state.vat,
+    liverOn: s.liver != null, liver: s.liver ?? D.fat.healthy_liver_fat * 100,
+  });
+  activePreset = presetKey;
+  writeControls();
+  updateModel();
+}
+el("presets").innerHTML = PRESETS.map((p) => `<button type="button" class="preset" data-key="${p.key}" aria-pressed="false">${p.label}</button>`).join("");
+el("presets").addEventListener("click", (event) => {
+  const button = event.target.closest(".preset");
+  if (button) applyPreset(button.dataset.key);
+});
+el("ind-toggle").addEventListener("click", () => {
+  const expanded = el("individual").classList.toggle("expanded");
+  el("ind-toggle").setAttribute("aria-expanded", String(expanded));
+  el("ind-toggle").textContent = expanded ? "Cerrar" : "Ajustar";
+});
+
+function setSex(sex) {
+  if (sex === state.sex) return;
+  state.sex = sex;
+  applyPreset(activePreset || "ref");
+  showBody(sex);
+}
+el("sex-male").addEventListener("click", () => setSex("male"));
+el("sex-female").addEventListener("click", () => setSex("female"));
+
+function setTab(tab) {
+  el("app").dataset.tab = tab;
+  for (const button of document.querySelectorAll(".tabs button")) button.setAttribute("aria-pressed", String(button.dataset.tab === tab));
+}
+for (const button of document.querySelectorAll(".tabs button")) button.addEventListener("click", () => setTab(button.dataset.tab));
+
+// ---------- Bucle de dibujo ----------
+const tag = el("tag");
+function placeTag() {
+  if (!selected || !selected.visible) { tag.hidden = true; return; }
+  const box = new THREE.Box3().setFromObject(selected);
+  const point = new THREE.Vector3((box.min.x + box.max.x) / 2, box.max.y, (box.min.z + box.max.z) / 2).project(camera);
+  if (point.z > 1) { tag.hidden = true; return; }
+  const rect = canvas.getBoundingClientRect();
+  tag.hidden = false;
+  el("tag-text").textContent = displayName(selected.userData);
+  tag.style.transform = `translate(${((point.x + 1) / 2) * rect.width}px, ${((1 - point.y) / 2) * rect.height}px) translate(-50%, -100%)`;
+}
+function frame() {
+  if (flight) {
+    const t = flight.duration ? Math.min(1, (performance.now() - flight.start) / flight.duration) : 1;
+    const k = 1 - Math.pow(1 - t, 3);
+    camera.position.lerpVectors(flight.from, flight.to, k);
+    controls.target.lerpVectors(flight.fromTarget, flight.toTarget, k);
+    if (t >= 1) flight = null;
+  }
+  controls.update();
+  renderer.render(scene, camera);
+  placeTag();
+  requestAnimationFrame(frame);
+}
+
+// ---------- Arranque ----------
+resize();
+writeControls();
+applyPreset("ref");
+renderInspector();
+requestAnimationFrame(frame);
+showBody(state.sex);
 </script>
 </body>
 </html>

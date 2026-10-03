@@ -7,3 +7,5 @@ build/
 dist/
 # Releases de ontologías descargadas (se regeneran con bodysim.sources.uberon)
 *.obo
+node_modules/
+demo/models/*.glb

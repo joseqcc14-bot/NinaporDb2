@@ -1,0 +1,14 @@
+{
+  "name": "bodysim-demo-models",
+  "private": true,
+  "type": "module",
+  "description": "Convierte los cuerpos 'united' del Human Reference Atlas en modelos ligeros para la demo.",
+  "scripts": {
+    "build": "node build_models.mjs"
+  },
+  "devDependencies": {
+    "@gltf-transform/core": "4.2.1",
+    "@gltf-transform/extensions": "4.2.1",
+    "meshoptimizer": "0.22.0"
+  }
+}

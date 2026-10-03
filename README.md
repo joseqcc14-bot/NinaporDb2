@@ -156,7 +156,11 @@ dispositivo médico.
    anatómicos y fisiológicos sobre nodos UBERON, enlazada a SNOMED CT y MONDO
    por las referencias cruzadas que ya tenemos.
 5. **Visualización y forma externa:**
-   - visor web que carga los GLB del HRA y los colorea según el informe;
+   - visor 3D al estilo de un atlas: hecho en [demo/](demo/README.md), con los
+     cuerpos del Human Reference Atlas escalados según el informe de cada
+     individuo;
+   - falta el esqueleto y la musculatura completos (BodyParts3D o Z-Anatomy,
+     CC BY-SA);
    - superficie corporal paramétrica con
      [Anny](https://europe.naverlabs.com/blog/anny-a-free-to-use-3d-human-parametric-model-for-all-ages/)
      (Apache 2.0; edad, talla y peso como parámetros).
