@@ -1,0 +1,229 @@
+{
+  "source": "ICRP Publication 89 (2002). Basic Anatomical and Physiological Data for Use in Radiological Protection: Reference Values. Ann. ICRP 32(3-4). Tabla 2.8, adulto de referencia.",
+  "verification_legend": {
+    "secondary_source": "Valor contrastado con una copia secundaria de la Tabla 2.8 durante el desarrollo.",
+    "pending": "Valor transcrito; falta contrastarlo con la Tabla 2.8 original antes de usarlo en resultados."
+  },
+  "reference_individuals": {
+    "male": {
+      "height_cm": 176,
+      "weight_kg": 73
+    },
+    "female": {
+      "height_cm": 163,
+      "weight_kg": 60
+    }
+  },
+  "organ_masses_g": [
+    {
+      "id": "UBERON:0000948",
+      "male": 330,
+      "female": 250,
+      "includes": "tejido cardíaco, sin la sangre de las cavidades",
+      "verification": "secondary_source"
+    },
+    {
+      "id": "UBERON:0000178",
+      "male": 5600,
+      "female": 4100,
+      "includes": "sangre total (≈5,3 L en el hombre y ≈3,9 L en la mujer)",
+      "verification": "secondary_source"
+    },
+    {
+      "id": "UBERON:0002048",
+      "male": 1200,
+      "female": 950,
+      "includes": "ambos pulmones, con su contenido de sangre",
+      "verification": "secondary_source"
+    },
+    {
+      "id": "UBERON:0001723",
+      "male": 73,
+      "female": 60,
+      "includes": "lengua",
+      "verification": "pending"
+    },
+    {
+      "id": "UBERON:0001044",
+      "male": 85,
+      "female": 70,
+      "includes": "todas las glándulas salivales",
+      "verification": "pending"
+    },
+    {
+      "id": "UBERON:0001043",
+      "male": 40,
+      "female": 35,
+      "includes": "pared del esófago",
+      "verification": "pending"
+    },
+    {
+      "id": "UBERON:0000945",
+      "male": 150,
+      "female": 140,
+      "includes": "pared del estómago, sin contenido",
+      "verification": "pending"
+    },
+    {
+      "id": "UBERON:0002108",
+      "male": 650,
+      "female": 600,
+      "includes": "pared del intestino delgado, sin contenido",
+      "verification": "pending"
+    },
+    {
+      "id": "UBERON:0000059",
+      "male": 370,
+      "female": 360,
+      "includes": "pared del colon derecho, colon izquierdo y rectosigma, sin contenido",
+      "verification": "pending"
+    },
+    {
+      "id": "UBERON:0002107",
+      "male": 1800,
+      "female": 1400,
+      "includes": "hígado",
+      "verification": "secondary_source"
+    },
+    {
+      "id": "UBERON:0002110",
+      "male": 10,
+      "female": 8,
+      "includes": "pared de la vesícula biliar, sin bilis",
+      "verification": "pending"
+    },
+    {
+      "id": "UBERON:0001264",
+      "male": 140,
+      "female": 120,
+      "includes": "páncreas",
+      "verification": "secondary_source"
+    },
+    {
+      "id": "UBERON:0002113",
+      "male": 310,
+      "female": 275,
+      "includes": "ambos riñones",
+      "verification": "pending"
+    },
+    {
+      "id": "UBERON:0001255",
+      "male": 50,
+      "female": 40,
+      "includes": "pared de la vejiga, sin orina",
+      "verification": "pending"
+    },
+    {
+      "id": "UBERON:0000007",
+      "male": 0.6,
+      "female": 0.6,
+      "includes": "hipófisis",
+      "verification": "pending"
+    },
+    {
+      "id": "UBERON:0002046",
+      "male": 20,
+      "female": 17,
+      "includes": "tiroides",
+      "verification": "secondary_source"
+    },
+    {
+      "id": "UBERON:0002369",
+      "male": 14,
+      "female": 13,
+      "includes": "ambas glándulas suprarrenales",
+      "verification": "secondary_source"
+    },
+    {
+      "id": "UBERON:0000955",
+      "male": 1450,
+      "female": 1300,
+      "includes": "encéfalo",
+      "verification": "secondary_source"
+    },
+    {
+      "id": "UBERON:0002240",
+      "male": 30,
+      "female": 28,
+      "includes": "médula espinal",
+      "verification": "pending"
+    },
+    {
+      "id": "UBERON:0002106",
+      "male": 150,
+      "female": 130,
+      "includes": "bazo",
+      "verification": "secondary_source"
+    },
+    {
+      "id": "UBERON:0002370",
+      "male": 25,
+      "female": 20,
+      "includes": "timo",
+      "verification": "pending"
+    },
+    {
+      "id": "UBERON:0000473",
+      "male": 35,
+      "female": null,
+      "includes": "ambos testículos",
+      "verification": "pending"
+    },
+    {
+      "id": "UBERON:0002367",
+      "male": 17,
+      "female": null,
+      "includes": "próstata",
+      "verification": "pending"
+    },
+    {
+      "id": "UBERON:0000992",
+      "male": null,
+      "female": 11,
+      "includes": "ambos ovarios",
+      "verification": "pending"
+    },
+    {
+      "id": "UBERON:0000995",
+      "male": null,
+      "female": 80,
+      "includes": "útero",
+      "verification": "pending"
+    },
+    {
+      "id": "UBERON:0000310",
+      "male": 25,
+      "female": 500,
+      "includes": "ambas mamas",
+      "verification": "pending"
+    },
+    {
+      "id": "UBERON:0004288",
+      "male": 10500,
+      "female": 7800,
+      "includes": "esqueleto completo: hueso, médula roja y amarilla, cartílago",
+      "verification": "pending"
+    },
+    {
+      "id": "UBERON:0001134",
+      "male": 29000,
+      "female": 17500,
+      "includes": "músculo esquelético",
+      "verification": "pending"
+    },
+    {
+      "id": "UBERON:0002097",
+      "male": 3300,
+      "female": 2300,
+      "includes": "piel",
+      "verification": "pending"
+    },
+    {
+      "id": "UBERON:0001013",
+      "male": 14500,
+      "female": 19000,
+      "includes": "tejido adiposo separable, sin la médula amarilla (ya incluida en el esqueleto)",
+      "verification": "pending"
+    }
+  ]
+}

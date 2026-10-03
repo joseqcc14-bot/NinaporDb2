@@ -1,0 +1,1566 @@
+{
+  "source": {
+    "ontology": "UBERON",
+    "license": "http://creativecommons.org/licenses/by/3.0/",
+    "data_version": "uberon/releases/2026-10-01/uberon-basic.owl",
+    "download_url": "https://github.com/obophenotype/uberon/releases/latest/download/uberon-basic.obo"
+  },
+  "terms": {
+    "UBERON:0000468": {
+      "label": "multicellular organism",
+      "definition": "Anatomical structure that is an individual member of a species and consists of more than one cell.",
+      "exact_synonyms": [
+        "multi-cellular organism"
+      ],
+      "xrefs": {
+        "FMA": [
+          "FMA:256135"
+        ],
+        "SCTID": [
+          "SCTID:243928005"
+        ],
+        "NCIT": [
+          "NCIT:C13041"
+        ]
+      },
+      "is_a": [
+        "UBERON:0010000"
+      ],
+      "part_of": [],
+      "in_human_reference_atlas": false,
+      "models_3d": []
+    },
+    "UBERON:0004535": {
+      "label": "cardiovascular system",
+      "definition": "Anatomical system that has as its parts the heart and blood vessels.",
+      "exact_synonyms": [],
+      "xrefs": {
+        "FMA": [
+          "FMA:7161"
+        ],
+        "SCTID": [
+          "SCTID:278198007"
+        ],
+        "MESH": [
+          "MESH:D002319"
+        ],
+        "NCIT": [
+          "NCIT:C12686"
+        ],
+        "UMLS": [
+          "UMLS:C0007226"
+        ]
+      },
+      "is_a": [
+        "UBERON:0000467",
+        "UBERON:0010314"
+      ],
+      "part_of": [
+        "UBERON:0001009"
+      ],
+      "in_human_reference_atlas": true,
+      "models_3d": []
+    },
+    "UBERON:0000948": {
+      "label": "heart",
+      "definition": "A myogenic muscular circulatory organ found in the vertebrate cardiovascular system composed of chambers of cardiac muscle. It is the primary circulatory organ.",
+      "exact_synonyms": [
+        "chambered heart",
+        "vertebrate heart"
+      ],
+      "xrefs": {
+        "FMA": [
+          "FMA:7088"
+        ],
+        "SCTID": [
+          "SCTID:302509004"
+        ],
+        "MESH": [
+          "MESH:D006321"
+        ],
+        "NCIT": [
+          "NCIT:C12727"
+        ],
+        "UMLS": [
+          "UMLS:C0018787"
+        ]
+      },
+      "is_a": [
+        "UBERON:0004120",
+        "UBERON:0005181",
+        "UBERON:0007100",
+        "UBERON:0010314"
+      ],
+      "part_of": [
+        "UBERON:0015410"
+      ],
+      "in_human_reference_atlas": true,
+      "models_3d": [
+        {
+          "url": "https://cdn.humanatlas.io/digital-objects/ref-organ/heart-female/v1.3/assets/3d-vh-f-heart.glb",
+          "sex": "female",
+          "uberon": "UBERON:0000948",
+          "label": "heart"
+        },
+        {
+          "url": "https://cdn.humanatlas.io/digital-objects/ref-organ/heart-male/v1.3/assets/3d-vh-m-heart.glb",
+          "sex": "male",
+          "uberon": "UBERON:0000948",
+          "label": "heart"
+        }
+      ]
+    },
+    "UBERON:0000178": {
+      "label": "blood",
+      "definition": "A fluid that is composed of blood plasma and erythrocytes.",
+      "exact_synonyms": [
+        "portion of blood",
+        "vertebrate blood"
+      ],
+      "xrefs": {
+        "FMA": [
+          "FMA:9670"
+        ],
+        "MESH": [
+          "MESH:D001769"
+        ],
+        "NCIT": [
+          "NCIT:C12434"
+        ],
+        "UMLS": [
+          "UMLS:C0005767"
+        ]
+      },
+      "is_a": [
+        "UBERON:0000179"
+      ],
+      "part_of": [
+        "UBERON:0002390"
+      ],
+      "in_human_reference_atlas": true,
+      "models_3d": []
+    },
+    "UBERON:0001004": {
+      "label": "respiratory system",
+      "definition": "Functional system which consists of structures involved in respiration.",
+      "exact_synonyms": [
+        "apparatus respiratorius",
+        "respiratory system"
+      ],
+      "xrefs": {
+        "FMA": [
+          "FMA:7158"
+        ],
+        "SCTID": [
+          "SCTID:278197002"
+        ],
+        "MESH": [
+          "MESH:D012137"
+        ],
+        "NCIT": [
+          "NCIT:C12779"
+        ],
+        "UMLS": [
+          "UMLS:C0035237"
+        ]
+      },
+      "is_a": [
+        "UBERON:0000467"
+      ],
+      "part_of": [],
+      "in_human_reference_atlas": true,
+      "models_3d": [
+        {
+          "url": "https://cdn.humanatlas.io/digital-objects/ref-organ/lung-female/v1.4/assets/3d-vh-f-lung.glb",
+          "sex": "female",
+          "uberon": "UBERON:0001004",
+          "label": "respiratory system"
+        },
+        {
+          "url": "https://cdn.humanatlas.io/digital-objects/ref-organ/lung-male/v1.4/assets/3d-vh-m-lung.glb",
+          "sex": "male",
+          "uberon": "UBERON:0001004",
+          "label": "respiratory system"
+        }
+      ]
+    },
+    "UBERON:0002048": {
+      "label": "lung",
+      "definition": "Respiration organ that develops as an outpocketing of the esophagus.",
+      "exact_synonyms": [
+        "pulmo"
+      ],
+      "xrefs": {
+        "FMA": [
+          "FMA:7195"
+        ],
+        "SCTID": [
+          "SCTID:181216001"
+        ],
+        "MESH": [
+          "MESH:D008168"
+        ],
+        "NCIT": [
+          "NCIT:C12468"
+        ],
+        "UMLS": [
+          "UMLS:C0024109"
+        ]
+      },
+      "is_a": [
+        "UBERON:0000171",
+        "UBERON:0005178",
+        "UBERON:0015212"
+      ],
+      "part_of": [
+        "UBERON:0000170"
+      ],
+      "in_human_reference_atlas": true,
+      "models_3d": [
+        {
+          "url": "https://cdn.humanatlas.io/digital-objects/ref-organ/lung-female/v1.4/assets/3d-vh-f-lung.glb",
+          "sex": "female",
+          "uberon": "UBERON:0002048",
+          "label": "lung"
+        },
+        {
+          "url": "https://cdn.humanatlas.io/digital-objects/ref-organ/lung-male/v1.4/assets/3d-vh-m-lung.glb",
+          "sex": "male",
+          "uberon": "UBERON:0002048",
+          "label": "lung"
+        }
+      ]
+    },
+    "UBERON:0001007": {
+      "label": "digestive system",
+      "definition": "Anatomical system that has as its parts the organs devoted to the ingestion, digestion, and assimilation of food and the discharge of residual wastes.",
+      "exact_synonyms": [],
+      "xrefs": {
+        "FMA": [
+          "FMA:7152"
+        ],
+        "SCTID": [
+          "SCTID:278859004"
+        ],
+        "MESH": [
+          "MESH:D004064"
+        ]
+      },
+      "is_a": [
+        "UBERON:0000467"
+      ],
+      "part_of": [],
+      "in_human_reference_atlas": true,
+      "models_3d": []
+    },
+    "UBERON:0001723": {
+      "label": "tongue",
+      "definition": "A muscular organ in the floor of the mouth.",
+      "exact_synonyms": [],
+      "xrefs": {
+        "FMA": [
+          "FMA:54640"
+        ],
+        "SCTID": [
+          "SCTID:181226008"
+        ],
+        "MESH": [
+          "MESH:D014059"
+        ],
+        "NCIT": [
+          "NCIT:C12422"
+        ],
+        "UMLS": [
+          "UMLS:C0040408"
+        ]
+      },
+      "is_a": [
+        "UBERON:0000020",
+        "UBERON:0013765"
+      ],
+      "part_of": [
+        "UBERON:0000165",
+        "UBERON:0001033"
+      ],
+      "in_human_reference_atlas": true,
+      "models_3d": [
+        {
+          "url": "https://cdn.humanatlas.io/digital-objects/ref-organ/mouth-female/v1.0/assets/3d-vh-f-mouth.glb",
+          "sex": "female",
+          "uberon": "UBERON:0001723",
+          "label": "tongue"
+        },
+        {
+          "url": "https://cdn.humanatlas.io/digital-objects/ref-organ/mouth-male/v1.0/assets/3d-vh-m-mouth.glb",
+          "sex": "male",
+          "uberon": "UBERON:0001723",
+          "label": "tongue"
+        }
+      ]
+    },
+    "UBERON:0001044": {
+      "label": "saliva-secreting gland",
+      "definition": "Saliva-secreting exocrine glands of the oral cavity[GO].",
+      "exact_synonyms": [
+        "salivary gland"
+      ],
+      "xrefs": {
+        "FMA": [
+          "FMA:9597"
+        ],
+        "SCTID": [
+          "SCTID:181236000"
+        ],
+        "MESH": [
+          "MESH:D012469"
+        ],
+        "NCIT": [
+          "NCIT:C12426"
+        ],
+        "UMLS": [
+          "UMLS:C0036098"
+        ]
+      },
+      "is_a": [
+        "UBERON:0010047"
+      ],
+      "part_of": [],
+      "in_human_reference_atlas": true,
+      "models_3d": [
+        {
+          "url": "https://cdn.humanatlas.io/digital-objects/ref-organ/mouth-female/v1.0/assets/3d-vh-f-mouth.glb",
+          "sex": "female",
+          "uberon": "UBERON:0001829",
+          "label": "major salivary gland"
+        },
+        {
+          "url": "https://cdn.humanatlas.io/digital-objects/ref-organ/mouth-male/v1.0/assets/3d-vh-m-mouth.glb",
+          "sex": "male",
+          "uberon": "UBERON:0001829",
+          "label": "major salivary gland"
+        }
+      ]
+    },
+    "UBERON:0001043": {
+      "label": "esophagus",
+      "definition": "Tube that connects the pharynx to the stomach. In mammals, the oesophagus connects the buccal cavity with the stomach. The stratified squamous non-keratinised epithelium lining the buccal cavity is continued through the pharynx down into the oesophagus. The lowest part of the oesophagus (ca. 2 cm) is lined with gastric mucosa and covered by peritoneum. The main body of the oesophagus is lined with small, simple mucous glands. Each gland opens into the lumen by a long duct which pierces the muscularis mucosae (Wilson and Washington, 1989). A sphincter is situated at the point where the oesophagus enters the stomach to prevent gastro-oesophageal reflux, i.e. to prevent acidic gastric contents from reaching stratified epithelia of the oesophagus, where they can cause inflammation and irritation (Wilson and Washington, 1989; Brown et al., 1993).",
+      "exact_synonyms": [
+        "gullet",
+        "oesophagus"
+      ],
+      "xrefs": {
+        "FMA": [
+          "FMA:7131"
+        ],
+        "SCTID": [
+          "SCTID:181245004"
+        ],
+        "MESH": [
+          "MESH:D004947"
+        ],
+        "NCIT": [
+          "NCIT:C12389"
+        ],
+        "UMLS": [
+          "UMLS:C0014876"
+        ]
+      },
+      "is_a": [
+        "UBERON:0004921",
+        "UBERON:0013765"
+      ],
+      "part_of": [
+        "UBERON:0004908"
+      ],
+      "in_human_reference_atlas": true,
+      "models_3d": []
+    },
+    "UBERON:0000945": {
+      "label": "stomach",
+      "definition": "An expanded region of the vertebrate alimentary tract that serves as a food storage compartment and digestive organ. A stomach is lined, in whole or in part by a glandular epithelium.",
+      "exact_synonyms": [],
+      "xrefs": {
+        "FMA": [
+          "FMA:7148"
+        ],
+        "SCTID": [
+          "SCTID:181246003"
+        ],
+        "MESH": [
+          "MESH:D013270"
+        ],
+        "NCIT": [
+          "NCIT:C12391"
+        ],
+        "UMLS": [
+          "UMLS:C0038351"
+        ]
+      },
+      "is_a": [
+        "UBERON:0004921",
+        "UBERON:0010039"
+      ],
+      "part_of": [
+        "UBERON:0001041"
+      ],
+      "in_human_reference_atlas": true,
+      "models_3d": []
+    },
+    "UBERON:0002108": {
+      "label": "small intestine",
+      "definition": "Subdivision of digestive tract that connects the stomach to the large intestine and is where much of the digestion and absorption of food takes place (with the exception of ruminants). The mammalian small intestine is long and coiled and can be differentiated histologically into: duodenum, jejunem, ileum[WP,cjm,Kardong].",
+      "exact_synonyms": [
+        "small bowel",
+        "small intestine"
+      ],
+      "xrefs": {
+        "FMA": [
+          "FMA:7200"
+        ],
+        "SCTID": [
+          "SCTID:181250005"
+        ],
+        "MESH": [
+          "MESH:D007421"
+        ],
+        "NCIT": [
+          "NCIT:C12386"
+        ],
+        "UMLS": [
+          "UMLS:C0021852"
+        ]
+      },
+      "is_a": [
+        "UBERON:0004921",
+        "UBERON:0013765"
+      ],
+      "part_of": [
+        "UBERON:0000160"
+      ],
+      "in_human_reference_atlas": true,
+      "models_3d": [
+        {
+          "url": "https://cdn.humanatlas.io/digital-objects/ref-organ/small-intestine-female/v1.2/assets/3d-vh-f-small-intestine.glb",
+          "sex": "female",
+          "uberon": "UBERON:0002108",
+          "label": "small intestine"
+        },
+        {
+          "url": "https://cdn.humanatlas.io/digital-objects/ref-organ/small-intestine-male/v1.2/assets/3d-vh-m-small-intestine.glb",
+          "sex": "male",
+          "uberon": "UBERON:0002108",
+          "label": "small intestine"
+        }
+      ]
+    },
+    "UBERON:0000059": {
+      "label": "large intestine",
+      "definition": "A subdivision of the digestive tract that connects the small intestine to the cloaca or anus. Lacks or has few villi[Kardong].",
+      "exact_synonyms": [],
+      "xrefs": {
+        "FMA": [
+          "FMA:7201"
+        ],
+        "SCTID": [
+          "SCTID:181254001"
+        ],
+        "MESH": [
+          "MESH:D007420"
+        ],
+        "NCIT": [
+          "NCIT:C12379"
+        ],
+        "UMLS": [
+          "UMLS:C0021851"
+        ]
+      },
+      "is_a": [
+        "UBERON:0004921",
+        "UBERON:0013765"
+      ],
+      "part_of": [
+        "UBERON:0000160",
+        "UBERON:0004907"
+      ],
+      "in_human_reference_atlas": true,
+      "models_3d": [
+        {
+          "url": "https://cdn.humanatlas.io/digital-objects/ref-organ/large-intestine-female/v1.3/assets/3d-sbu-f-large-intestine.glb",
+          "sex": "female",
+          "uberon": "UBERON:0000059",
+          "label": "large intestine"
+        },
+        {
+          "url": "https://cdn.humanatlas.io/digital-objects/ref-organ/large-intestine-male/v1.3/assets/3d-sbu-m-large-intestine.glb",
+          "sex": "male",
+          "uberon": "UBERON:0000059",
+          "label": "large intestine"
+        }
+      ]
+    },
+    "UBERON:0002107": {
+      "label": "liver",
+      "definition": "An exocrine gland which secretes bile and functions in metabolism of protein and carbohydrate and fat, synthesizes substances involved in the clotting of the blood, synthesizes vitamin A, detoxifies poisonous substances, stores glycogen, and breaks down worn-out erythrocytes[GO].",
+      "exact_synonyms": [],
+      "xrefs": {
+        "FMA": [
+          "FMA:7197"
+        ],
+        "SCTID": [
+          "SCTID:181268008"
+        ],
+        "MESH": [
+          "MESH:D008099"
+        ],
+        "NCIT": [
+          "NCIT:C12392"
+        ],
+        "UMLS": [
+          "UMLS:C0023884"
+        ]
+      },
+      "is_a": [
+        "UBERON:0002365",
+        "UBERON:0004119",
+        "UBERON:0005172",
+        "UBERON:0006925"
+      ],
+      "part_of": [
+        "UBERON:0002423"
+      ],
+      "in_human_reference_atlas": true,
+      "models_3d": [
+        {
+          "url": "https://cdn.humanatlas.io/digital-objects/ref-organ/liver-female/v1.2/assets/3d-vh-f-liver.glb",
+          "sex": "female",
+          "uberon": "UBERON:0002107",
+          "label": "liver"
+        },
+        {
+          "url": "https://cdn.humanatlas.io/digital-objects/ref-organ/liver-male/v1.2/assets/3d-vh-m-liver.glb",
+          "sex": "male",
+          "uberon": "UBERON:0002107",
+          "label": "liver"
+        }
+      ]
+    },
+    "UBERON:0002110": {
+      "label": "gallbladder",
+      "definition": "An organ that aids digestion and stores bile produced by the liver[WP].",
+      "exact_synonyms": [
+        "cholecyst",
+        "gall bladder"
+      ],
+      "xrefs": {
+        "FMA": [
+          "FMA:7202"
+        ],
+        "SCTID": [
+          "SCTID:181269000"
+        ],
+        "MESH": [
+          "MESH:D005704"
+        ],
+        "NCIT": [
+          "NCIT:C12377"
+        ],
+        "UMLS": [
+          "UMLS:C0016976"
+        ]
+      },
+      "is_a": [
+        "UBERON:0004119",
+        "UBERON:0013765",
+        "UBERON:0017672",
+        "UBERON:0018707"
+      ],
+      "part_of": [
+        "UBERON:0002294"
+      ],
+      "in_human_reference_atlas": false,
+      "models_3d": []
+    },
+    "UBERON:0001264": {
+      "label": "pancreas",
+      "definition": "An endoderm derived structure that produces precursors of digestive enzymes and blood glucose regulating hormones[GO].",
+      "exact_synonyms": [],
+      "xrefs": {
+        "FMA": [
+          "FMA:7198"
+        ],
+        "SCTID": [
+          "SCTID:181277001"
+        ],
+        "MESH": [
+          "MESH:D010179"
+        ],
+        "NCIT": [
+          "NCIT:C12393"
+        ],
+        "UMLS": [
+          "UMLS:C0030274"
+        ]
+      },
+      "is_a": [
+        "UBERON:0002075"
+      ],
+      "part_of": [],
+      "in_human_reference_atlas": true,
+      "models_3d": [
+        {
+          "url": "https://cdn.humanatlas.io/digital-objects/ref-organ/pancreas-female/v1.3/assets/3d-vh-f-pancreas.glb",
+          "sex": "female",
+          "uberon": "UBERON:0001264",
+          "label": "pancreas"
+        },
+        {
+          "url": "https://cdn.humanatlas.io/digital-objects/ref-organ/pancreas-male/v1.3/assets/3d-vh-m-pancreas.glb",
+          "sex": "male",
+          "uberon": "UBERON:0001264",
+          "label": "pancreas"
+        }
+      ]
+    },
+    "UBERON:0001008": {
+      "label": "renal system",
+      "definition": "The renal system in an anatomical system that maintains fluid balance and contributes to electrolyte balance, acid/base balance, and disposal of nitrogenous waste products.",
+      "exact_synonyms": [
+        "systema urinaria",
+        "systema urinarium",
+        "urinary system",
+        "urinary tract"
+      ],
+      "xrefs": {
+        "FMA": [
+          "FMA:7159"
+        ],
+        "SCTID": [
+          "SCTID:362204003"
+        ],
+        "MESH": [
+          "MESH:D014551"
+        ],
+        "NCIT": [
+          "NCIT:C12413"
+        ],
+        "UMLS": [
+          "UMLS:C1508753"
+        ]
+      },
+      "is_a": [
+        "UBERON:8450002"
+      ],
+      "part_of": [],
+      "in_human_reference_atlas": true,
+      "models_3d": []
+    },
+    "UBERON:0002113": {
+      "label": "kidney",
+      "definition": "A paired organ of the urinary tract that produces urine and maintains bodily fluid homeostasis, blood pressure, pH levels, red blood cell production and skeleton mineralization.",
+      "exact_synonyms": [],
+      "xrefs": {
+        "MESH": [
+          "MESH:D007668"
+        ],
+        "UMLS": [
+          "UMLS:C0022646"
+        ]
+      },
+      "is_a": [
+        "UBERON:0000489",
+        "UBERON:0005172",
+        "UBERON:0015212"
+      ],
+      "part_of": [
+        "UBERON:0011143"
+      ],
+      "in_human_reference_atlas": true,
+      "models_3d": [
+        {
+          "url": "https://cdn.humanatlas.io/digital-objects/ref-organ/kidney-female-left/v1.3/assets/3d-vh-f-kidney-l.glb",
+          "sex": "female",
+          "uberon": "UBERON:0004538",
+          "label": "left kidney"
+        },
+        {
+          "url": "https://cdn.humanatlas.io/digital-objects/ref-organ/kidney-male-left/v1.3/assets/3d-vh-m-kidney-l.glb",
+          "sex": "male",
+          "uberon": "UBERON:0004538",
+          "label": "left kidney"
+        },
+        {
+          "url": "https://cdn.humanatlas.io/digital-objects/ref-organ/kidney-female-right/v1.3/assets/3d-vh-f-kidney-r.glb",
+          "sex": "female",
+          "uberon": "UBERON:0004539",
+          "label": "right kidney"
+        },
+        {
+          "url": "https://cdn.humanatlas.io/digital-objects/ref-organ/kidney-male-right/v1.3/assets/3d-vh-m-kidney-r.glb",
+          "sex": "male",
+          "uberon": "UBERON:0004539",
+          "label": "right kidney"
+        }
+      ]
+    },
+    "UBERON:0001255": {
+      "label": "urinary bladder",
+      "definition": "Distensible musculomembranous organ situated in the anterior part of the pelvic cavity in which urine collects before excretion[MP].",
+      "exact_synonyms": [
+        "vesica urinaria"
+      ],
+      "xrefs": {
+        "FMA": [
+          "FMA:15900"
+        ],
+        "SCTID": [
+          "SCTID:302512001"
+        ],
+        "MESH": [
+          "MESH:D001743"
+        ],
+        "NCIT": [
+          "NCIT:C12414"
+        ],
+        "UMLS": [
+          "UMLS:C0005682"
+        ]
+      },
+      "is_a": [
+        "UBERON:0002075",
+        "UBERON:0004120",
+        "UBERON:0018707"
+      ],
+      "part_of": [
+        "UBERON:0001556"
+      ],
+      "in_human_reference_atlas": true,
+      "models_3d": [
+        {
+          "url": "https://cdn.humanatlas.io/digital-objects/ref-organ/urinary-bladder-female/v1.2/assets/3d-vh-f-urinary-bladder.glb",
+          "sex": "female",
+          "uberon": "UBERON:0001255",
+          "label": "urinary bladder"
+        },
+        {
+          "url": "https://cdn.humanatlas.io/digital-objects/ref-organ/urinary-bladder-male/v1.2/assets/3d-vh-m-urinary-bladder.glb",
+          "sex": "male",
+          "uberon": "UBERON:0001255",
+          "label": "urinary bladder"
+        }
+      ]
+    },
+    "UBERON:0000949": {
+      "label": "endocrine system",
+      "definition": "Anatomical system that consists of the glands and parts of glands that produce endocrine secretions and help to integrate and control bodily metabolic activity.",
+      "exact_synonyms": [
+        "endocrine glandular system",
+        "endocrine system",
+        "systema endocrinum"
+      ],
+      "xrefs": {
+        "FMA": [
+          "FMA:9668"
+        ],
+        "SCTID": [
+          "SCTID:278876000"
+        ],
+        "MESH": [
+          "MESH:D004703"
+        ],
+        "NCIT": [
+          "NCIT:C12705"
+        ],
+        "UMLS": [
+          "UMLS:C0014136"
+        ]
+      },
+      "is_a": [
+        "UBERON:0015204"
+      ],
+      "part_of": [],
+      "in_human_reference_atlas": false,
+      "models_3d": []
+    },
+    "UBERON:0000007": {
+      "label": "pituitary gland",
+      "definition": "The pituitary gland is an endocrine gland that secretes hormones that regulate many other glands [GO]. An endocrine gland located ventral to the diencephalon and derived from mixed neuroectodermal and non neuroectodermal origin [ZFIN].",
+      "exact_synonyms": [
+        "glandula pituitaria",
+        "pituitary",
+        "pituitary body"
+      ],
+      "xrefs": {
+        "FMA": [
+          "FMA:13889"
+        ],
+        "SCTID": [
+          "SCTID:181125003"
+        ],
+        "MESH": [
+          "MESH:D010902"
+        ],
+        "NCIT": [
+          "NCIT:C12399"
+        ],
+        "UMLS": [
+          "UMLS:C0032005"
+        ]
+      },
+      "is_a": [
+        "UBERON:0002368",
+        "UBERON:0003133",
+        "UBERON:0003296",
+        "UBERON:0003937",
+        "UBERON:0004121"
+      ],
+      "part_of": [],
+      "in_human_reference_atlas": false,
+      "models_3d": []
+    },
+    "UBERON:0002046": {
+      "label": "thyroid gland",
+      "definition": "A two-lobed endocrine gland found in all vertebrates, located in front of and on either side of the trachea in humans, and producing various hormones, such as triiodothyronine and calcitonin[BTO].",
+      "exact_synonyms": [
+        "thyroid"
+      ],
+      "xrefs": {
+        "FMA": [
+          "FMA:9603"
+        ],
+        "SCTID": [
+          "SCTID:181117000"
+        ],
+        "MESH": [
+          "MESH:D013961"
+        ],
+        "NCIT": [
+          "NCIT:C12400"
+        ],
+        "UMLS": [
+          "UMLS:C0040132"
+        ]
+      },
+      "is_a": [
+        "UBERON:0002368",
+        "UBERON:0004119",
+        "UBERON:0010314"
+      ],
+      "part_of": [],
+      "in_human_reference_atlas": false,
+      "models_3d": []
+    },
+    "UBERON:0002369": {
+      "label": "adrenal gland",
+      "definition": "Either of a pair of complex endocrine organs near the anterior medial border of the kidney consisting of a mesodermal cortex that produces glucocorticoid, mineralocorticoid, and androgenic hormones and an ectodermal medulla that produces epinephrine and norepinephrine[BTO].",
+      "exact_synonyms": [
+        "glandula adrenalis",
+        "glandula suprarenalis"
+      ],
+      "xrefs": {
+        "FMA": [
+          "FMA:9604"
+        ],
+        "SCTID": [
+          "SCTID:181127006"
+        ],
+        "MESH": [
+          "MESH:D000311"
+        ],
+        "NCIT": [
+          "NCIT:C12666"
+        ],
+        "UMLS": [
+          "UMLS:C0001625"
+        ]
+      },
+      "is_a": [
+        "UBERON:0005172",
+        "UBERON:0006858",
+        "UBERON:0010314",
+        "UBERON:0015212"
+      ],
+      "part_of": [],
+      "in_human_reference_atlas": false,
+      "models_3d": []
+    },
+    "UBERON:0001016": {
+      "label": "nervous system",
+      "definition": "The nervous system is an organ system containing predominantly neuron and glial cells. In bilaterally symmetrical organism, it is arranged in a network of tree-like structures connected to a central body. The main functions of the nervous system are to regulate and control body functions, and to receive sensory input, process this information, and generate behavior [CUMBO].",
+      "exact_synonyms": [
+        "neurological system"
+      ],
+      "xrefs": {
+        "FMA": [
+          "FMA:7157"
+        ],
+        "SCTID": [
+          "SCTID:278196006"
+        ],
+        "MESH": [
+          "MESH:D009420"
+        ],
+        "NCIT": [
+          "NCIT:C12755"
+        ],
+        "UMLS": [
+          "UMLS:C0027763"
+        ]
+      },
+      "is_a": [
+        "UBERON:0000467"
+      ],
+      "part_of": [],
+      "in_human_reference_atlas": true,
+      "models_3d": []
+    },
+    "UBERON:0000955": {
+      "label": "brain",
+      "definition": "The brain is the center of the nervous system in all vertebrate, and most invertebrate, animals. Some primitive animals such as jellyfish and starfish have a decentralized nervous system without a brain, while sponges lack any nervous system at all. In vertebrates, the brain is located in the head, protected by the skull and close to the primary sensory apparatus of vision, hearing, balance, taste, and smell[WP].",
+      "exact_synonyms": [],
+      "xrefs": {
+        "FMA": [
+          "FMA:50801"
+        ],
+        "SCTID": [
+          "SCTID:258335003"
+        ],
+        "MESH": [
+          "MESH:D001921"
+        ],
+        "NCIT": [
+          "NCIT:C12439"
+        ],
+        "UMLS": [
+          "UMLS:C0006104",
+          "UMLS:C1269537"
+        ]
+      },
+      "is_a": [
+        "UBERON:0000062",
+        "UBERON:0004121"
+      ],
+      "part_of": [
+        "UBERON:0001017"
+      ],
+      "in_human_reference_atlas": true,
+      "models_3d": [
+        {
+          "url": "https://cdn.humanatlas.io/digital-objects/ref-organ/brain-female/v1.4/assets/3d-allen-f-brain.glb",
+          "sex": "female",
+          "uberon": "UBERON:0000955",
+          "label": "brain"
+        },
+        {
+          "url": "https://cdn.humanatlas.io/digital-objects/ref-organ/brain-male/v1.4/assets/3d-allen-m-brain.glb",
+          "sex": "male",
+          "uberon": "UBERON:0000955",
+          "label": "brain"
+        }
+      ]
+    },
+    "UBERON:0002240": {
+      "label": "spinal cord",
+      "definition": "Part of the central nervous system located in the vertebral canal continuous with and caudal to the brain; demarcated from brain by plane of foramen magnum. It is composed of an inner core of gray matter in which nerve cells predominate, and an outer layer of white matter in which myelinated nerve fibers predominate, and surrounds the central canal. (CUMBO).",
+      "exact_synonyms": [],
+      "xrefs": {
+        "FMA": [
+          "FMA:7647"
+        ],
+        "SCTID": [
+          "SCTID:180959008"
+        ],
+        "MESH": [
+          "MESH:D013116"
+        ],
+        "NCIT": [
+          "NCIT:C12464"
+        ],
+        "UMLS": [
+          "UMLS:C0037925"
+        ]
+      },
+      "is_a": [
+        "UBERON:0000489",
+        "UBERON:0004121",
+        "UBERON:0005174",
+        "UBERON:0010314"
+      ],
+      "part_of": [
+        "UBERON:0001017"
+      ],
+      "in_human_reference_atlas": true,
+      "models_3d": [
+        {
+          "url": "https://cdn.humanatlas.io/digital-objects/ref-organ/spinal-cord-female/v1.1/assets/3d-vh-f-spinal-cord.glb",
+          "sex": "female",
+          "uberon": "UBERON:0002240",
+          "label": "spinal cord"
+        },
+        {
+          "url": "https://cdn.humanatlas.io/digital-objects/ref-organ/spinal-cord-male/v1.1/assets/3d-vh-m-spinal-cord.glb",
+          "sex": "male",
+          "uberon": "UBERON:0002240",
+          "label": "spinal cord"
+        }
+      ]
+    },
+    "UBERON:0002405": {
+      "label": "immune system",
+      "definition": "Anatomical system that protects the body from foreign substances, cells, and tissues by producing the immune response and that includes especially the thymus, spleen, lymphoid tissue, lymphocytes including the B cells and T cells, and antibodies.",
+      "exact_synonyms": [],
+      "xrefs": {
+        "FMA": [
+          "FMA:9825"
+        ],
+        "SCTID": [
+          "SCTID:362590003"
+        ],
+        "MESH": [
+          "MESH:D007107"
+        ],
+        "NCIT": [
+          "NCIT:C12735"
+        ],
+        "UMLS": [
+          "UMLS:C0020962"
+        ]
+      },
+      "is_a": [
+        "UBERON:0015203"
+      ],
+      "part_of": [],
+      "in_human_reference_atlas": true,
+      "models_3d": []
+    },
+    "UBERON:0002106": {
+      "label": "spleen",
+      "definition": "The organ that functions to filter blood and to store red corpuscles and platelets.",
+      "exact_synonyms": [],
+      "xrefs": {
+        "FMA": [
+          "FMA:7196"
+        ],
+        "SCTID": [
+          "SCTID:181279003"
+        ],
+        "MESH": [
+          "MESH:D013154"
+        ],
+        "NCIT": [
+          "NCIT:C12432"
+        ],
+        "UMLS": [
+          "UMLS:C0037993"
+        ]
+      },
+      "is_a": [
+        "UBERON:0004177",
+        "UBERON:0005057",
+        "UBERON:0017672"
+      ],
+      "part_of": [],
+      "in_human_reference_atlas": true,
+      "models_3d": [
+        {
+          "url": "https://cdn.humanatlas.io/digital-objects/ref-organ/spleen-female/v1.3/assets/3d-vh-f-spleen.glb",
+          "sex": "female",
+          "uberon": "UBERON:0002106",
+          "label": "spleen"
+        },
+        {
+          "url": "https://cdn.humanatlas.io/digital-objects/ref-organ/spleen-male/v1.3/assets/3d-vh-m-spleen.glb",
+          "sex": "male",
+          "uberon": "UBERON:0002106",
+          "label": "spleen"
+        }
+      ]
+    },
+    "UBERON:0002370": {
+      "label": "thymus",
+      "definition": "Anatomical structure of largely lymphoid tissue that functions in cell-mediated immunity by being the site where T cells develop.",
+      "exact_synonyms": [
+        "thymus gland",
+        "thymus organ"
+      ],
+      "xrefs": {
+        "FMA": [
+          "FMA:9607"
+        ],
+        "SCTID": [
+          "SCTID:118507000"
+        ],
+        "MESH": [
+          "MESH:D013950"
+        ],
+        "NCIT": [
+          "NCIT:C12433"
+        ],
+        "UMLS": [
+          "UMLS:C0040113"
+        ]
+      },
+      "is_a": [
+        "UBERON:0002368",
+        "UBERON:0004119",
+        "UBERON:0004177",
+        "UBERON:0005057",
+        "UBERON:0005058"
+      ],
+      "part_of": [
+        "UBERON:0000153"
+      ],
+      "in_human_reference_atlas": true,
+      "models_3d": [
+        {
+          "url": "https://cdn.humanatlas.io/digital-objects/ref-organ/thymus-female/v1.3/assets/3d-vh-f-thymus.glb",
+          "sex": "female",
+          "uberon": "UBERON:0002370",
+          "label": "thymus"
+        },
+        {
+          "url": "https://cdn.humanatlas.io/digital-objects/ref-organ/thymus-male/v1.3/assets/3d-vh-m-thymus.glb",
+          "sex": "male",
+          "uberon": "UBERON:0002370",
+          "label": "thymus"
+        }
+      ]
+    },
+    "UBERON:0000990": {
+      "label": "reproductive system",
+      "definition": "Anatomical system that has as its parts the organs concerned with reproduction.",
+      "exact_synonyms": [],
+      "xrefs": {
+        "FMA": [
+          "FMA:7160"
+        ],
+        "SCTID": [
+          "SCTID:278875001"
+        ],
+        "MESH": [
+          "MESH:D005835"
+        ],
+        "NCIT": [
+          "NCIT:C12841"
+        ],
+        "UMLS": [
+          "UMLS:C1261210"
+        ]
+      },
+      "is_a": [
+        "UBERON:0000467"
+      ],
+      "part_of": [],
+      "in_human_reference_atlas": true,
+      "models_3d": [
+        {
+          "url": "https://cdn.humanatlas.io/digital-objects/ref-organ/prostate-male/v1.2/assets/3d-vh-m-prostate.glb",
+          "sex": "male",
+          "uberon": "UBERON:0000079",
+          "label": "male reproductive system"
+        }
+      ]
+    },
+    "UBERON:0000473": {
+      "label": "testis",
+      "definition": "A gonad of a male animal. A gonad produces and releases sperm.",
+      "exact_synonyms": [
+        "gonad of male genitalia",
+        "gonad of male reproductive system",
+        "male gonad",
+        "testicle"
+      ],
+      "xrefs": {
+        "FMA": [
+          "FMA:7210"
+        ],
+        "SCTID": [
+          "SCTID:181431007"
+        ],
+        "MESH": [
+          "MESH:D013737"
+        ],
+        "NCIT": [
+          "NCIT:C12412"
+        ],
+        "UMLS": [
+          "UMLS:C0039597"
+        ]
+      },
+      "is_a": [
+        "UBERON:0000991",
+        "UBERON:0003135"
+      ],
+      "part_of": [],
+      "in_human_reference_atlas": false,
+      "models_3d": []
+    },
+    "UBERON:0002367": {
+      "label": "prostate gland",
+      "definition": "The prostate gland is a partly muscular, partly glandular body that is situated near the base of the mammalian male urethra and secretes an alkaline viscid fluid which is a major constituent of the ejaculatory fluid.",
+      "exact_synonyms": [
+        "male prostate",
+        "prostate"
+      ],
+      "xrefs": {
+        "FMA": [
+          "FMA:9600"
+        ],
+        "SCTID": [
+          "SCTID:181422007"
+        ],
+        "MESH": [
+          "MESH:D011467"
+        ],
+        "NCIT": [
+          "NCIT:C12410"
+        ],
+        "UMLS": [
+          "UMLS:C0033572"
+        ]
+      },
+      "is_a": [
+        "UBERON:0004119",
+        "UBERON:0010147"
+      ],
+      "part_of": [],
+      "in_human_reference_atlas": true,
+      "models_3d": [
+        {
+          "url": "https://cdn.humanatlas.io/digital-objects/ref-organ/prostate-male/v1.2/assets/3d-vh-m-prostate.glb",
+          "sex": "male",
+          "uberon": "UBERON:0002367",
+          "label": "prostate gland"
+        }
+      ]
+    },
+    "UBERON:0000992": {
+      "label": "ovary",
+      "definition": "The gonad of a female organism which contains germ cells.",
+      "exact_synonyms": [
+        "animal ovary",
+        "female gonad",
+        "female organism genitalia gonad",
+        "female organism genitalia gonada",
+        "female organism reproductive system gonad",
+        "female organism reproductive system gonada",
+        "female reproductive system gonad",
+        "female reproductive system gonada",
+        "genitalia of female organism gonad",
+        "genitalia of female organism gonada",
+        "gonad of female organism genitalia",
+        "gonad of female organism reproductive system",
+        "gonad of female reproductive system",
+        "gonad of genitalia of female organism",
+        "gonad of reproductive system of female organism",
+        "gonada of female organism genitalia",
+        "gonada of female organism reproductive system",
+        "gonada of female reproductive system",
+        "gonada of genitalia of female organism",
+        "gonada of reproductive system of female organism",
+        "ovum-producing ovary",
+        "reproductive system of female organism gonad",
+        "reproductive system of female organism gonada"
+      ],
+      "xrefs": {
+        "FMA": [
+          "FMA:7209"
+        ],
+        "SCTID": [
+          "SCTID:181464007"
+        ],
+        "MESH": [
+          "MESH:D010053"
+        ],
+        "NCIT": [
+          "NCIT:C12404"
+        ],
+        "UMLS": [
+          "UMLS:C0029939"
+        ]
+      },
+      "is_a": [
+        "UBERON:0000991",
+        "UBERON:0003134"
+      ],
+      "part_of": [],
+      "in_human_reference_atlas": true,
+      "models_3d": [
+        {
+          "url": "https://cdn.humanatlas.io/digital-objects/ref-organ/ovary-female-right/v1.3/assets/3d-vh-f-ovary-r.glb",
+          "sex": "female",
+          "uberon": "UBERON:0002118",
+          "label": "right ovary"
+        },
+        {
+          "url": "https://cdn.humanatlas.io/digital-objects/ref-organ/ovary-female-left/v1.3/assets/3d-vh-f-ovary-l.glb",
+          "sex": "female",
+          "uberon": "UBERON:0002119",
+          "label": "left ovary"
+        }
+      ]
+    },
+    "UBERON:0000995": {
+      "label": "uterus",
+      "definition": "The female muscular organ of gestation in which the developing embryo or fetus is nourished until birth.",
+      "exact_synonyms": [],
+      "xrefs": {
+        "FMA": [
+          "FMA:17558"
+        ],
+        "SCTID": [
+          "SCTID:181452004"
+        ],
+        "MESH": [
+          "MESH:D014599"
+        ],
+        "NCIT": [
+          "NCIT:C12405"
+        ],
+        "UMLS": [
+          "UMLS:C0042149"
+        ]
+      },
+      "is_a": [
+        "UBERON:0013515"
+      ],
+      "part_of": [
+        "UBERON:0004175"
+      ],
+      "in_human_reference_atlas": true,
+      "models_3d": [
+        {
+          "url": "https://cdn.humanatlas.io/digital-objects/ref-organ/uterus-female/v1.2/assets/3d-vh-f-uterus.glb",
+          "sex": "female",
+          "uberon": "UBERON:0000995",
+          "label": "uterus"
+        }
+      ]
+    },
+    "UBERON:0000310": {
+      "label": "breast",
+      "definition": "The upper ventral region of the torso of an organism.",
+      "exact_synonyms": [
+        "mammary part of chest",
+        "mammary region"
+      ],
+      "xrefs": {
+        "FMA": [
+          "FMA:9601"
+        ],
+        "SCTID": [
+          "SCTID:181131000"
+        ],
+        "MESH": [
+          "MESH:D001940"
+        ],
+        "NCIT": [
+          "NCIT:C12971"
+        ],
+        "UMLS": [
+          "UMLS:C0006141"
+        ]
+      },
+      "is_a": [
+        "UBERON:0034929"
+      ],
+      "part_of": [
+        "UBERON:0001443"
+      ],
+      "in_human_reference_atlas": false,
+      "models_3d": []
+    },
+    "UBERON:0002204": {
+      "label": "musculoskeletal system",
+      "definition": "Anatomical system that consists of the muscular and skeletal systems.",
+      "exact_synonyms": [
+        "musculo-skeletal system"
+      ],
+      "xrefs": {
+        "FMA": [
+          "FMA:7482"
+        ],
+        "SCTID": [
+          "SCTID:278858007"
+        ],
+        "MESH": [
+          "MESH:D009141"
+        ],
+        "NCIT": [
+          "NCIT:C12754"
+        ],
+        "UMLS": [
+          "UMLS:C0026860"
+        ]
+      },
+      "is_a": [
+        "UBERON:0000467"
+      ],
+      "part_of": [],
+      "in_human_reference_atlas": false,
+      "models_3d": []
+    },
+    "UBERON:0004288": {
+      "label": "skeleton",
+      "definition": "Anatomical cluster that consists of all the skeletal elements (eg., bone, cartilage, and teeth) of the body.",
+      "exact_synonyms": [
+        "set of all bones",
+        "set of bones of body"
+      ],
+      "xrefs": {
+        "FMA": [
+          "FMA:23875"
+        ],
+        "SCTID": [
+          "SCTID:361378004"
+        ],
+        "MESH": [
+          "MESH:D012863"
+        ]
+      },
+      "is_a": [
+        "UBERON:0034925"
+      ],
+      "part_of": [
+        "UBERON:0001434"
+      ],
+      "in_human_reference_atlas": true,
+      "models_3d": []
+    },
+    "UBERON:0001134": {
+      "label": "skeletal muscle tissue",
+      "definition": "Muscle tissue that consists primarily of skeletal muscle fibers.",
+      "exact_synonyms": [],
+      "xrefs": {
+        "FMA": [
+          "FMA:14069"
+        ],
+        "SCTID": [
+          "SCTID:426215008"
+        ],
+        "NCIT": [
+          "NCIT:C13050"
+        ],
+        "UMLS": [
+          "UMLS:C0242692"
+        ]
+      },
+      "is_a": [
+        "UBERON:0002036"
+      ],
+      "part_of": [
+        "UBERON:0014892"
+      ],
+      "in_human_reference_atlas": false,
+      "models_3d": []
+    },
+    "UBERON:0002416": {
+      "label": "integumental system",
+      "definition": "Connected anatomical system that forms a barrier between an animal and its environment. In vertebrates, the integumental system consists of the epidermis, dermis plus associated glands and adnexa such as hair and scales. In invertebrates, the integumental system may include cuticle.",
+      "exact_synonyms": [
+        "integumentary system"
+      ],
+      "xrefs": {
+        "FMA": [
+          "FMA:72979"
+        ],
+        "SCTID": [
+          "SCTID:361692004"
+        ],
+        "MESH": [
+          "MESH:D034582"
+        ],
+        "NCIT": [
+          "NCIT:C12907"
+        ],
+        "UMLS": [
+          "UMLS:C0037267"
+        ]
+      },
+      "is_a": [
+        "UBERON:0000467"
+      ],
+      "part_of": [],
+      "in_human_reference_atlas": true,
+      "models_3d": []
+    },
+    "UBERON:0002097": {
+      "label": "skin of body",
+      "definition": "The organ covering the body that consists of the dermis and epidermis.",
+      "exact_synonyms": [
+        "entire skin",
+        "skin organ"
+      ],
+      "xrefs": {
+        "FMA": [
+          "FMA:7163"
+        ],
+        "SCTID": [
+          "SCTID:181469002"
+        ],
+        "MESH": [
+          "MESH:D012867"
+        ],
+        "NCIT": [
+          "NCIT:C12470"
+        ],
+        "UMLS": [
+          "UMLS:C1123023"
+        ]
+      },
+      "is_a": [
+        "UBERON:0000062",
+        "UBERON:0010314"
+      ],
+      "part_of": [
+        "UBERON:0002199"
+      ],
+      "in_human_reference_atlas": true,
+      "models_3d": [
+        {
+          "url": "https://cdn.humanatlas.io/digital-objects/ref-organ/skin-female/v1.5/assets/3d-vh-f-skin.glb",
+          "sex": "female",
+          "uberon": "UBERON:0002097",
+          "label": "skin of body"
+        },
+        {
+          "url": "https://cdn.humanatlas.io/digital-objects/ref-organ/skin-male/v1.4/assets/3d-vh-m-skin.glb",
+          "sex": "male",
+          "uberon": "UBERON:0002097",
+          "label": "skin of body"
+        }
+      ]
+    },
+    "UBERON:0001013": {
+      "label": "adipose tissue",
+      "definition": "Portion of connective tissue composed of adipocytes enmeshed in areolar tissue.",
+      "exact_synonyms": [
+        "fat",
+        "fat tissue",
+        "fatty tissue"
+      ],
+      "xrefs": {
+        "FMA": [
+          "FMA:20110"
+        ],
+        "SCTID": [
+          "SCTID:55603005"
+        ],
+        "MESH": [
+          "MESH:D000273"
+        ],
+        "NCIT": [
+          "NCIT:C12472"
+        ],
+        "UMLS": [
+          "UMLS:C0001527"
+        ]
+      },
+      "is_a": [
+        "UBERON:0011822"
+      ],
+      "part_of": [],
+      "in_human_reference_atlas": true,
+      "models_3d": []
+    }
+  }
+}

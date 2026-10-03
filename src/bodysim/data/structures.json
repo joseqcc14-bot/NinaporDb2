@@ -1,0 +1,262 @@
+{
+  "description": "Árbol anatómico del modelo. Cada estructura se identifica por su CURIE de UBERON; nombre, definición, referencias cruzadas y modelos 3D se toman de uberon_snapshot.json. 'parent' define la jerarquía del simulador (cuerpo > sistema > órgano/tejido), que es más simple que el grafo part_of de UBERON. 'bilateral' indica que la estructura se modela como el par completo; 'sex' limita la estructura a un sexo.",
+  "structures": [
+    {
+      "id": "UBERON:0000468",
+      "name_es": "cuerpo humano",
+      "kind": "organism",
+      "parent": null
+    },
+    {
+      "id": "UBERON:0004535",
+      "name_es": "sistema cardiovascular",
+      "kind": "system",
+      "parent": "UBERON:0000468"
+    },
+    {
+      "id": "UBERON:0000948",
+      "name_es": "corazón",
+      "kind": "organ",
+      "parent": "UBERON:0004535"
+    },
+    {
+      "id": "UBERON:0000178",
+      "name_es": "sangre",
+      "kind": "tissue",
+      "parent": "UBERON:0004535"
+    },
+    {
+      "id": "UBERON:0001004",
+      "name_es": "sistema respiratorio",
+      "kind": "system",
+      "parent": "UBERON:0000468"
+    },
+    {
+      "id": "UBERON:0002048",
+      "name_es": "pulmón",
+      "kind": "organ",
+      "parent": "UBERON:0001004",
+      "bilateral": true
+    },
+    {
+      "id": "UBERON:0001007",
+      "name_es": "sistema digestivo",
+      "kind": "system",
+      "parent": "UBERON:0000468"
+    },
+    {
+      "id": "UBERON:0001723",
+      "name_es": "lengua",
+      "kind": "organ",
+      "parent": "UBERON:0001007"
+    },
+    {
+      "id": "UBERON:0001044",
+      "name_es": "glándulas salivales",
+      "kind": "organ",
+      "parent": "UBERON:0001007",
+      "bilateral": true
+    },
+    {
+      "id": "UBERON:0001043",
+      "name_es": "esófago",
+      "kind": "organ",
+      "parent": "UBERON:0001007"
+    },
+    {
+      "id": "UBERON:0000945",
+      "name_es": "estómago",
+      "kind": "organ",
+      "parent": "UBERON:0001007"
+    },
+    {
+      "id": "UBERON:0002108",
+      "name_es": "intestino delgado",
+      "kind": "organ",
+      "parent": "UBERON:0001007"
+    },
+    {
+      "id": "UBERON:0000059",
+      "name_es": "intestino grueso",
+      "kind": "organ",
+      "parent": "UBERON:0001007"
+    },
+    {
+      "id": "UBERON:0002107",
+      "name_es": "hígado",
+      "kind": "organ",
+      "parent": "UBERON:0001007"
+    },
+    {
+      "id": "UBERON:0002110",
+      "name_es": "vesícula biliar",
+      "kind": "organ",
+      "parent": "UBERON:0001007"
+    },
+    {
+      "id": "UBERON:0001264",
+      "name_es": "páncreas",
+      "kind": "organ",
+      "parent": "UBERON:0001007"
+    },
+    {
+      "id": "UBERON:0001008",
+      "name_es": "sistema renal y urinario",
+      "kind": "system",
+      "parent": "UBERON:0000468"
+    },
+    {
+      "id": "UBERON:0002113",
+      "name_es": "riñón",
+      "kind": "organ",
+      "parent": "UBERON:0001008",
+      "bilateral": true
+    },
+    {
+      "id": "UBERON:0001255",
+      "name_es": "vejiga urinaria",
+      "kind": "organ",
+      "parent": "UBERON:0001008"
+    },
+    {
+      "id": "UBERON:0000949",
+      "name_es": "sistema endocrino",
+      "kind": "system",
+      "parent": "UBERON:0000468"
+    },
+    {
+      "id": "UBERON:0000007",
+      "name_es": "hipófisis",
+      "kind": "organ",
+      "parent": "UBERON:0000949"
+    },
+    {
+      "id": "UBERON:0002046",
+      "name_es": "glándula tiroides",
+      "kind": "organ",
+      "parent": "UBERON:0000949"
+    },
+    {
+      "id": "UBERON:0002369",
+      "name_es": "glándula suprarrenal",
+      "kind": "organ",
+      "parent": "UBERON:0000949",
+      "bilateral": true
+    },
+    {
+      "id": "UBERON:0001016",
+      "name_es": "sistema nervioso",
+      "kind": "system",
+      "parent": "UBERON:0000468"
+    },
+    {
+      "id": "UBERON:0000955",
+      "name_es": "encéfalo",
+      "kind": "organ",
+      "parent": "UBERON:0001016"
+    },
+    {
+      "id": "UBERON:0002240",
+      "name_es": "médula espinal",
+      "kind": "organ",
+      "parent": "UBERON:0001016"
+    },
+    {
+      "id": "UBERON:0002405",
+      "name_es": "sistema inmunitario",
+      "kind": "system",
+      "parent": "UBERON:0000468"
+    },
+    {
+      "id": "UBERON:0002106",
+      "name_es": "bazo",
+      "kind": "organ",
+      "parent": "UBERON:0002405"
+    },
+    {
+      "id": "UBERON:0002370",
+      "name_es": "timo",
+      "kind": "organ",
+      "parent": "UBERON:0002405"
+    },
+    {
+      "id": "UBERON:0000990",
+      "name_es": "sistema reproductor",
+      "kind": "system",
+      "parent": "UBERON:0000468"
+    },
+    {
+      "id": "UBERON:0000473",
+      "name_es": "testículo",
+      "kind": "organ",
+      "parent": "UBERON:0000990",
+      "bilateral": true,
+      "sex": "male"
+    },
+    {
+      "id": "UBERON:0002367",
+      "name_es": "próstata",
+      "kind": "organ",
+      "parent": "UBERON:0000990",
+      "sex": "male"
+    },
+    {
+      "id": "UBERON:0000992",
+      "name_es": "ovario",
+      "kind": "organ",
+      "parent": "UBERON:0000990",
+      "bilateral": true,
+      "sex": "female"
+    },
+    {
+      "id": "UBERON:0000995",
+      "name_es": "útero",
+      "kind": "organ",
+      "parent": "UBERON:0000990",
+      "sex": "female"
+    },
+    {
+      "id": "UBERON:0000310",
+      "name_es": "mama",
+      "kind": "organ",
+      "parent": "UBERON:0000990",
+      "bilateral": true
+    },
+    {
+      "id": "UBERON:0002204",
+      "name_es": "sistema musculoesquelético",
+      "kind": "system",
+      "parent": "UBERON:0000468"
+    },
+    {
+      "id": "UBERON:0004288",
+      "name_es": "esqueleto",
+      "kind": "organ",
+      "parent": "UBERON:0002204"
+    },
+    {
+      "id": "UBERON:0001134",
+      "name_es": "músculo esquelético",
+      "kind": "tissue",
+      "parent": "UBERON:0002204"
+    },
+    {
+      "id": "UBERON:0002416",
+      "name_es": "sistema tegumentario",
+      "kind": "system",
+      "parent": "UBERON:0000468"
+    },
+    {
+      "id": "UBERON:0002097",
+      "name_es": "piel",
+      "kind": "organ",
+      "parent": "UBERON:0002416"
+    },
+    {
+      "id": "UBERON:0001013",
+      "name_es": "tejido adiposo",
+      "kind": "tissue",
+      "parent": "UBERON:0000468"
+    }
+  ]
+}
