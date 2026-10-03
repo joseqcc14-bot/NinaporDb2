@@ -13,9 +13,16 @@ Visor de anatomía 3D al estilo de los atlas interactivos:
   - los 12 pares craneales y los nervios periféricos;
   - ojo, oído y vías lagrimales;
   - vísceras, glándulas endocrinas y ganglios linfáticos.
-- **Cuerpo femenino** (Human Reference Atlas): órganos, encéfalo, ojos, vasos
-  principales y parte del esqueleto. Todavía no tiene la musculatura ni los
-  nervios completos.
+- **Cuerpo femenino** (Visible Human Project y Human Reference Atlas): una
+  mujer real.
+  - De su tomografía de cuerpo entero, segmentada con TotalSegmentator, salen el
+    esqueleto completo (cráneo, costillas, huesos de brazos, piernas, manos y
+    pies), la piel, los grandes vasos, los músculos grandes, los lóbulos
+    pulmonares, el estómago, el esófago, la tiroides y las suprarrenales.
+  - Los órganos del HRA, modelados sobre esa misma mujer, completan las vísceras,
+    el encéfalo, los ojos, la columna, la pelvis y el aparato reproductor.
+  - Todavía no tiene nervios periféricos, ligamentos ni la mayoría de los
+    músculos.
 - **Capas y vistas.** Cada sistema es una capa que se enciende o se apaga. Las
   vistas rápidas (huesos, músculos, articulaciones, inserciones, vasos, nervios,
   órganos, encéfalo y sentidos) combinan capas y transparencia de la piel.
@@ -56,9 +63,10 @@ piezas del atlas cuestan unas 15 llamadas de dibujo.
   datos del paquete. Hay que regenerarlo cuando cambien esos datos.
 - `models/`: los dos cuerpos, una carpeta por sexo con un archivo por capa. El
   hombre deriva de Z-Anatomy y BodyParts3D (CC BY-SA 4.0, share-alike, con
-  piezas posiblemente no comerciales). La mujer deriva del Human Reference
-  Atlas (CC BY 4.0). En [models/README.md](models/README.md) están la
-  procedencia, las licencias y cómo regenerarlos.
+  piezas posiblemente no comerciales). La mujer combina la TC del Visible Human
+  Project (NLM) con el Human Reference Atlas (CC BY 4.0). En
+  [models/README.md](models/README.md) están la procedencia, las licencias y
+  cómo regenerarlos.
 
 ## Pruebas
 

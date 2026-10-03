@@ -22,28 +22,27 @@ cerebral...) lleva:
 Coordenadas en metros: Y hacia arriba, +Z hacia delante y +X hacia la izquierda
 del sujeto.
 
-| Capa | `male/` (Z-Anatomy) | `female/` (HRA) |
+| Capa | `male/` (Z-Anatomy) | `female/` (Visible Human + HRA) |
 |---|---:|---:|
 | piel y regiones | 256 | 1 |
-| esqueleto (huesos, cartílagos, dientes) | 277 | 32 |
+| esqueleto (huesos, cartílagos, dientes) | 277 | 73 |
 | articulaciones y ligamentos (cápsulas, meniscos, discos) | 413 | — |
-| músculos y tendones | 491 | 2 |
+| músculos y tendones | 491 | 10 |
 | orígenes e inserciones musculares | 705 | — |
-| corazón y vasos | 673 | 15 |
+| corazón y vasos | 673 | 31 |
 | encéfalo y médula (giros, surcos, núcleos, ventrículos) | 287 | 4 |
 | nervios (pares craneales, plexos, nervios periféricos) | 255 | — |
 | órganos de los sentidos (ojo, oído, vías lagrimales) | 40 | 2 |
-| digestivo | 46 | 8 |
-| respiratorio (con bronquios segmentarios) | 36 | 5 |
+| digestivo | 46 | 11 |
+| respiratorio (con bronquios segmentarios) | 36 | 8 |
 | urinario | 8 | 4 |
 | reproductor | 14 | 9 |
-| endocrino | 10 | — |
+| endocrino | 10 | 3 |
 | linfático | 163 | 2 |
-| **total** | **3674 piezas, 1,21 M triángulos, 16,1 MB** | **84 piezas, 0,39 M triángulos, 4,7 MB** |
+| **total** | **3674 piezas, 1,21 M triángulos, 16,1 MB** | **158 piezas, 0,63 M triángulos, 7,7 MB** |
 
-El cuerpo femenino todavía no tiene esqueleto, musculatura ni nervios
-completos. El HRA solo trae órganos, y Z-Anatomy no incluye órganos
-reproductores femeninos.
+El cuerpo femenino ya tiene el esqueleto completo, pero todavía no tiene
+nervios, ligamentos ni la mayoría de los músculos (ver más abajo).
 
 ## Hombre: Z-Anatomy
 
@@ -143,54 +142,101 @@ cd demo/models && npm install
 node zanatomy/build_zanatomy.mjs ../../raw
 ```
 
-## Mujer: Human Reference Atlas
+## Mujer: Visible Human + Human Reference Atlas
 
-### Procedencia
+Es la mujer del Visible Human Project, de la que hay dos fuentes abiertas que se
+combinan:
 
-Derivado del Human Reference Atlas (HRA, HuBMAP), publicación v2.0 en
-[hubmapconsortium/ccf-releases](https://github.com/hubmapconsortium/ccf-releases):
+- **su TC de cuerpo entero** (1 mm, de la cabeza a los pies), segmentada con
+  TotalSegmentator;
+- **los órganos del HRA**, modelados sobre esa misma mujer. Se alinean con la TC
+  con una transformación de semejanza ajustada sobre centroides de vértebras,
+  riñones, bazo, corazón y vesícula: escala 1,0001 y error medio de 5 mm en 27
+  puntos.
 
-- **3D Reference Organ Set for United, Female**. Kristen Browne y Heidi
-  Schlehlein, a partir del Visible Human Project (National Library of
-  Medicine). DOI de la versión 1.4:
-  [10.48539/HBM959.JMVR.733](https://doi.org/10.48539/HBM959.JMVR.733).
-- **ASCT+B Tables to 3D Reference Object Library Mapping** v1.5, que relaciona
-  cada pieza 3D con su término UBERON. Ellen M. Quardokus, Heidi Schlehlein,
-  Bruce Herr II y Katy Börner. DOI
-  [10.48539/HBM595.JNGT.446](https://doi.org/10.48539/HBM595.JNGT.446).
+De cada estructura se toma la mejor fuente:
 
-### Licencia
+| Fuente | Estructuras |
+|---|---|
+| TC, segmentación de TotalSegmentator | cráneo, 24 costillas, esternón, cartílagos costales, clavículas, escápulas, húmeros y fémures; glúteos, iliopsoas y músculos profundos del dorso; aorta, cavas, carótidas, subclavias, braquiocefálicos, ilíacas, porta y venas pulmonares; lóbulos pulmonares, estómago, esófago, duodeno, tiroides y suprarrenales |
+| TC, umbral de densidad a 1 mm | piel; tibia y fíbula, radio y ulna, huesos de manos y pies |
+| HRA | vísceras, encéfalo, ojos, columna (con la sexta vértebra lumbar de esta mujer), pelvis, aparato reproductor, mamas y vasos de los órganos |
 
-[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), tanto los datos
-originales como estos derivados. Hay que mantener la atribución anterior al
-reutilizarlos.
+El HRA cambió de postura las extremidades y la piel (brazos separados del
+cuerpo), así que esas piezas suyas no se usan: no coincidirían con el esqueleto
+real.
 
-### Qué se cambió respecto del original
+### Procedencia y licencias
 
-- **Fusión.** Las piezas de cada estructura se unen en una sola malla.
-- **Simplificación** con meshoptimizer: de 4,8 a 0,39 millones de triángulos.
-- **Exclusiones:**
-  - un ganglio linfático aislado de alta resolución;
-  - la placenta (el modelo representa un embarazo a término);
-  - los nervios, músculos y vasos internos del ojo.
-- **Vasos.** Arterias y venas se separan según el material original.
+- **Visible Human Project**, cortesía de la U.S. National Library of Medicine.
+  Desde 2019 no requiere acuerdo de licencia; sus condiciones (NLM Terms and
+  Conditions, 21 de mayo de 2019) piden reconocer a la NLM en cualquier uso. La
+  TC se descarga del NCI Imaging Data Commons, colección
+  `nlm_visible_human_project`.
+- **TotalSegmentator** (Wasserthal et al., *Radiology: Artificial Intelligence*
+  2023, [10.1148/ryai.230024](https://doi.org/10.1148/ryai.230024)): tarea
+  `total`, licencia Apache 2.0, que permite el uso comercial. No se usan sus
+  subtareas de licencia restringida, como `appendicular_bones` (huesos de manos
+  y pies): esos huesos salen del umbral de densidad.
+- **Human Reference Atlas** (HuBMAP), publicación v2.0 en
+  [hubmapconsortium/ccf-releases](https://github.com/hubmapconsortium/ccf-releases),
+  [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/):
+  - **3D Reference Organ Set for United, Female**. Kristen Browne y Heidi
+    Schlehlein, a partir del Visible Human Project. DOI de la versión 1.4:
+    [10.48539/HBM959.JMVR.733](https://doi.org/10.48539/HBM959.JMVR.733).
+  - **ASCT+B Tables to 3D Reference Object Library Mapping** v1.5, que relaciona
+    cada pieza 3D con su término UBERON. Ellen M. Quardokus, Heidi Schlehlein,
+    Bruce Herr II y Katy Börner. DOI
+    [10.48539/HBM595.JNGT.446](https://doi.org/10.48539/HBM595.JNGT.446).
 
-El HRA no incluye estómago, esófago, tiroides, suprarrenales, glándulas
-salivales, ni el esqueleto y la musculatura completos.
+Cada pieza lleva su fuente en el campo `source`, y el visor la muestra en su
+ficha.
+
+### Límites de esta versión
+
+- **Resolución.** Las estructuras de TotalSegmentator salen de su modelo
+  rápido, a 3 mm (en CPU, el de 1,5 mm tarda casi una hora); las superficies se
+  suavizan unos 2 mm. Los huesos de las extremidades y la piel salen de la TC a
+  1 mm.
+- **Huesos agrupados.** La TC de un cadáver tiene las articulaciones cerradas:
+  cuando no se separan, tibia y fíbula, y radio y ulna, van juntos, y los huesos
+  de cada mano y cada pie forman un grupo.
+- **Columna.** TotalSegmentator numera cinco lumbares y esta mujer tiene seis.
+  Por eso la columna viene del HRA.
+- **Postura.** La TC es de un cadáver tumbado: la espalda y las mamas están
+  aplanadas.
+- **Falta el detalle fino.** No hay nervios periféricos, ligamentos ni la
+  mayoría de los músculos. El siguiente paso es deformar el atlas masculino
+  (Z-Anatomy) hasta el esqueleto de esta mujer.
 
 ### Regenerarlo
 
 ```bash
-# 1. Archivos originales: v2.0/models/3d-vh-f-united.glb.7z y la tabla
-#    v2.0/models/asct-b-3d-models-crosswalk.csv de ccf-releases.
-# 2. Correspondencias con bodysim (necesita uberon-basic.obo):
+# 1. TC del Visible Human desde el IDC (unos 900 MB) y volúmenes de 1 y 1,5 mm:
+pip install idc-index pydicom SimpleITK
+python demo/models/ct/fetch_vhp.py female vhp_dicom
+python demo/models/ct/assemble_vhp.py vhp_dicom/* vhp_f.nii.gz
+python demo/models/ct/assemble_vhp.py vhp_dicom/* vhp_f_1p5mm.nii.gz --spacing 1.5
+# 2. Segmentación (en CPU, --force_split reduce la memoria):
+pip install TotalSegmentator
+TotalSegmentator -i vhp_f_1p5mm.nii.gz -o seg.nii.gz --ml --force_split   # --fast: modelo de 3 mm
+python -c "import json; from totalsegmentator.map_to_binary import class_map; json.dump(class_map['total'], open('labels_total.json', 'w'))"
+# 3. Órganos del HRA en una carpeta aparte. Archivos de ccf-releases:
+#    v2.0/models/3d-vh-f-united.glb.7z y v2.0/models/asct-b-3d-models-crosswalk.csv.
 python demo/models/build_mapping.py --crosswalk asct-b-3d-models-crosswalk.csv --obo uberon-basic.obo
-# 3. Conversión (Node.js); --glb escribe además un GLB estándar:
-cd demo/models && npm install
-node build_models.mjs 3d-vh-f-united.glb female
+cd demo/models && npm install && node build_models.mjs 3d-vh-f-united.glb female ../../hra_female && cd ../..
+# 4. Combinación y capas del visor (necesita bodysim, scikit-image y scipy):
+python demo/models/ct/build_female.py --hra hra_female --ct vhp_f.nii.gz --seg seg.nii.gz \
+    --labels labels_total.json --obo uberon-basic.obo --out female_raw
+node demo/models/build_layers.mjs female_raw demo/models/female
 ```
 
-Los nombres en español están en `labels_es.json`. El reparto de piezas, los
-presupuestos de triángulos y las exclusiones están en `build_models.mjs`. El
-mismo script convierte el cuerpo masculino del HRA (`3d-vh-m-united.glb male`),
-pero escribe en `male/` y sustituiría al de Z-Anatomy.
+Los nombres en español de las piezas del HRA están en `labels_es.json`, y su
+reparto y exclusiones, en `build_models.mjs`:
+
+- se excluyen un ganglio linfático aislado de alta resolución, la placenta (el
+  modelo representa un embarazo a término) y los nervios, músculos y vasos
+  internos del ojo;
+- arterias y venas se separan según el material original.
+
+Los de las piezas de la TC están en `ct/build_female.py`.

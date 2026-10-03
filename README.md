@@ -43,7 +43,9 @@ Los detalles están en [docs/arquitectura.md](docs/arquitectura.md).
     y tablas ASCT+B que relacionan estructura, tipo celular y biomarcador.
   - BodyParts3D y Z-Anatomy: mallas de todo el cuerpo indexadas por FMA.
   - Fantomas computacionales de ICRP 110 y 145.
-  - Visible Human Project.
+  - Visible Human Project (NLM): TC, RM y cortes anatómicos de un hombre y una
+    mujer, sin licencia desde 2019. Con TotalSegmentator (Apache 2.0) su TC se
+    convierte en 117 estructuras.
 - **Fisiología.** También existe, aunque es menos conocida:
   - [Pulse Physiology Engine](https://pulse.kitware.com/_about_pulse.html)
     (Kitware, Apache 2.0, con API en Python). Simula un paciente definido por
@@ -161,7 +163,11 @@ dispositivo médico.
    - atlas masculino completo con Z-Anatomy (CC BY-SA 4.0): hecho. Tiene 3674
      piezas: huesos, articulaciones, músculos con sus orígenes e inserciones,
      vasos, nervios, encéfalo y sentidos;
-   - falta el atlas femenino completo, pues el HRA solo trae órganos;
+   - cuerpo femenino de una mujer real: TC de cuerpo entero del Visible Human
+     Project segmentada con TotalSegmentator (esqueleto completo, piel, grandes
+     vasos, músculos grandes), más los órganos del HRA de esa misma mujer. Le
+     faltan nervios, ligamentos y la mayoría de los músculos: el siguiente paso
+     es deformar el atlas masculino hasta su esqueleto;
    - pendiente antes de cualquier uso comercial: verificar o sustituir el oído
      interno y el riñón, que Z-Anatomy pudo tomar de modelos con licencia no
      comercial (ver [demo/models/README.md](demo/models/README.md#licencia));

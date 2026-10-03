@@ -9,14 +9,16 @@
 // e índices en base64 (el visor calcula las normales), y manifest.json con las
 // capas y los límites del cuerpo. Con --glb escribe además un GLB estándar.
 //
-//   node build_models.mjs <3d-vh-f-united.glb> female [--glb]
-//   node build_models.mjs <3d-vh-m-united.glb> male [--glb]   (sustituye al hombre de Z-Anatomy)
+//   node build_models.mjs <3d-vh-f-united.glb> female [carpeta] [--glb]
+//
+// Sin carpeta escribe en <sexo>/. El cuerpo femenino del visor combina esta salida con la TC
+// del Visible Human (ct/build_female.py), así que conviene escribirla en una carpeta aparte.
 import fs from "node:fs";
 import { Document, NodeIO, getBounds } from "@gltf-transform/core";
 import { ALL_EXTENSIONS } from "@gltf-transform/extensions";
 import { pack, simplify, vertexNormals, weld } from "./mesh_tools.mjs";
 
-const [source, sex] = process.argv.slice(2);
+const [source, sex, outArg] = process.argv.slice(2).filter((arg) => !arg.startsWith("--"));
 const writeGlb = process.argv.includes("--glb");
 if (!source || !["male", "female"].includes(sex)) {
   console.error("uso: node build_models.mjs <united.glb> male|female");
@@ -238,7 +240,7 @@ scene.setExtras({
   source: "Human Reference Atlas, 3D Reference Organ Set, United " + (sex === "male" ? "Male" : "Female") + " (v2.0), CC BY 4.0",
   units: "m",
 });
-const outDir = here(`${sex}/`).pathname;
+const outDir = outArg ? `${outArg.replace(/\/$/, "")}/` : here(`${sex}/`).pathname;
 fs.mkdirSync(outDir, { recursive: true });
 const credit = scene.getExtras().source;
 const layers = [];

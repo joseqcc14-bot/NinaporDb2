@@ -1,96 +1,103 @@
 {
  "format": "bodysim-body-1",
  "sex": "female",
- "source": "Human Reference Atlas, 3D Reference Organ Set, United Female (v2.0), CC BY 4.0",
+ "source": "Visible Human Project (U.S. National Library of Medicine), TC segmentada con TotalSegmentator; órganos: Human Reference Atlas, 3D Reference Organ Set, United Female (v2.0), CC BY 4.0",
  "bounds": {
   "min": [
-   -0.4895615577697754,
-   -0.7947609424591064,
-   -0.22261953353881836
+   -0.23775291442871094,
+   0,
+   -0.13499757647514343
   ],
   "max": [
-   0.4778805077075958,
-   0.8715872764587402,
-   0.10666697472333908
+   0.23775291442871094,
+   1.7295057773590088,
+   0.13499757647514343
   ]
  },
  "layers": [
-  {
-   "key": "piel",
-   "file": "piel.json",
-   "parts": 1,
-   "triangles": 60000,
-   "bytes": 720510
-  },
   {
    "key": "reproductor",
    "file": "reproductor.json",
    "parts": 9,
    "triangles": 32540,
-   "bytes": 385225
+   "bytes": 386129
   },
   {
    "key": "sentidos",
    "file": "sentidos.json",
    "parts": 2,
    "triangles": 4973,
-   "bytes": 61926
+   "bytes": 62208
   },
   {
    "key": "encefalo",
    "file": "encefalo.json",
    "parts": 4,
    "triangles": 47526,
-   "bytes": 576588
-  },
-  {
-   "key": "musculos",
-   "file": "musculos.json",
-   "parts": 2,
-   "triangles": 8000,
-   "bytes": 96922
+   "bytes": 577049
   },
   {
    "key": "digestivo",
    "file": "digestivo.json",
-   "parts": 8,
-   "triangles": 40385,
-   "bytes": 488780
+   "parts": 11,
+   "triangles": 60381,
+   "bytes": 730985
   },
   {
    "key": "urinario",
    "file": "urinario.json",
    "parts": 4,
    "triangles": 17997,
-   "bytes": 217371
+   "bytes": 217834
   },
   {
    "key": "cardiovascular",
    "file": "cardiovascular.json",
-   "parts": 15,
-   "triangles": 69908,
-   "bytes": 853101
+   "parts": 31,
+   "triangles": 102736,
+   "bytes": 1256941
   },
   {
    "key": "respiratorio",
    "file": "respiratorio.json",
-   "parts": 5,
-   "triangles": 35716,
-   "bytes": 425585
+   "parts": 8,
+   "triangles": 57813,
+   "bytes": 703984
   },
   {
    "key": "linfatico",
    "file": "linfatico.json",
    "parts": 2,
    "triangles": 7864,
-   "bytes": 93050
+   "bytes": 93333
   },
   {
    "key": "esqueleto",
    "file": "esqueleto.json",
-   "parts": 32,
-   "triangles": 64792,
-   "bytes": 775559
+   "parts": 73,
+   "triangles": 196756,
+   "bytes": 2381078
+  },
+  {
+   "key": "endocrino",
+   "file": "endocrino.json",
+   "parts": 3,
+   "triangles": 2948,
+   "bytes": 37161
+  },
+  {
+   "key": "musculos",
+   "file": "musculos.json",
+   "parts": 10,
+   "triangles": 39998,
+   "bytes": 485334
+  },
+  {
+   "key": "piel",
+   "file": "piel.json",
+   "parts": 1,
+   "triangles": 59990,
+   "bytes": 720735
   }
  ]
 }

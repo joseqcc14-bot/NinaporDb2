@@ -96,8 +96,22 @@ def test_male_atlas_is_complete():
 
 
 def test_female_body():
-    _, layers = _body("female")
+    """TC del Visible Human (esqueleto, piel, vasos, músculos) + órganos del HRA de la misma mujer."""
+    manifest, layers = _body("female")
+    assert "Visible Human" in manifest["source"]
     meshes = _meshes(layers)
     assert meshes["liver"]["model_id"] == "UBERON:0002107"
     assert meshes["heart"]["model_id"] == "UBERON:0000948"
+    assert meshes["uterus"]["layer"] == "reproductor"
     assert meshes["skin"]["layer"] == "piel"
+    # Cada pieza dice de qué fuente sale.
+    assert all("Visible Human" in m["source"] or "Human Reference Atlas" in m["source"] for m in meshes.values())
+    # Esqueleto completo: cráneo, 24 costillas, cinturas, huesos largos, manos y pies.
+    skeleton = {m["key"] for m in layers["esqueleto"]["meshes"]}
+    assert {"ct_skull", "ct_sternum", "ct_femur_left", "ct_femur_right", "ct_humerus_left", "ct_humerus_right"} <= skeleton
+    assert sum(1 for key in skeleton if key.startswith("ct_rib_")) == 24
+    assert {"ct_bones_of_foot_l", "ct_bones_of_foot_r", "ct_bones_of_hand_l", "ct_bones_of_hand_r"} <= skeleton
+    assert meshes["ct_rib_left_1"]["name_es"] == "primera costilla izquierda"
+    assert meshes["ct_aorta"]["layer"] == "cardiovascular"
+    low, high = manifest["bounds"]["min"], manifest["bounds"]["max"]
+    assert abs(low[1]) < 1e-6 and 1.6 < high[1] < 1.75  # pies en el suelo; 1,67 m

@@ -367,7 +367,7 @@ summary { cursor: pointer; color: var(--muted); font-size: 0.82rem; }
     <button type="button" data-tab="individuo" aria-pressed="false">Individuo</button>
   </nav>
 
-  <p class="credits">Hombre: <a href="https://github.com/Z-Anatomy/Models-of-human-anatomy" target="_blank" rel="noopener">Z-Anatomy</a> (CC BY-SA 4.0), derivado de BodyParts3D, © DBCLS (CC BY-SA 2.1 JP). Mujer: Human Reference Atlas, HuBMAP (CC BY 4.0). Masas: ICRP 89. Herramienta de investigación, no es un dispositivo médico.</p>
+  <p class="credits">Hombre: <a href="https://github.com/Z-Anatomy/Models-of-human-anatomy" target="_blank" rel="noopener">Z-Anatomy</a> (CC BY-SA 4.0), derivado de BodyParts3D, © DBCLS (CC BY-SA 2.1 JP). Mujer: <a href="https://www.nlm.nih.gov/research/visible/visible_human.html" target="_blank" rel="noopener">Visible Human Project</a>, cortesía de la U.S. National Library of Medicine (TC segmentada con TotalSegmentator), y Human Reference Atlas, HuBMAP (CC BY 4.0). Masas: ICRP 89. Herramienta de investigación, no es un dispositivo médico.</p>
 </div>
 
 <script src="model-data.js"></script>
@@ -700,7 +700,7 @@ function addLayer(key, meshes) {
     const instanceId = batch.addInstance(batch.addGeometry(geometry));
     const color = new THREE.Color(entry.color || "#d9b8a8");
     const part = {
-      info: { key: entry.key, name_es: entry.name_es, label_en: entry.label_en, uberon: entry.uberon, model_id: entry.model_id, layer: key, side: entry.side, group: entry.group },
+      info: { key: entry.key, name_es: entry.name_es, label_en: entry.label_en, uberon: entry.uberon, model_id: entry.model_id, layer: key, side: entry.side, group: entry.group, source: entry.source },
       batch, instanceId, geometry, center,
       position: center.clone(), scale: 1,
       radius: geometry.boundingSphere.radius,
@@ -1106,7 +1106,7 @@ function renderInspector() {
     massBlock = `<p class="note">Esta estructura todavía no tiene masa en el modelo: se dibuja y escala con el cuerpo.</p>`;
   }
   const ownId = info.uberon || info.model_id;
-  const credit = selected.isBlob ? "esquema del modelo (no es una malla anatómica)" : body?.manifest?.source || "";
+  const credit = selected.isBlob ? "esquema del modelo (no es una malla anatómica)" : info.source || body?.manifest?.source || "";
   box.innerHTML = `
     <div class="card-title">
       <span class="chip"><i style="background: ${layer?.color}"></i>${escapeHtml(layer?.name || "")}</span>
