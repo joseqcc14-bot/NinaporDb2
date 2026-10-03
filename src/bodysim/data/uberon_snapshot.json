@@ -1561,6 +1561,45 @@
       "part_of": [],
       "in_human_reference_atlas": true,
       "models_3d": []
+    },
+    "UBERON:0002190": {
+      "label": "subcutaneous adipose tissue",
+      "definition": "A portion of adipose tissue that is part of the hypodermis, beneath the dermis.",
+      "exact_synonyms": [
+        "fatty layer of subcutaneous tissue",
+        "hypodermis fat layer",
+        "panniculus adiposus (tela subcutanea)",
+        "panniculus adiposus telae subcutaneae",
+        "subcutaneous fat layer"
+      ],
+      "xrefs": {
+        "FMA": [
+          "FMA:74315"
+        ],
+        "MESH": [
+          "MESH:D015434"
+        ]
+      },
+      "is_a": [
+        "UBERON:0001013"
+      ],
+      "part_of": [
+        "UBERON:0002072"
+      ],
+      "in_human_reference_atlas": true,
+      "models_3d": []
+    },
+    "UBERON:0035818": {
+      "label": "visceral fat",
+      "definition": "Any fat deposit surrounding a visceral organ.",
+      "exact_synonyms": [],
+      "xrefs": {},
+      "is_a": [
+        "UBERON:0001013"
+      ],
+      "part_of": [],
+      "in_human_reference_atlas": false,
+      "models_3d": []
     }
   }
 }

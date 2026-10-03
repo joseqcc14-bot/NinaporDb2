@@ -1,6 +1,6 @@
 """Informe anatómico de un individuo.
 
-Ejemplo: ``python -m bodysim --sex female --age 40 --height 163 --weight 95 --body-fat 45``.
+Ejemplo: ``python -m bodysim --sex male --age 50 --height 175 --weight 100 --visceral-fat 4 --liver-fat 20``.
 """
 
 from __future__ import annotations
@@ -16,16 +16,26 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--age", type=float, required=True, help="años")
     parser.add_argument("--height", type=float, required=True, help="cm")
     parser.add_argument("--weight", type=float, required=True, help="kg")
-    parser.add_argument("--body-fat", type=float, help="%% de grasa medido; si se omite, se estima")
+    parser.add_argument("--body-fat", type=float, help="%% de grasa corporal medido; si se omite, se estima")
+    parser.add_argument("--visceral-fat", type=float, help="kg de grasa visceral medidos (DXA, TC o RM)")
+    parser.add_argument("--liver-fat", type=float, help="%% de grasa del hígado medido por RM (PDFF)")
     args = parser.parse_args(argv)
 
-    body_fat = None if args.body_fat is None else args.body_fat / 100
     try:
-        person = Person(Sex(args.sex), args.age, args.height, args.weight, body_fat_fraction=body_fat)
+        person = Person(
+            Sex(args.sex),
+            args.age,
+            args.height,
+            args.weight,
+            body_fat_fraction=None if args.body_fat is None else args.body_fat / 100,
+            visceral_fat_kg=args.visceral_fat,
+            liver_fat_fraction=None if args.liver_fat is None else args.liver_fat / 100,
+        )
+        report = organ_masses(person)
     except ValueError as error:
         parser.error(str(error))
     composition = body_composition(person)
-    report = organ_masses(person)
+    fat = report.fat
     print(f"Anatomía: {load_anatomy().source_version}")
     print(
         f"IMC {composition.bmi:.1f} kg/m² | SC {composition.bsa_m2:.2f} m² | "
@@ -33,13 +43,19 @@ def main(argv: list[str] | None = None) -> None:
         f"grasa {composition.fat_fraction:.0%} ({'medida' if composition.fat_measured else 'estimada'}) | "
         f"volemia {composition.blood_volume_l:.2f} L | agua {composition.total_body_water_l:.1f} L"
     )
-    print(f"\n{'estructura':<24}{'UBERON':<16}{'ref (g)':>10}{'masa (g)':>10}{'Δ':>7}  modelos 3D")
+    print(
+        f"Tejido adiposo {fat.adipose_tissue_g / 1000:.1f} kg: subcutáneo {fat.subcutaneous_g / 1000:.1f} kg | "
+        f"visceral {fat.visceral_g / 1000:.1f} kg ({fat.visceral_fraction:.0%}, "
+        f"{'medida' if fat.visceral_measured else 'típica'}) | hígado {fat.liver_fat_fraction:.0%} de grasa "
+        f"({'medida' if fat.liver_fat_measured else 'supuesto sano'}{', esteatosis' if fat.steatosis else ''})"
+    )
+    print(f"\n{'estructura':<28}{'UBERON':<16}{'ref (g)':>10}{'masa (g)':>10}{'Δ':>7}  modelos 3D")
     for organ in report.organs.values():
         change = organ.mass_g / organ.reference_g - 1
         models = len(organ.structure.models_for(person.sex))
         flag = "" if organ.verification == "secondary_source" else " *"
         print(
-            f"{organ.structure.name_es + flag:<24}{organ.structure.id:<16}"
+            f"{organ.structure.name_es + flag:<28}{organ.structure.id:<16}"
             f"{organ.reference_g:>10.1f}{organ.mass_g:>10.1f}{change:>+7.0%}  {models}"
         )
     print(f"\nmasa no asignada a estructuras modeladas: {report.unmodeled_mass_g / 1000:.1f} kg")

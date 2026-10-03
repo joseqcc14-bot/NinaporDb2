@@ -11,7 +11,9 @@ todos editables en ``SCALING_RULES``:
 - órganos y tejidos magros escalan con la masa libre de grasa (b = 1);
 - encéfalo y médula espinal no escalan con el tamaño corporal en el adulto;
 - la sangre escala con el volumen sanguíneo (Nadler);
-- el tejido adiposo y la mama escalan con la masa grasa.
+- el tejido adiposo y la mama escalan con la masa grasa; después el tejido
+  adiposo se reparte en subcutáneo y visceral, y el hígado recibe su grasa
+  (``adiposity.py``).
 
 La masa grasa y la libre de grasa salen de la grasa medida del individuo si la
 tiene; si no, se estiman desde sexo, talla y peso. La del adulto de referencia
@@ -22,12 +24,13 @@ exactamente los valores de ICRP 89.
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from enum import Enum
 from functools import lru_cache
 from types import MappingProxyType
 from typing import Iterable, Mapping
 
+from bodysim.adiposity import ADIPOSE, LIVER, SUBCUTANEOUS, VISCERAL, FatDistribution, fat_parameters
 from bodysim.anatomy import Anatomy, Structure, load_anatomy, load_data
 from bodysim.anthropometry import blood_volume, fat_free_mass, fat_mass
 from bodysim.person import Person, Sex
@@ -52,7 +55,7 @@ SCALING_RULES: Mapping[str, ScalingRule] = MappingProxyType(
         "UBERON:0000955": ScalingRule(Basis.CONSTANT),  # encéfalo
         "UBERON:0002240": ScalingRule(Basis.CONSTANT),  # médula espinal
         "UBERON:0000178": ScalingRule(Basis.BLOOD_VOLUME),  # sangre
-        "UBERON:0001013": ScalingRule(Basis.FAT_MASS),  # tejido adiposo
+        ADIPOSE: ScalingRule(Basis.FAT_MASS),  # tejido adiposo
         "UBERON:0000310": ScalingRule(Basis.FAT_MASS),  # mama, mayoritariamente adiposa
     }
 )
@@ -95,7 +98,8 @@ class OrganMass:
 @dataclass(frozen=True)
 class MassReport:
     person: Person
-    organs: Mapping[str, OrganMass]
+    organs: Mapping[str, OrganMass]  # compartimentos sin solapamiento: el tejido adiposo va repartido
+    fat: FatDistribution
 
     @property
     def modeled_mass_g(self) -> float:
@@ -146,4 +150,41 @@ def organ_masses(
             rule=rule,
             verification=entry["verification"],
         )
-    return MassReport(person, MappingProxyType(organs))
+    fat = _distribute_fat(person, organs, anatomy)
+    return MassReport(person, MappingProxyType(organs), fat)
+
+
+def _distribute_fat(person: Person, organs: dict[str, OrganMass], anatomy: Anatomy) -> FatDistribution:
+    """Reparte el tejido adiposo en subcutáneo y visceral y pasa al hígado su grasa."""
+    params = fat_parameters()
+    adipose = organs.pop(ADIPOSE)
+
+    # La masa magra del hígado no cambia; la grasa por encima de la de un hígado sano se suma.
+    liver = organs[LIVER]
+    liver_fat = params.healthy_liver_fat if person.liver_fat_fraction is None else person.liver_fat_fraction
+    liver_g = liver.mass_g * (1.0 - params.healthy_liver_fat) / (1.0 - liver_fat)
+    excess_g = liver_g - liver.mass_g
+    organs[LIVER] = replace(liver, mass_g=liver_g)
+
+    share = params.visceral_fraction[person.sex]
+    visceral_g = adipose.mass_g * share if person.visceral_fat_kg is None else person.visceral_fat_kg * 1000.0
+    subcutaneous_g = adipose.mass_g - visceral_g - excess_g
+    if subcutaneous_g <= 0:
+        raise ValueError(
+            f"la grasa visceral ({visceral_g / 1000:.1f} kg) y la del hígado ({excess_g / 1000:.1f} kg) no caben "
+            f"en el tejido adiposo total ({adipose.mass_g / 1000:.1f} kg); revisa la grasa corporal"
+        )
+    organs[SUBCUTANEOUS] = replace(
+        adipose, structure=anatomy[SUBCUTANEOUS], reference_g=adipose.reference_g * (1.0 - share), mass_g=subcutaneous_g
+    )
+    organs[VISCERAL] = replace(
+        adipose, structure=anatomy[VISCERAL], reference_g=adipose.reference_g * share, mass_g=visceral_g
+    )
+    return FatDistribution(
+        subcutaneous_g=subcutaneous_g,
+        visceral_g=visceral_g,
+        visceral_measured=person.visceral_fat_kg is not None,
+        liver_fat_fraction=liver_fat,
+        liver_fat_measured=person.liver_fat_fraction is not None,
+        liver_fat_excess_g=excess_g,
+    )

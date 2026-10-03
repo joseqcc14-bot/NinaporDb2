@@ -10,7 +10,8 @@ La grasa corporal es opcional porque no siempre se mide. Si se omite, se estima
 a partir de sexo, talla y peso, y dos personas con la misma talla y el mismo
 peso tienen la misma composición. Si se conoce (DXA, bioimpedancia, pliegues
 cutáneos), un atleta y una persona sedentaria del mismo peso dan anatomías
-distintas.
+distintas. Lo mismo vale para la grasa visceral y la del hígado: si no se
+miden, se asume un reparto típico y un hígado sano.
 
 Para explorar el efecto de una sola variable se usa ``dataclasses.replace``::
 
@@ -32,6 +33,8 @@ AGE_RANGE = (18.0, 100.0)
 HEIGHT_RANGE_CM = (120.0, 230.0)
 WEIGHT_RANGE_KG = (30.0, 300.0)
 BODY_FAT_RANGE = (0.03, 0.70)
+VISCERAL_FAT_RANGE_KG = (0.05, 20.0)
+LIVER_FAT_RANGE = (0.0, 0.5)
 MAX_BMI = 100.0
 
 
@@ -64,6 +67,10 @@ class Person:
     weight_kg: float
     # Fracción de grasa corporal medida (0-1). None: se estima desde sexo, talla y peso.
     body_fat_fraction: float | None = None
+    # Grasa visceral medida (kg; DXA, TC o RM). None: fracción típica del tejido adiposo.
+    visceral_fat_kg: float | None = None
+    # Fracción de grasa del hígado medida por RM (PDFF, 0-1). None: hígado sano.
+    liver_fat_fraction: float | None = None
     # Variante -> genotipo, p. ej. {"rs429358": "CT"}. La capa anatómica no lo lee
     # directamente: la capa genética lo traducirá a ``Modifier`` sobre estructuras.
     genotype: Mapping[str, str] = field(default_factory=dict, hash=False)
@@ -84,6 +91,10 @@ class Person:
                     f"masa libre de grasa de {ffmi:.1f} kg/m², por debajo de la mínima compatible con la vida "
                     f"({min_ffmi:.1f} kg/m²)"
                 )
+        if self.visceral_fat_kg is not None:
+            _check_range("visceral_fat_kg", self.visceral_fat_kg, VISCERAL_FAT_RANGE_KG)
+        if self.liver_fat_fraction is not None:
+            _check_range("liver_fat_fraction", self.liver_fat_fraction, LIVER_FAT_RANGE)
         genotype = dict(self.genotype)
         for variant, call in genotype.items():
             if not (isinstance(variant, str) and variant and isinstance(call, str) and call):

@@ -257,6 +257,18 @@
       "name_es": "tejido adiposo",
       "kind": "tissue",
       "parent": "UBERON:0000468"
+    },
+    {
+      "id": "UBERON:0002190",
+      "name_es": "tejido adiposo subcutáneo",
+      "kind": "tissue",
+      "parent": "UBERON:0001013"
+    },
+    {
+      "id": "UBERON:0035818",
+      "name_es": "grasa visceral",
+      "kind": "tissue",
+      "parent": "UBERON:0001013"
     }
   ]
 }

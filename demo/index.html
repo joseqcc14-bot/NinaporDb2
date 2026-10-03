@@ -1,0 +1,869 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cuerpo variabilístico</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@500;600&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Lámina de atlas: parámetros a la izquierda como un instrumento, figura al centro, lecturas a la derecha; en móvil se apilan. */
+:root {
+  --bg: #f2f5f4;
+  --surface: #ffffff;
+  --ink: #1b2422;
+  --muted: #59675f;
+  --rule: #d3dbd8;
+  --accent: #0c6a62;
+  --accent-soft: #dcecea;
+  --body: #ebe2da;
+  --body-edge: #c9b9ac;
+  --fat: #d9a42f;
+  --visceral: #b46d18;
+  --liver: #85382c;
+  --organ-pink: #d99a95;
+  --organ-red: #a8433c;
+  --organ-tan: #d4a787;
+  --organ-plum: #8f4660;
+  --increase: #b0524a;
+  --decrease: #3d7c98;
+  --ok: #2f7a4e;
+  --warn: #a5521a;
+  --font-display: "Spectral", Georgia, "Times New Roman", serif;
+  --font-body: "Public Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101715;
+    --surface: #18201e;
+    --ink: #e1e8e5;
+    --muted: #97a59f;
+    --rule: #2a3431;
+    --accent: #5bbcaf;
+    --accent-soft: #1b3330;
+    --body: #2e2824;
+    --body-edge: #4b413a;
+    --fat: #e0b448;
+    --visceral: #d08b34;
+    --liver: #b65547;
+    --organ-pink: #c98682;
+    --organ-red: #cc6158;
+    --organ-tan: #c09272;
+    --organ-plum: #b5698a;
+    --increase: #d47c72;
+    --decrease: #6fa9c4;
+    --ok: #63b385;
+    --warn: #e08b4c;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101715;
+  --surface: #18201e;
+  --ink: #e1e8e5;
+  --muted: #97a59f;
+  --rule: #2a3431;
+  --accent: #5bbcaf;
+  --accent-soft: #1b3330;
+  --body: #2e2824;
+  --body-edge: #4b413a;
+  --fat: #e0b448;
+  --visceral: #d08b34;
+  --liver: #b65547;
+  --organ-pink: #c98682;
+  --organ-red: #cc6158;
+  --organ-tan: #c09272;
+  --organ-plum: #b5698a;
+  --increase: #d47c72;
+  --decrease: #6fa9c4;
+  --ok: #63b385;
+  --warn: #e08b4c;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+}
+.page {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding-inline: 20px;
+  padding-block: 28px 40px;
+  display: grid;
+  gap: 24px;
+}
+h1, h2, h3 { font-family: var(--font-display); font-weight: 600; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2rem, 4vw, 2.75rem); line-height: 1.1; letter-spacing: -0.01em; }
+h2 { font-size: 1.2rem; line-height: 1.25; }
+h3 { font-size: 1rem; }
+p { margin: 0; }
+a { color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.mono { font-family: var(--font-mono); font-size: 0.85em; }
+.num { font-variant-numeric: tabular-nums; }
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Cabecera */
+.masthead { display: grid; gap: 12px; }
+.lede { max-width: 68ch; color: var(--muted); }
+.meta { display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.presets { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.presets .eyebrow { margin-right: 4px; }
+.preset {
+  font: inherit;
+  font-size: 0.875rem;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--rule);
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+}
+.preset:hover { border-color: var(--accent); }
+.preset[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+
+/* Lámina principal */
+.plate {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: minmax(260px, 300px) minmax(0, 1fr) minmax(300px, 360px);
+  align-items: start;
+}
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 18px;
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+.panel-head { display: grid; gap: 2px; }
+
+/* Parámetros */
+.field { display: grid; gap: 6px; }
+.field-row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.field label, .field .label { font-weight: 500; }
+.field output { font-variant-numeric: tabular-nums; color: var(--ink); }
+.field input[type="range"] { width: 100%; accent-color: var(--accent); }
+.field input[type="range"]:disabled { opacity: 0.45; }
+.field .hint { font-size: 0.8rem; color: var(--muted); }
+.measured {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--muted);
+  cursor: pointer;
+}
+.measured input { accent-color: var(--accent); margin: 0; }
+.group { display: grid; gap: 14px; padding-top: 14px; border-top: 1px solid var(--rule); }
+.segmented { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+.segmented input { position: absolute; opacity: 0; pointer-events: none; }
+.segmented label { text-align: center; padding: 7px 8px; cursor: pointer; font-weight: 500; }
+.segmented input:checked + label { background: var(--accent-soft); color: var(--accent); }
+.segmented input:focus-visible + label { outline: 2px solid var(--accent); outline-offset: -2px; }
+.status { font-size: 0.875rem; color: var(--warn); border-left: 3px solid var(--warn); padding-left: 10px; }
+
+/* Figura */
+.figure-wrap { display: grid; justify-items: center; gap: 12px; }
+.figure-wrap svg { width: 100%; max-width: 360px; height: auto; display: block; }
+svg .shape { cursor: pointer; }
+svg .shape:focus { outline: none; }
+svg .halo { fill: var(--fat); stroke: var(--fat); }
+svg .skin { fill: var(--body); stroke: var(--body-edge); }
+svg .limb { fill: none; }
+svg .skin.limb { stroke: var(--body); }
+svg .blob { stroke: var(--surface); stroke-width: 1px; }
+svg .line { fill: none; stroke: var(--organ-tan); }
+svg .behind { stroke-dasharray: 3 2; }
+svg .blob.selected, svg .blob:focus-visible { stroke: var(--accent); stroke-width: 2.5px; }
+svg .line.selected, svg .line:focus-visible { stroke: var(--accent); }
+svg .halo.selected, svg .halo:focus-visible { stroke: color-mix(in srgb, var(--accent) 55%, var(--fat)); }
+svg .skin.selected, svg .skin:focus-visible { fill: var(--accent-soft); }
+svg .skin.limb.selected, svg .skin.limb:focus-visible { fill: none; stroke: var(--accent-soft); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 0.8rem; color: var(--muted); justify-content: center; }
+.swatch { display: inline-block; width: 11px; height: 11px; border-radius: 50%; vertical-align: -1px; margin-right: 5px; }
+.figure-note { font-size: 0.8rem; color: var(--muted); text-align: center; max-width: 46ch; }
+
+/* Lecturas */
+.readings { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; margin: 0; }
+.readings div { display: grid; gap: 1px; min-width: 0; }
+.readings dt { font-size: 0.8rem; color: var(--muted); }
+.readings dd { margin: 0; font-size: 1.15rem; font-variant-numeric: tabular-nums; }
+.chip {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 1px 6px;
+  border-radius: 3px;
+  border: 1px solid var(--rule);
+  color: var(--muted);
+  vertical-align: 2px;
+  margin-left: 4px;
+}
+.chip.is-measured { border-color: var(--accent); color: var(--accent); }
+.stack { display: flex; height: 14px; border-radius: 3px; overflow: hidden; background: var(--rule); }
+.stack span { display: block; height: 100%; transition: width 0.25s; }
+.fat-legend { display: grid; gap: 4px; font-size: 0.85rem; }
+.fat-legend div { display: flex; justify-content: space-between; gap: 8px; }
+.gauge { position: relative; height: 30px; margin-top: 4px; }
+.gauge-track { position: absolute; left: 0; right: 0; top: 8px; height: 6px; border-radius: 3px; background: linear-gradient(to right, var(--liver), var(--fat)); opacity: 0.85; }
+.gauge-mark { position: absolute; top: 3px; width: 2px; height: 16px; background: var(--ink); }
+.gauge-dot { position: absolute; top: 4px; width: 14px; height: 14px; margin-left: -7px; border-radius: 50%; background: var(--surface); border: 3px solid var(--ink); transition: left 0.25s; }
+.gauge-labels { position: absolute; top: 20px; left: 0; right: 0; font-size: 0.72rem; color: var(--muted); }
+.gauge-labels span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+.pill { display: inline-block; font-size: 0.8rem; font-weight: 600; padding: 2px 10px; border-radius: 999px; white-space: nowrap; }
+.pill.ok { color: var(--ok); border: 1px solid var(--ok); }
+.pill.warn { color: var(--warn); border: 1px solid var(--warn); }
+.balance { font-size: 0.85rem; color: var(--muted); }
+.stale { opacity: 0.45; }
+
+/* Ficha de la estructura */
+.detail { display: grid; gap: 10px; }
+.detail-path { font-size: 0.8rem; color: var(--muted); }
+.detail dl { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; margin: 0; font-size: 0.875rem; }
+.detail dt { color: var(--muted); }
+.detail dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.definition { font-size: 0.85rem; color: var(--muted); font-style: italic; }
+
+/* Tabla */
+.table-section { display: grid; gap: 12px; }
+.table-scroll { overflow-x: auto; background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; }
+table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+th, td { padding: 7px 12px; text-align: left; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+thead th { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+td.num, th.num { text-align: right; }
+tr.group-row th { font-family: var(--font-display); font-size: 0.95rem; text-transform: none; letter-spacing: 0; color: var(--ink); background: var(--bg); padding-top: 10px; }
+tbody tr.organ-row { cursor: pointer; }
+tbody tr.organ-row:hover td { background: var(--accent-soft); }
+tbody tr.organ-row.selected td { background: var(--accent-soft); }
+tbody tr.organ-row.selected td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
+sup.pending { color: var(--warn); font-weight: 600; }
+.delta { display: flex; align-items: center; gap: 10px; }
+.delta-bar { position: relative; width: 120px; height: 10px; flex: none; }
+.delta-bar::before { content: ""; position: absolute; left: 50%; top: -2px; bottom: -2px; width: 1px; background: var(--muted); }
+.delta-bar span { position: absolute; top: 0; height: 100%; border-radius: 2px; }
+.delta-text { min-width: 4.5ch; text-align: right; font-variant-numeric: tabular-nums; }
+.table-note { font-size: 0.8rem; color: var(--muted); }
+
+footer { display: grid; gap: 6px; font-size: 0.8rem; color: var(--muted); border-top: 1px solid var(--rule); padding-top: 16px; }
+footer p { max-width: 110ch; }
+
+@media (max-width: 1120px) {
+  .plate { grid-template-columns: minmax(250px, 300px) minmax(0, 1fr); }
+  .readouts { grid-column: 1 / -1; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+}
+@media (max-width: 700px) {
+  .page { padding-inline: 16px; padding-block: 20px 32px; }
+  .plate { grid-template-columns: minmax(0, 1fr); }
+  .readouts { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) {
+  svg .shape, .stack span, .gauge-dot { transition: none; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="masthead">
+    <span class="eyebrow">bodysim · fase 1: anatomía enlazada</span>
+    <h1>Cuerpo variabilístico</h1>
+    <p class="lede">Cambia las variables independientes de una persona y mira cómo responde su anatomía. Cada estructura está identificada en UBERON y, cuando existe, enlazada a su modelo 3D del Human Reference Atlas. Los cálculos son los mismos que los del paquete Python.</p>
+    <div class="meta eyebrow" id="meta"></div>
+    <div class="presets" role="group" aria-label="Ejemplos">
+      <span class="eyebrow">Ejemplos</span>
+      <span id="presets" class="presets"></span>
+    </div>
+  </header>
+
+  <main class="plate">
+    <section class="panel params" aria-labelledby="params-title">
+      <div class="panel-head">
+        <span class="eyebrow">Variables independientes</span>
+        <h2 id="params-title">Individuo</h2>
+      </div>
+      <div class="field">
+        <span class="label" id="sex-label">Sexo</span>
+        <div class="segmented" role="radiogroup" aria-labelledby="sex-label">
+          <input type="radio" name="sex" id="sex-male" value="male"><label for="sex-male">Hombre</label>
+          <input type="radio" name="sex" id="sex-female" value="female"><label for="sex-female">Mujer</label>
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-row"><label for="age">Edad</label><output id="age-out" for="age"></output></div>
+        <input type="range" id="age" min="18" max="100" step="1">
+      </div>
+      <div class="field">
+        <div class="field-row"><label for="height">Talla</label><output id="height-out" for="height"></output></div>
+        <input type="range" id="height" min="140" max="210" step="1">
+      </div>
+      <div class="field">
+        <div class="field-row"><label for="weight">Peso</label><output id="weight-out" for="weight"></output></div>
+        <input type="range" id="weight" min="35" max="200" step="0.5">
+      </div>
+
+      <div class="group">
+        <span class="eyebrow">Grasa: medida o estimada</span>
+        <div class="field">
+          <div class="field-row"><label for="bf">Grasa corporal</label><output id="bf-out" for="bf"></output></div>
+          <input type="range" id="bf" min="3" max="70" step="0.5">
+          <label class="measured"><input type="checkbox" id="bf-on"> Medida (DXA, bioimpedancia, pliegues)</label>
+        </div>
+        <div class="field">
+          <div class="field-row"><label for="vat">Grasa visceral</label><output id="vat-out" for="vat"></output></div>
+          <input type="range" id="vat" min="0.1" max="10" step="0.1">
+          <label class="measured"><input type="checkbox" id="vat-on"> Medida (DXA, TC o RM)</label>
+        </div>
+        <div class="field">
+          <div class="field-row"><label for="liver">Grasa del hígado</label><output id="liver-out" for="liver"></output></div>
+          <input type="range" id="liver" min="0" max="50" step="0.5">
+          <label class="measured"><input type="checkbox" id="liver-on"> Medida por RM (PDFF)</label>
+        </div>
+      </div>
+      <p class="status" id="status" role="status" hidden></p>
+    </section>
+
+    <section class="panel figure" aria-labelledby="figure-title">
+      <div class="panel-head">
+        <span class="eyebrow">Lámina</span>
+        <h2 id="figure-title">Anatomía de este individuo</h2>
+      </div>
+      <div class="figure-wrap" id="figure-wrap">
+        <svg id="figure" viewBox="0 0 320 630" role="group" aria-label="Figura del cuerpo: el tamaño de cada órgano sigue su masa"></svg>
+        <div class="legend">
+          <span><i class="swatch" style="background: var(--fat)"></i>grasa subcutánea (contorno)</span>
+          <span><i class="swatch" style="background: var(--visceral)"></i>grasa visceral</span>
+          <span><i class="swatch" style="background: var(--liver)"></i>hígado (amarillea con la grasa)</span>
+        </div>
+        <p class="figure-note">El área de cada órgano es proporcional a su masa respecto del adulto de referencia del mismo sexo. Toca un órgano para ver su ficha.</p>
+      </div>
+    </section>
+
+    <section class="panel readouts" aria-label="Lecturas">
+      <div class="readout-block" id="composition-block">
+        <div class="panel-head">
+          <span class="eyebrow">Composición corporal</span>
+        </div>
+        <dl class="readings" id="readings"></dl>
+      </div>
+      <div class="readout-block" id="fat-block">
+        <div class="panel-head">
+          <span class="eyebrow">Distribución de la grasa</span>
+        </div>
+        <div style="display: grid; gap: 10px;">
+          <div class="stack" id="fat-stack" aria-hidden="true"></div>
+          <div class="fat-legend" id="fat-legend"></div>
+          <div>
+            <div class="field-row" style="display: flex; justify-content: space-between; gap: 8px; align-items: baseline;">
+              <span style="font-size: 0.85rem;">Grasa del hígado <span id="liver-chip"></span></span>
+              <span id="liver-pill"></span>
+            </div>
+            <div class="gauge" id="gauge" aria-hidden="true">
+              <div class="gauge-track"></div>
+              <div class="gauge-mark" id="gauge-mark"></div>
+              <div class="gauge-dot" id="gauge-dot"></div>
+              <div class="gauge-labels" id="gauge-labels"></div>
+            </div>
+          </div>
+          <p class="balance" id="balance"></p>
+        </div>
+      </div>
+      <div class="readout-block detail" id="detail" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <section class="table-section" aria-labelledby="table-title">
+    <div class="panel-head">
+      <span class="eyebrow">Masas por estructura</span>
+      <h2 id="table-title">Referencia frente a este individuo</h2>
+    </div>
+    <div class="table-scroll" id="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Estructura</th><th class="num">Referencia</th><th class="num">Individuo</th><th>Cambio</th><th>UBERON</th></tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+      </table>
+    </div>
+    <p class="table-note"><sup class="pending">*</sup> Masa de referencia transcrita de ICRP 89 y pendiente de contrastar con la tabla original. Las demás están contrastadas con una fuente secundaria.</p>
+  </section>
+
+  <footer>
+    <p id="sources"></p>
+    <p>Herramienta de investigación y desarrollo. No es un dispositivo médico ni sirve para diagnosticar.</p>
+  </footer>
+</div>
+
+<script src="model-data.js"></script>
+<script src="bodysim.js"></script>
+<script>
+(function () {
+  "use strict";
+  const D = window.BODYSIM_DATA;
+  const model = window.Bodysim.model;
+  const byId = new Map(D.structures.map((s) => [s.id, s]));
+  const ROOT = D.structures.find((s) => s.parent === null).id;
+  const FAT = D.fat.ids;
+  const ID = {
+    brain: "UBERON:0000955", pituitary: "UBERON:0000007", tongue: "UBERON:0001723", salivary: "UBERON:0001044",
+    thyroid: "UBERON:0002046", thymus: "UBERON:0002370", lung: "UBERON:0002048", heart: "UBERON:0000948",
+    breast: "UBERON:0000310", esophagus: "UBERON:0001043", liver: FAT.liver, gallbladder: "UBERON:0002110",
+    stomach: "UBERON:0000945", spleen: "UBERON:0002106", pancreas: "UBERON:0001264", adrenal: "UBERON:0002369",
+    kidney: "UBERON:0002113", smallIntestine: "UBERON:0002108", largeIntestine: "UBERON:0000059",
+    bladder: "UBERON:0001255", uterus: "UBERON:0000995", ovary: "UBERON:0000992", prostate: "UBERON:0002367",
+    testis: "UBERON:0000473", spinalCord: "UBERON:0002240", skin: "UBERON:0002097",
+    subcutaneous: FAT.subcutaneous, visceral: FAT.visceral,
+  };
+
+  // ---------- Formato ----------
+  const formatters = new Map();
+  function nf(digits) {
+    if (!formatters.has(digits)) {
+      formatters.set(digits, new Intl.NumberFormat("es-ES", { minimumFractionDigits: digits, maximumFractionDigits: digits }));
+    }
+    return formatters.get(digits);
+  }
+  function mass(g) {
+    if (g < 10) return nf(1).format(g) + " g";
+    if (g < 1000) return nf(0).format(g) + " g";
+    if (g < 10000) return nf(2).format(g / 1000) + " kg";
+    return nf(1).format(g / 1000) + " kg";
+  }
+  const pct = (x, digits = 0) => nf(digits).format(x * 100) + " %";
+  function signed(x) {
+    const v = Math.round(x * 100);
+    return (v > 0 ? "+" : v < 0 ? "−" : "±") + Math.abs(v) + " %";
+  }
+  const el = (id) => document.getElementById(id);
+  function escapeHtml(text) {
+    return String(text).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+  }
+  const uberonUrl = (id) => "http://purl.obolibrary.org/obo/" + id.replace(":", "_");
+
+  // ---------- Estado ----------
+  const PRESETS = [
+    { key: "ref-m", label: "Hombre de referencia", state: { sex: "male", age: 35, height: 176, weight: 73 } },
+    { key: "ref-f", label: "Mujer de referencia", state: { sex: "female", age: 35, height: 163, weight: 60 } },
+    { key: "obese", label: "Mujer de 95 kg", state: { sex: "female", age: 40, height: 163, weight: 95 } },
+    { key: "athlete", label: "Atleta de 90 kg", state: { sex: "male", age: 30, height: 180, weight: 90, bf: 12 } },
+    { key: "sedentary", label: "Sedentario de 90 kg", state: { sex: "male", age: 30, height: 180, weight: 90, bf: 35 } },
+    { key: "fatty-liver", label: "Hígado graso", state: { sex: "male", age: 50, height: 175, weight: 100, vat: 4, liver: 20 } },
+  ];
+  let state = null;
+  let activePreset = null;
+  let selected = ID.liver;
+  let lastReport = null;
+
+  function applyPreset(preset) {
+    const s = preset.state;
+    state = {
+      sex: s.sex, age: s.age, height: s.height, weight: s.weight,
+      bfOn: s.bf != null, bf: s.bf ?? 25,
+      vatOn: s.vat != null, vat: s.vat ?? 1.5,
+      liverOn: s.liver != null, liver: s.liver ?? D.fat.healthy_liver_fat * 100,
+    };
+    activePreset = preset.key;
+    writeControls();
+    update();
+  }
+
+  function personFromState(s) {
+    return {
+      sex: s.sex, age_years: s.age, height_cm: s.height, weight_kg: s.weight,
+      body_fat_fraction: s.bfOn ? s.bf / 100 : null,
+      visceral_fat_kg: s.vatOn ? s.vat : null,
+      liver_fat_fraction: s.liverOn ? s.liver / 100 : null,
+    };
+  }
+
+  // ---------- Controles ----------
+  function writeControls() {
+    el("sex-male").checked = state.sex === "male";
+    el("sex-female").checked = state.sex === "female";
+    for (const key of ["age", "height", "weight", "bf", "vat", "liver"]) el(key).value = state[key];
+    el("bf-on").checked = state.bfOn;
+    el("vat-on").checked = state.vatOn;
+    el("liver-on").checked = state.liverOn;
+    for (const button of document.querySelectorAll(".preset")) {
+      button.setAttribute("aria-pressed", String(button.dataset.key === activePreset));
+    }
+  }
+
+  function readControls(event) {
+    state.sex = el("sex-female").checked ? "female" : "male";
+    state.age = Number(el("age").value);
+    state.height = Number(el("height").value);
+    state.weight = Number(el("weight").value);
+    const target = event && event.target;
+    // Al marcar "medida", el control arranca en el valor que el modelo estaba estimando.
+    if (target === el("bf-on") && target.checked && lastReport) state.bf = round(lastReport.composition.fat_fraction * 100, 0.5);
+    if (target === el("vat-on") && target.checked && lastReport) state.vat = round(lastReport.fat.visceral_g / 1000, 0.1);
+    state.bfOn = el("bf-on").checked;
+    state.vatOn = el("vat-on").checked;
+    state.liverOn = el("liver-on").checked;
+    if (target === el("bf")) { state.bf = Number(target.value); state.bfOn = true; }
+    if (target === el("vat")) { state.vat = Number(target.value); state.vatOn = true; }
+    if (target === el("liver")) { state.liver = Number(target.value); state.liverOn = true; }
+    activePreset = null;
+    writeControls();
+    update();
+  }
+  const round = (x, step) => Math.round(x / step) * step;
+
+  function writeOutputs(report) {
+    el("age-out").textContent = state.age + " años";
+    el("height-out").textContent = state.height + " cm";
+    el("weight-out").textContent = nf(1).format(state.weight) + " kg";
+    if (report && !state.bfOn) el("bf").value = round(report.composition.fat_fraction * 100, 0.5);
+    if (report && !state.vatOn) el("vat").value = round(report.fat.visceral_g / 1000, 0.1);
+    if (!state.liverOn) el("liver").value = D.fat.healthy_liver_fat * 100;
+    el("bf-out").textContent = state.bfOn
+      ? pct(state.bf / 100, 1)
+      : report ? "estimada " + pct(report.composition.fat_fraction) : "estimada";
+    el("vat-out").textContent = state.vatOn
+      ? nf(1).format(state.vat) + " kg"
+      : report ? "típica " + nf(1).format(report.fat.visceral_g / 1000) + " kg" : "típica";
+    el("liver-out").textContent = state.liverOn ? pct(state.liver / 100, 1) : "sano (" + pct(D.fat.healthy_liver_fat) + ")";
+  }
+
+  // ---------- Figura ----------
+  const SVG_NS = "http://www.w3.org/2000/svg";
+  function svg(tag, attrs, parent) {
+    const node = document.createElementNS(SVG_NS, tag);
+    for (const [k, v] of Object.entries(attrs)) node.setAttribute(k, v);
+    if (parent) parent.appendChild(node);
+    return node;
+  }
+  const BODY_SHAPES = [
+    { tag: "ellipse", attrs: { cx: 160, cy: 68, rx: 34, ry: 42 }, head: true },
+    { tag: "path", attrs: { d: "M160 104 L160 136" }, limb: 30 },
+    { tag: "path", attrs: { d: "M100 146 C82 205 74 285 70 372" }, limb: 24 },
+    { tag: "path", attrs: { d: "M220 146 C238 205 246 285 250 372" }, limb: 24 },
+    { tag: "path", attrs: { d: "M133 380 L127 610" }, limb: 40 },
+    { tag: "path", attrs: { d: "M187 380 L193 610" }, limb: 40 },
+    { tag: "path", attrs: { d: "M98 134 Q160 116 222 134 Q234 160 230 196 Q224 250 222 290 Q232 340 224 388 L96 388 Q88 340 98 290 Q96 250 90 196 Q86 160 98 134 Z" } },
+  ];
+  // Órganos en coordenadas de la lámina; cx puede ser una lista para los pares.
+  const ORGANS = [
+    { id: ID.spinalCord, line: "M160 112 L160 334", width: 3, color: "--organ-tan", behind: true },
+    { id: ID.esophagus, line: "M160 120 C160 170 166 212 180 242", width: 5, color: "--organ-tan" },
+    { id: ID.visceral, cx: 160, cy: 318, rx: 46, ry: 40, color: "--visceral", opacity: 0.75 },
+    { id: ID.largeIntestine, line: "M130 352 L130 298 Q130 288 140 288 L180 288 Q190 288 190 298 L190 348 Q188 362 168 364", width: 9, color: "--organ-tan" },
+    { id: ID.smallIntestine, cx: 160, cy: 322, rx: 26, ry: 21, color: "--organ-tan" },
+    { id: ID.kidney, cx: [136, 184], cy: 292, rx: 9, ry: 14, color: "--organ-red", behind: true },
+    { id: ID.adrenal, cx: [136, 184], cy: 275, rx: 5, ry: 3, color: "--organ-tan" },
+    { id: ID.pancreas, cx: 168, cy: 272, rx: 20, ry: 5, color: "--organ-tan" },
+    { id: ID.liver, cx: 134, cy: 250, rx: 33, ry: 18, rotate: -8, color: "--liver" },
+    { id: ID.gallbladder, cx: 147, cy: 266, rx: 5, ry: 4, color: "--organ-plum" },
+    { id: ID.stomach, cx: 186, cy: 250, rx: 17, ry: 14, rotate: 20, color: "--organ-pink" },
+    { id: ID.spleen, cx: 212, cy: 246, rx: 7, ry: 12, color: "--organ-plum" },
+    { id: ID.lung, cx: [130, 190], cy: 188, rx: 22, ry: 40, color: "--organ-pink", opacity: 0.9 },
+    { id: ID.heart, cx: 166, cy: 206, rx: 15, ry: 18, rotate: -25, color: "--organ-red" },
+    { id: ID.thymus, cx: 160, cy: 152, rx: 8, ry: 7, color: "--organ-tan" },
+    { id: ID.breast, cx: [128, 192], cy: 186, rx: 16, ry: 14, color: "--fat", opacity: 0.45, sexScale: { male: 0.4, female: 1 } },
+    { id: ID.uterus, cx: 160, cy: 352, rx: 9, ry: 11, color: "--organ-plum" },
+    { id: ID.ovary, cx: [142, 178], cy: 350, rx: 5, ry: 4, color: "--organ-plum" },
+    { id: ID.bladder, cx: 160, cy: 373, rx: 12, ry: 8, color: "--organ-tan" },
+    { id: ID.prostate, cx: 160, cy: 386, rx: 6, ry: 5, color: "--organ-plum" },
+    { id: ID.testis, cx: [152, 168], cy: 406, rx: 6, ry: 8, color: "--organ-plum" },
+    { id: ID.thyroid, cx: 160, cy: 120, rx: 9, ry: 4, color: "--organ-red" },
+    { id: ID.brain, cx: 160, cy: 62, rx: 25, ry: 21, color: "--organ-pink" },
+    { id: ID.pituitary, cx: 160, cy: 77, rx: 3, ry: 2.5, color: "--organ-red" },
+    { id: ID.tongue, cx: 160, cy: 95, rx: 8, ry: 3.5, color: "--organ-red" },
+    { id: ID.salivary, cx: [142, 178], cy: 99, rx: 4.5, ry: 3.5, color: "--organ-tan" },
+  ];
+  const figureNodes = new Map(); // id -> [{node, spec}]
+
+  function interactive(node, id) {
+    node.classList.add("shape");
+    node.dataset.id = id;
+    node.setAttribute("tabindex", "0");
+    node.setAttribute("role", "button");
+    const title = svg("title", {}, node);
+    title.textContent = byId.get(id).name_es;
+    node.addEventListener("click", () => select(id));
+    node.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") { event.preventDefault(); select(id); }
+    });
+    if (!figureNodes.has(id)) figureNodes.set(id, []);
+    return node;
+  }
+
+  function buildFigure() {
+    const root = el("figure");
+    const fatLayer = svg("g", {}, root);
+    const bodyLayer = svg("g", {}, root);
+    for (const shape of BODY_SHAPES) {
+      const round = { "stroke-linecap": "round", "stroke-linejoin": "round" };
+      const fat = svg(shape.tag, { ...shape.attrs, ...round }, fatLayer);
+      fat.classList.add("halo");
+      const skin = svg(shape.tag, { ...shape.attrs, ...round, "stroke-width": shape.limb || 1 }, bodyLayer);
+      skin.classList.add("skin");
+      if (shape.limb) { fat.classList.add("limb"); skin.classList.add("limb"); }
+      interactive(fat, ID.subcutaneous);
+      figureNodes.get(ID.subcutaneous).push({ node: fat, spec: shape, layer: "fat" });
+      interactive(skin, ID.skin);
+      figureNodes.get(ID.skin).push({ node: skin, spec: shape, layer: "body" });
+    }
+    const organs = svg("g", {}, root);
+    for (const spec of ORGANS) {
+      if (spec.line) {
+        const node = svg("path", { d: spec.line, "stroke-linecap": "round", "stroke-width": spec.width }, organs);
+        node.classList.add("line");
+        if (spec.behind) node.classList.add("behind");
+        interactive(node, spec.id);
+        figureNodes.get(spec.id).push({ node, spec });
+        continue;
+      }
+      for (const cx of [].concat(spec.cx)) {
+        const attrs = { cx, cy: spec.cy, rx: spec.rx, ry: spec.ry, "fill-opacity": spec.opacity ?? 1 };
+        if (spec.rotate) attrs.transform = `rotate(${spec.rotate} ${cx} ${spec.cy})`;
+        const node = svg("ellipse", attrs, organs);
+        node.classList.add("blob");
+        node.style.fill = `var(${spec.color})`;
+        if (spec.behind) node.classList.add("behind");
+        interactive(node, spec.id);
+        figureNodes.get(spec.id).push({ node, spec });
+      }
+    }
+  }
+
+  function renderFigure(report) {
+    for (const [id, entries] of figureNodes) {
+      const organ = report.organs.get(id);
+      const present = Boolean(organ);
+      const ratio = present ? organ.mass_g / organ.reference_g : 1;
+      const scale = Math.min(1.9, Math.max(0.45, Math.sqrt(ratio)));
+      for (const { node, spec, layer } of entries) {
+        node.style.display = present ? "" : "none";
+        if (!present) continue;
+        node.querySelector("title").textContent = `${byId.get(id).name_es}: ${mass(organ.mass_g)} (${signed(ratio - 1)})`;
+        if (layer === "fat") {
+          // Grosor del contorno de grasa según la grasa subcutánea respecto de la referencia.
+          const halo = Math.min(22, Math.max(1.5, 7 * Math.sqrt(ratio))) * (spec.head ? 0.5 : 1);
+          node.setAttribute("stroke-width", (spec.limb || 0) + 2 * halo);
+        } else if (layer === "body") {
+          continue;
+        } else if (spec.line) {
+          node.setAttribute("stroke-width", spec.width * scale);
+        } else {
+          const base = spec.sexScale ? spec.sexScale[state.sex] : 1;
+          node.setAttribute("rx", spec.rx * scale * base);
+          node.setAttribute("ry", spec.ry * scale * base);
+        }
+      }
+    }
+    // El hígado amarillea con su grasa: mezcla de color hasta un 30 % de grasa.
+    const liverMix = Math.min(1, report.fat.liver_fat_fraction / 0.3) * 85;
+    for (const { node } of figureNodes.get(ID.liver)) {
+      node.style.fill = `color-mix(in srgb, var(--fat) ${liverMix.toFixed(0)}%, var(--liver))`;
+    }
+    for (const [id, entries] of figureNodes) {
+      for (const { node } of entries) node.classList.toggle("selected", id === selected);
+    }
+  }
+
+  // ---------- Lecturas ----------
+  function chip(measured, yes, no) {
+    return `<span class="chip${measured ? " is-measured" : ""}">${measured ? yes : no}</span>`;
+  }
+
+  function renderReadings(report) {
+    const c = report.composition;
+    const rows = [
+      ["IMC", nf(1).format(c.bmi) + " kg/m²"],
+      ["Superficie corporal", nf(2).format(c.bsa_m2) + " m²"],
+      ["Grasa corporal " + chip(c.fat_measured, "medida", "estimada"), pct(c.fat_fraction) + " · " + nf(1).format(c.fat_mass_kg) + " kg"],
+      ["Masa libre de grasa", nf(1).format(c.fat_free_mass_kg) + " kg"],
+      ["Volumen sanguíneo", nf(2).format(c.blood_volume_l) + " L"],
+      ["Agua corporal", nf(1).format(c.total_body_water_l) + " L"],
+    ];
+    el("readings").innerHTML = rows.map(([label, value]) => `<div><dt>${label}</dt><dd>${value}</dd></div>`).join("");
+  }
+
+  function renderFat(report) {
+    const f = report.fat;
+    const total = f.adipose_tissue_g;
+    const parts = [
+      ["Subcutánea", f.subcutaneous_g, "var(--fat)", ""],
+      ["Visceral", f.visceral_g, "var(--visceral)", chip(f.visceral_measured, "medida", "típica") + " " + pct(f.visceral_fraction)],
+      ["Hígado, grasa añadida", Math.max(0, f.liver_fat_excess_g), "var(--liver)", ""],
+    ];
+    el("fat-stack").innerHTML = parts
+      .map(([, g, color]) => `<span style="width: ${((100 * g) / total).toFixed(2)}%; background: ${color};"></span>`)
+      .join("");
+    el("fat-legend").innerHTML =
+      `<div><strong>Tejido adiposo total</strong><span class="num">${mass(total)}</span></div>` +
+      parts
+        .map(([label, g, color, extra]) => `<div><span><i class="swatch" style="background: ${color}"></i>${label} ${extra}</span><span class="num">${mass(g)}</span></div>`)
+        .join("");
+
+    el("liver-chip").innerHTML = chip(f.liver_fat_measured, "medida", "supuesta");
+    el("liver-pill").innerHTML = f.steatosis
+      ? `<span class="pill warn">Esteatosis · ${pct(f.liver_fat_fraction, 1)}</span>`
+      : `<span class="pill ok">Normal · ${pct(f.liver_fat_fraction, 1)}</span>`;
+    const max = D.limits.liver_fat_fraction[1];
+    const position = (x) => (100 * Math.min(max, x)) / max + "%";
+    el("gauge-mark").style.left = position(D.fat.steatosis_threshold);
+    el("gauge-dot").style.left = position(f.liver_fat_fraction);
+    el("gauge-labels").innerHTML =
+      `<span style="left: ${position(D.fat.steatosis_threshold)}; transform: translateX(-4px);">↑ límite normal ${pct(D.fat.steatosis_threshold, 2)}</span>` +
+      `<span style="left: 100%; transform: translateX(-100%);">${pct(max)}</span>`;
+
+    el("balance").textContent =
+      `Estructuras modeladas: ${nf(1).format(report.modeled_mass_g / 1000)} kg de ${nf(1).format(state.weight)} kg. ` +
+      `El resto (${nf(1).format(report.unmodeled_mass_g / 1000)} kg) son tejidos aún no modelados: ganglios, ojos, contenido digestivo…`;
+  }
+
+  function systemOf(id) {
+    let node = byId.get(id);
+    while (node.parent && node.parent !== ROOT && byId.get(node.parent).kind !== "system") node = byId.get(node.parent);
+    return node.parent && node.parent !== ROOT ? byId.get(node.parent) : node;
+  }
+
+  function renderDetail(report) {
+    const s = byId.get(selected);
+    const organ = report.organs.get(selected);
+    const path = [];
+    for (let node = s; node; node = node.parent ? byId.get(node.parent) : null) path.unshift(node.name_es);
+    const models = s.models.filter((m) => !m.sex || m.sex === state.sex);
+    const xrefs = Object.entries(s.xrefs).map(([prefix, values]) => `${prefix === "SCTID" ? "SNOMED CT" : prefix} <span class="mono">${values.map((v) => v.split(":")[1]).join(", ")}</span>`);
+    let measuredNote = "";
+    if (selected === ID.visceral) measuredNote = report.fat.visceral_measured ? "Valor medido." : "Fracción típica del tejido adiposo para el sexo (pendiente de contrastar).";
+    if (selected === ID.liver) measuredNote = `Grasa del hígado: ${pct(report.fat.liver_fat_fraction, 1)} (${report.fat.liver_fat_measured ? "medida" : "supuesto sano"}).`;
+    el("detail").innerHTML = `
+      <div class="panel-head">
+        <span class="eyebrow">Estructura seleccionada</span>
+        <h3>${escapeHtml(s.name_es)}</h3>
+        <span class="detail-path">${path.map(escapeHtml).join(" › ")}</span>
+      </div>
+      <dl>
+        <dt>Masa</dt><dd class="num">${mass(organ.mass_g)} <span style="color: var(--muted)">(referencia ${mass(organ.reference_g)}, ${signed(organ.mass_g / organ.reference_g - 1)})</span></dd>
+        <dt>UBERON</dt><dd><a class="mono" href="${uberonUrl(s.id)}" target="_blank" rel="noopener">${s.id}</a> · ${escapeHtml(s.label_en)}</dd>
+        ${xrefs.length ? `<dt>Enlaces</dt><dd>${xrefs.join(" · ")}</dd>` : ""}
+        <dt>Modelo 3D</dt><dd>${models.length ? models.map((m) => `<a href="${m.url}" target="_blank" rel="noopener">${escapeHtml(m.label)} (GLB)</a>`).join(" · ") : "sin modelo en el Human Reference Atlas"}</dd>
+      </dl>
+      ${measuredNote ? `<p style="font-size: 0.85rem;">${measuredNote}</p>` : ""}
+      ${s.definition ? `<p class="definition">${escapeHtml(s.definition)}</p>` : ""}`;
+  }
+
+  function renderTable(report) {
+    const groups = new Map();
+    for (const organ of report.organs.values()) {
+      const group = systemOf(organ.id);
+      if (!groups.has(group.id)) groups.set(group.id, { group, organs: [] });
+      groups.get(group.id).organs.push(organ);
+    }
+    const order = D.structures.map((s) => s.id);
+    const sorted = [...groups.values()].sort((a, b) => order.indexOf(a.group.id) - order.indexOf(b.group.id));
+    const rows = [];
+    for (const { group, organs } of sorted) {
+      rows.push(`<tr class="group-row"><th colspan="5">${escapeHtml(group.name_es)}</th></tr>`);
+      for (const organ of organs) {
+        const s = byId.get(organ.id);
+        const change = organ.mass_g / organ.reference_g - 1;
+        const width = Math.min(50, Math.abs(change) * 50);
+        const bar = change >= 0
+          ? `<span style="left: 50%; width: ${width}%; background: var(--increase);"></span>`
+          : `<span style="right: 50%; width: ${width}%; background: var(--decrease);"></span>`;
+        const pending = organ.verification === "pending" ? '<sup class="pending" title="Pendiente de contrastar con ICRP 89">*</sup>' : "";
+        rows.push(`<tr class="organ-row${organ.id === selected ? " selected" : ""}" data-id="${organ.id}" tabindex="0">
+          <td>${escapeHtml(s.name_es)}${pending}</td>
+          <td class="num">${mass(organ.reference_g)}</td>
+          <td class="num">${mass(organ.mass_g)}</td>
+          <td><div class="delta"><div class="delta-bar">${bar}</div><span class="delta-text">${signed(change)}</span></div></td>
+          <td><a class="mono" href="${uberonUrl(s.id)}" target="_blank" rel="noopener">${s.id}</a></td>
+        </tr>`);
+      }
+    }
+    el("table-body").innerHTML = rows.join("");
+  }
+
+  function select(id) {
+    selected = id;
+    if (lastReport) render(lastReport);
+  }
+
+  function render(report) {
+    renderFigure(report);
+    renderReadings(report);
+    renderFat(report);
+    renderDetail(report);
+    renderTable(report);
+  }
+
+  const STALE = ["figure-wrap", "readings", "fat-block", "detail", "table-scroll"];
+
+  function update() {
+    let report;
+    try {
+      report = model.organMasses(personFromState(state));
+    } catch (error) {
+      const message = String(error.message).replace(/\d+\.\d{3,}/g, (m) => nf(2).format(Number(m)));
+      el("status").textContent = "Combinación no válida: " + message + ". Se muestra el último resultado válido.";
+      el("status").hidden = false;
+      for (const id of STALE) el(id).classList.add("stale");
+      writeOutputs(null);
+      return;
+    }
+    el("status").hidden = true;
+    for (const id of STALE) el(id).classList.remove("stale");
+    if (!report.organs.has(selected)) selected = ID.liver;
+    lastReport = report;
+    writeOutputs(report);
+    render(report);
+  }
+
+  // ---------- Arranque ----------
+  el("meta").innerHTML = [
+    D.uberon_version.split("/")[0].toUpperCase() + " " + D.uberon_version.split("/")[2],
+    D.structures.length + " estructuras",
+    D.structures.reduce((n, s) => n + s.models.length, 0) + " modelos 3D",
+    "masas de referencia ICRP 89",
+  ].map((text) => `<span>${text}</span>`).join("");
+  el("sources").innerHTML =
+    "Datos: UBERON " + D.uberon_version.split("/")[2] + " (CC BY 3.0); modelos 3D del Human Reference Atlas (CC BY 4.0); " +
+    "masas de referencia de ICRP 89, Tabla 2.8. Ecuaciones: Janmahasatian 2005 (masa libre de grasa), Nadler 1962 (volemia), " +
+    "Watson 1980 y Wang 1999 (agua), Mosteller 1987 (superficie), Szczepaniak 2005 (umbral de esteatosis), Henry 1990 (límites de IMC).";
+
+  el("presets").innerHTML = PRESETS.map((p) => `<button type="button" class="preset" data-key="${p.key}" aria-pressed="false">${p.label}</button>`).join("");
+  el("presets").addEventListener("click", (event) => {
+    const button = event.target.closest(".preset");
+    if (button) applyPreset(PRESETS.find((p) => p.key === button.dataset.key));
+  });
+  for (const id of ["sex-male", "sex-female", "age", "height", "weight", "bf", "vat", "liver", "bf-on", "vat-on", "liver-on"]) {
+    el(id).addEventListener("input", readControls);
+  }
+  el("table-body").addEventListener("click", (event) => {
+    if (event.target.closest("a")) return;
+    const row = event.target.closest("tr.organ-row");
+    if (row) select(row.dataset.id);
+  });
+  el("table-body").addEventListener("keydown", (event) => {
+    const row = event.target.closest("tr.organ-row");
+    if (row && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); select(row.dataset.id); }
+  });
+
+  buildFigure();
+  applyPreset(PRESETS[5]);
+})();
+</script>
+</body>
+</html>

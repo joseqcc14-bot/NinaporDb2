@@ -113,6 +113,21 @@ personas de la misma talla es la grasa. El modelo lo trata así:
    tienen la misma composición.
 3. **Reparto.** El tejido adiposo y la mama escalan con la masa grasa. El resto
    de órganos magros escala con la masa libre de grasa. El encéfalo no cambia.
+4. **Distribución** (`adiposity.py`). El tejido adiposo se divide en tres
+   destinos:
+   - **visceral** (`UBERON:0035818`): la medida por DXA, TC o RM
+     (`visceral_fat_kg`) o, si falta, una fracción típica del tejido adiposo:
+     15 % en hombres y 6,5 % en mujeres (pendiente de contrastar);
+   - **hígado**: con la fracción de grasa medida por RM (`liver_fat_fraction`,
+     PDFF), la masa magra del hígado se mantiene y se le suma la grasa por
+     encima de la de un hígado sano (se asume 2 %). Desde 5,56 % hay
+     esteatosis (Szczepaniak 2005);
+   - **subcutáneo** (`UBERON:0002190`): el resto.
+
+   Con la misma grasa total, más grasa visceral o hepática deja menos
+   subcutánea, y la masa total del cuerpo no cambia. Responde a la idea de que,
+   cuando el tejido subcutáneo no puede expandirse más, la grasa se desplaza a
+   las vísceras y al hígado.
 
 Ejemplo con la grasa estimada: una mujer de 163 cm pasa de 60 a 95 kg. De los
 35 kg ganados, 23,6 kg (67 %) son grasa y 11,4 kg (33 %) masa libre de grasa.
@@ -121,10 +136,11 @@ persona, mayor es la proporción de grasa en el peso que gana.
 
 Limitaciones, en orden de importancia para simular enfermedad:
 
-- **Distribución de la grasa.** Hay un único compartimento de tejido adiposo.
-  No distingue grasa subcutánea, visceral ni ectópica (hígado, epicardio,
-  páncreas, músculo), que es la que más pesa en el riesgo metabólico y
-  cardiovascular.
+- **Distribución de la grasa.** Ya distingue subcutánea, visceral y hepática,
+  pero tiene dos carencias:
+  - sin medidas, el reparto visceral es una fracción fija por sexo, que no
+    cambia con la edad ni con la adiposidad (en la realidad aumenta con ambas);
+  - aún no modela otra grasa ectópica (epicardio, páncreas, músculo).
 - **Reparto de la masa magra.** La masa libre de grasa extra se reparte en
   proporción a todos los órganos magros. Ejemplo: un hombre de 180 cm y 90 kg
   con 12 % de grasa frente a otro con 35 %. El primero obtiene más músculo,
@@ -141,9 +157,11 @@ Limitaciones, en orden de importancia para simular enfermedad:
 
 - **`Modifier(structure_id, mass_factor, origin)`.** Es la interfaz por la que
   la genética y la enfermedad actuarán sobre la anatomía sin tocar las variables
-  del individuo. Por ejemplo, una esteatosis hepática sería un `Modifier` sobre
-  `UBERON:0002107`. Hoy solo afecta a la masa; en fase 2 se ampliará a
-  parámetros fisiológicos.
+  del individuo. Por ejemplo, una miocardiopatía hipertrófica sería un
+  `Modifier` sobre el corazón (`UBERON:0000948`). Se aplica antes de repartir la
+  grasa, sobre las estructuras con masa de referencia. La grasa visceral y la
+  hepática se fijan con las medidas del individuo. Hoy solo afecta a la masa; en
+  fase 2 se ampliará a parámetros fisiológicos.
 - **Nuevas estructuras.** Para añadir una:
   1. Agrégala a `structures.json` con su CURIE de UBERON.
   2. Ejecuta `python -m bodysim.sources.uberon`.

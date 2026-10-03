@@ -9,6 +9,7 @@ from bodysim.scaling import SCALING_RULES
 
 REFERENCE = load_data("icrp89_reference.json")
 LIVER, BRAIN, ADIPOSE, BLOOD = "UBERON:0002107", "UBERON:0000955", "UBERON:0001013", "UBERON:0000178"
+SUBCUTANEOUS, VISCERAL = "UBERON:0002190", "UBERON:0035818"
 
 
 def test_reference_data_matches_anatomy():
@@ -25,32 +26,36 @@ def test_reference_data_matches_anatomy():
 def test_reference_person_recovers_icrp89(sex):
     report = organ_masses(reference_person(sex))
     for entry in REFERENCE["organ_masses_g"]:
-        if entry[sex.value] is None:
+        expected = entry[sex.value]
+        if entry["id"] == ADIPOSE:  # se reparte en subcutáneo y visceral
+            assert ADIPOSE not in report.organs
+            assert report.fat.adipose_tissue_g == pytest.approx(expected)
+        elif expected is None:
             assert entry["id"] not in report.organs
         else:
-            assert report.organs[entry["id"]].mass_g == pytest.approx(entry[sex.value])
+            assert report.organs[entry["id"]].mass_g == pytest.approx(expected)
     assert 0 < report.unmodeled_mass_g < 0.1 * report.person.weight_kg * 1000
 
 
 def test_weight_changes_lean_organs_and_fat_but_not_brain():
     base = reference_person(Sex.FEMALE)
-    obese = organ_masses(replace(base, weight_kg=95)).organs
-    reference = organ_masses(base).organs
+    obese_report, reference_report = organ_masses(replace(base, weight_kg=95)), organ_masses(base)
+    obese, reference = obese_report.organs, reference_report.organs
     assert obese[LIVER].mass_g > reference[LIVER].mass_g
     assert obese[BLOOD].mass_g > reference[BLOOD].mass_g
     assert obese[BRAIN].mass_g == pytest.approx(reference[BRAIN].mass_g)
     # El tejido adiposo crece proporcionalmente más que los órganos magros.
-    assert obese[ADIPOSE].mass_g / reference[ADIPOSE].mass_g > obese[LIVER].mass_g / reference[LIVER].mass_g
+    fat_growth = obese_report.fat.adipose_tissue_g / reference_report.fat.adipose_tissue_g
+    assert fat_growth > obese[LIVER].mass_g / reference[LIVER].mass_g
 
 
 def test_measured_fat_separates_people_of_equal_weight():
     athlete = Person(Sex.MALE, 30, 180, 90, body_fat_fraction=0.12)
     sedentary = replace(athlete, body_fat_fraction=0.35)
-    a, s = organ_masses(athlete).organs, organ_masses(sedentary).organs
-    assert a[ADIPOSE].mass_g < s[ADIPOSE].mass_g
-    assert a[LIVER].mass_g > s[LIVER].mass_g
-    assert a[BRAIN].mass_g == s[BRAIN].mass_g
-    assert a[ADIPOSE].mass_g / s[ADIPOSE].mass_g == pytest.approx(0.12 / 0.35)
+    a, s = organ_masses(athlete), organ_masses(sedentary)
+    assert a.fat.adipose_tissue_g / s.fat.adipose_tissue_g == pytest.approx(0.12 / 0.35)
+    assert a.organs[LIVER].mass_g > s.organs[LIVER].mass_g
+    assert a.organs[BRAIN].mass_g == s.organs[BRAIN].mass_g
 
 
 def test_measuring_the_estimated_fat_changes_nothing():
@@ -59,6 +64,44 @@ def test_measuring_the_estimated_fat_changes_nothing():
     measured = replace(estimated, body_fat_fraction=fraction)
     a, b = organ_masses(estimated).organs, organ_masses(measured).organs
     assert all(a[k].mass_g == pytest.approx(b[k].mass_g) for k in a)
+
+
+def test_default_fat_split_is_typical_for_sex():
+    for sex, share in ((Sex.MALE, 0.15), (Sex.FEMALE, 0.065)):
+        fat = organ_masses(reference_person(sex)).fat
+        assert not fat.visceral_measured and not fat.liver_fat_measured
+        assert fat.visceral_fraction == pytest.approx(share)
+        assert fat.subcutaneous_g + fat.visceral_g == pytest.approx(fat.adipose_tissue_g)
+        assert not fat.steatosis
+
+
+def test_measured_visceral_fat_moves_fat_out_of_subcutaneous():
+    base = Person(Sex.MALE, 50, 175, 100)
+    default, measured = organ_masses(base), organ_masses(replace(base, visceral_fat_kg=5.0))
+    assert measured.fat.visceral_measured
+    assert measured.organs[VISCERAL].mass_g == pytest.approx(5000)
+    assert measured.fat.adipose_tissue_g == pytest.approx(default.fat.adipose_tissue_g)
+    assert measured.organs[SUBCUTANEOUS].mass_g < default.organs[SUBCUTANEOUS].mass_g
+    assert measured.modeled_mass_g == pytest.approx(default.modeled_mass_g)
+
+
+def test_liver_fat_enlarges_liver_and_is_taken_from_subcutaneous_fat():
+    base = Person(Sex.MALE, 50, 175, 100)
+    healthy, fatty = organ_masses(base), organ_masses(replace(base, liver_fat_fraction=0.20))
+    # Misma masa magra del hígado (98 % del de referencia sano), ahora con 20 % de grasa.
+    assert fatty.organs[LIVER].mass_g == pytest.approx(healthy.organs[LIVER].mass_g * 0.98 / 0.80)
+    added = fatty.organs[LIVER].mass_g - healthy.organs[LIVER].mass_g
+    assert fatty.fat.liver_fat_excess_g == pytest.approx(added)
+    assert fatty.organs[SUBCUTANEOUS].mass_g == pytest.approx(healthy.organs[SUBCUTANEOUS].mass_g - added)
+    assert fatty.modeled_mass_g == pytest.approx(healthy.modeled_mass_g)
+    assert fatty.fat.steatosis and fatty.fat.liver_fat_measured
+    assert not organ_masses(replace(base, liver_fat_fraction=0.04)).fat.steatosis
+
+
+def test_visceral_fat_cannot_exceed_adipose_tissue():
+    athlete = Person(Sex.MALE, 30, 180, 75, body_fat_fraction=0.08, visceral_fat_kg=9.0)
+    with pytest.raises(ValueError):
+        organ_masses(athlete)
 
 
 def test_genotype_alone_does_not_change_anatomy():

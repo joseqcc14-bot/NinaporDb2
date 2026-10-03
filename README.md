@@ -66,12 +66,16 @@ pip install -e ".[dev]"
 pytest
 ```
 
-Informe anatómico de una mujer de 163 cm y 95 kg. Con `--body-fat` se indica
-el % de grasa medido; si se omite, se estima desde sexo, talla y peso:
+Informe anatómico de una mujer de 163 cm y 95 kg. Las medidas de grasa son
+opcionales; las que falten se estiman:
+
+- `--body-fat`: % de grasa corporal (DXA, bioimpedancia, pliegues);
+- `--visceral-fat`: kg de grasa visceral (DXA, TC o RM);
+- `--liver-fat`: % de grasa del hígado por RM (PDFF).
 
 ```bash
 python -m bodysim --sex female --age 40 --height 163 --weight 95
-python -m bodysim --sex female --age 40 --height 163 --weight 95 --body-fat 45
+python -m bodysim --sex female --age 40 --height 163 --weight 95 --body-fat 45 --visceral-fat 2.5 --liver-fat 12
 ```
 
 Desde Python:
@@ -98,6 +102,7 @@ anatomia.find_xref("FMA:7088").name_es                # 'corazón'
 src/bodysim/
   person.py          variables independientes del individuo (sexo, edad, talla, peso, grasa, genotipo)
   anthropometry.py   composición corporal: IMC, superficie corporal, masa libre de grasa, volemia, agua
+  adiposity.py       reparto de la grasa: subcutánea, visceral y del hígado
   anatomy.py         árbol anatómico enlazado a UBERON, FMA, SNOMED CT y los modelos 3D del HRA
   scaling.py         masa de cada órgano para un individuo + modificadores (genética y enfermedad)
   sources/obo.py     lector del formato OBO
@@ -106,6 +111,8 @@ src/bodysim/
     structures.json        árbol curado a mano: qué estructuras modelamos y cómo se agrupan
     uberon_snapshot.json   GENERADO desde UBERON; no se edita a mano
     icrp89_reference.json  masas de referencia de ICRP 89 y estado de verificación de cada valor
+    fat_distribution.json  parámetros del reparto de la grasa, con su fuente y su verificación
+demo/                    demostración interactiva en el navegador (ver demo/README.md)
 tests/
 docs/arquitectura.md
 ```
@@ -115,7 +122,7 @@ docs/arquitectura.md
 - **`uberon_snapshot.json`** se regenera con `python -m bodysim.sources.uberon`.
   El comando descarga el último release desde GitHub y falla si alguna
   estructura deja de existir o queda obsoleta. La versión actual es UBERON
-  2026-10-01: 41 estructuras y 39 modelos 3D.
+  2026-10-01: 43 estructuras y 39 modelos 3D.
 - **`icrp89_reference.json`** tiene dos tipos de valores:
   - 9 contrastados con una copia secundaria de la Tabla 2.8 de ICRP 89
     (`secondary_source`);
@@ -126,8 +133,12 @@ docs/arquitectura.md
   `scaling.py`: órganos magros según la masa libre de grasa, encéfalo constante,
   sangre según la volemia y tejido adiposo según la masa grasa. Son un punto de
   partida que hay que calibrar con datos.
-- **Grasa corporal.** Si se mide, se usa; si no, se estima. Cómo entra en el
-  modelo y sus limitaciones (distribución visceral y reparto de la masa magra):
+- **Grasa corporal.** La total, la visceral y la del hígado se usan si están
+  medidas; si no, se estiman. En `fat_distribution.json`:
+  - el reparto visceral típico por sexo está pendiente de contrastar (`pending`);
+  - el umbral de esteatosis (5,56 %) está contrastado (`secondary_source`).
+
+  Cómo entra la grasa en el modelo y sus limitaciones:
   [docs/arquitectura.md](docs/arquitectura.md#grasa-corporal-y-peso).
 
 Este proyecto es una herramienta de investigación y desarrollo. No es un
@@ -135,7 +146,8 @@ dispositivo médico.
 
 ## Hoja de ruta
 
-1. **Anatomía empalmada.** Hecha en esta fase.
+1. **Anatomía empalmada.** Hecha, con la grasa repartida en subcutánea,
+   visceral y del hígado.
 2. **Fisiología.** Puente con Pulse: `Person` se traduce en un paciente de Pulse
    y sus compartimentos se asignan a nodos UBERON.
 3. **Genética.** El genotipo se traduce en `Modifier` sobre estructuras, a partir

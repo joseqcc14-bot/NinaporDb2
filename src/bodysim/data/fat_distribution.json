@@ -1,0 +1,24 @@
+{
+  "description": "Parámetros para repartir el tejido adiposo en subcutáneo y visceral y para la grasa del hígado. Se usan solo cuando el individuo no trae su valor medido.",
+  "verification_legend": {
+    "secondary_source": "Valor contrastado con una fuente secundaria durante el desarrollo.",
+    "pending": "Valor transcrito; falta contrastarlo con la publicación original antes de usarlo en resultados.",
+    "assumption": "Supuesto del modelo, no un valor publicado."
+  },
+  "visceral_fraction_of_adipose_tissue": {
+    "male": 0.15,
+    "female": 0.065,
+    "source": "Punto medio de los rangos típicos de la grasa visceral respecto de la grasa total: 10-20 % en hombres y 5-8 % en mujeres (Wajchenberg, Endocr Rev 2000;21:697).",
+    "verification": "pending"
+  },
+  "healthy_liver_fat_fraction": {
+    "value": 0.02,
+    "source": "Contenido de grasa que se asume para el hígado de referencia de ICRP 89: un hígado sano, por debajo del límite normal.",
+    "verification": "assumption"
+  },
+  "steatosis_threshold": {
+    "value": 0.0556,
+    "source": "Límite superior normal de triglicéridos hepáticos: percentil 95 en personas de bajo riesgo del Dallas Heart Study (Szczepaniak et al., Am J Physiol Endocrinol Metab 2005;288:E462).",
+    "verification": "secondary_source"
+  }
+}

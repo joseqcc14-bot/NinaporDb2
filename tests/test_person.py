@@ -45,6 +45,10 @@ def test_body_fat_is_optional_and_independent():
         {"body_fat_fraction": 0.75},
         {"body_fat_fraction": 0.01},
         {"weight_kg": 45, "body_fat_fraction": 0.2},  # 11.6 kg/m² de masa libre de grasa
+        {"visceral_fat_kg": 0},
+        {"visceral_fat_kg": 25},
+        {"liver_fat_fraction": -0.01},
+        {"liver_fat_fraction": 0.55},
         {"genotype": {"rs429358": ""}},
     ],
 )
