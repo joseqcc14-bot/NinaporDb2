@@ -26,7 +26,9 @@ const parts = JSON.parse(fs.readFileSync(path.join(here, "zanatomy_parts.json"),
 const BUDGETS = {
   piel: 70000,
   esqueleto: 170000,
+  articulaciones: 60000,
   musculos: 260000,
+  inserciones: 70000,
   cardiovascular: 170000,
   encefalo: 130000,
   nervios: 90000,
@@ -80,6 +82,7 @@ for (const [layer, items] of byLayer) {
       layer,
       side: info.side,
       color: info.color,
+      ...(info.group ? { group: info.group } : {}),
       ...pack(geometry),
     });
   });

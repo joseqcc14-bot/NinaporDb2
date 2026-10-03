@@ -2,9 +2,12 @@
 
 Visor de anatomía 3D al estilo de los atlas interactivos:
 
-- **Cuerpo masculino completo** (atlas Z-Anatomy, 2556 piezas):
-  - esqueleto con cada hueso, cartílago, ligamento y diente;
-  - 491 músculos y tendones;
+- **Cuerpo masculino completo** (atlas Z-Anatomy, 3674 piezas):
+  - esqueleto con cada hueso, cartílago y diente;
+  - 413 articulaciones y ligamentos (cápsulas, meniscos, discos);
+  - 491 músculos y tendones, con su grupo funcional (flexores, extensores…);
+  - 705 zonas de origen (rojo) e inserción (azul) de los músculos sobre el
+    hueso;
   - corazón y vasos de todo el cuerpo;
   - encéfalo con giros, surcos, núcleos y ventrículos, y médula espinal;
   - los 12 pares craneales y los nervios periféricos;
@@ -14,8 +17,8 @@ Visor de anatomía 3D al estilo de los atlas interactivos:
   principales y parte del esqueleto. Todavía no tiene la musculatura ni los
   nervios completos.
 - **Capas y vistas.** Cada sistema es una capa que se enciende o se apaga. Las
-  vistas rápidas (huesos, músculos, vasos, nervios, órganos, encéfalo y
-  sentidos) combinan capas y transparencia de la piel.
+  vistas rápidas (huesos, músculos, articulaciones, inserciones, vasos, nervios,
+  órganos, encéfalo y sentidos) combinan capas y transparencia de la piel.
 - **Fichas.** Cada pieza se puede tocar o buscar por nombre (en español o en
   inglés) para ver su ficha: término UBERON, estructura de bodysim y masa para
   el individuo. "Aislar" y "Atenuar el resto" la destacan.
@@ -38,11 +41,11 @@ Las capas se descargan bajo demanda:
 
 - al abrir llegan la piel y el esqueleto;
 - las demás capas encendidas se descargan en segundo plano;
-- las que empiezan apagadas (músculos, 3,3 MB; nervios; linfático), solo al
-  encenderlas o al elegir una vista que las use.
+- las que empiezan apagadas (músculos, 3,3 MB; articulaciones; inserciones;
+  nervios; linfático), solo al encenderlas o al elegir una vista que las use.
 
-Cada capa se dibuja como un solo `BatchedMesh` de three.js. Así, las 2556
-piezas del atlas cuestan unas 13 llamadas de dibujo.
+Cada capa se dibuja como un solo `BatchedMesh` de three.js. Así, las 3674
+piezas del atlas cuestan unas 15 llamadas de dibujo.
 
 ## Archivos
 

@@ -13,6 +13,7 @@ resolución para que el atlas quepa en un navegador.
 """
 
 import json
+import re
 import sys
 
 import bpy
@@ -24,6 +25,8 @@ scene = bpy.context.scene
 
 COLLECTIONS = {
     "1: Skeletal system": "esqueleto",
+    "2: Muscular insertions": "inserciones",
+    "3: Joints": "articulaciones",
     "4: Muscular system": "musculos",
     "5: Cardiovascular system": "cardiovascular",
     "6: Lymphoid organs": "linfatico",
@@ -84,7 +87,9 @@ for collection_name, layer in COLLECTIONS.items():
             chain.append(parent.name)
             parent = parent.parent
         name = obj.name
-        side = "R" if name.endswith(".r") else "L" if name.endswith(".l") else None
+        # ".r"/".l"; en las inserciones, ".or" (origen) o ".e2l" (segunda inserción).
+        suffix = re.search(r"\.(?:[oe]\d*)?([lr])$", name)
+        side = suffix.group(1).upper() if suffix else None
         entries.append({
             "name": name,
             "layer": layer,

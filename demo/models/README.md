@@ -25,8 +25,10 @@ del sujeto.
 | Capa | `male/` (Z-Anatomy) | `female/` (HRA) |
 |---|---:|---:|
 | piel y regiones | 256 | 1 |
-| esqueleto (huesos, cartílagos, ligamentos, dientes) | 277 | 32 |
+| esqueleto (huesos, cartílagos, dientes) | 277 | 32 |
+| articulaciones y ligamentos (cápsulas, meniscos, discos) | 413 | — |
 | músculos y tendones | 491 | 2 |
+| orígenes e inserciones musculares | 705 | — |
 | corazón y vasos | 673 | 15 |
 | encéfalo y médula (giros, surcos, núcleos, ventrículos) | 287 | 4 |
 | nervios (pares craneales, plexos, nervios periféricos) | 255 | — |
@@ -37,10 +39,11 @@ del sujeto.
 | reproductor | 14 | 9 |
 | endocrino | 10 | — |
 | linfático | 163 | 2 |
-| **total** | **2556 piezas, 1,06 M triángulos, 13,9 MB** | **84 piezas, 0,39 M triángulos, 4,7 MB** |
+| **total** | **3674 piezas, 1,21 M triángulos, 16,1 MB** | **84 piezas, 0,39 M triángulos, 4,7 MB** |
 
 El cuerpo femenino todavía no tiene esqueleto, musculatura ni nervios
-completos. El HRA solo trae órganos.
+completos. El HRA solo trae órganos, y Z-Anatomy no incluye órganos
+reproductores femeninos.
 
 ## Hombre: Z-Anatomy
 
@@ -86,14 +89,15 @@ comerciales. Para un producto comercial hay dos opciones:
 ### Qué se cambió respecto del original
 
 - **Extracción** con Blender como módulo de Python (`extract_blend.py`):
-  - colecciones de esqueleto, músculos, cardiovascular, linfático, nervioso y
-    sentidos, vísceras y regiones;
+  - colecciones de esqueleto, inserciones musculares, articulaciones,
+    músculos, cardiovascular, linfático, nervioso y sentidos, vísceras y
+    regiones;
   - solo los objetos visibles;
   - en coordenadas del mundo;
   - vasos y nervios son curvas con grosor y se convierten en tubos con menos
     resolución.
 - **Exclusiones** (`build_parts.py`): fascias, cavidades, bolsas sinoviales,
-  vainas tendinosas y piezas sin nombre. De 2756 piezas quedan 2556.
+  vainas tendinosas y piezas sin nombre. De 3874 piezas quedan 3674.
 - **Capas.** Cada pieza va a una capa según su grupo en el atlas: sistema
   nervioso central → encéfalo, periférico → nervios, órganos de los
   sentidos → sentidos, y así con cada aparato.
@@ -103,15 +107,25 @@ comerciales. Para un producto comercial hay dos opciones:
   - "stapes" → estribo (la TA2 da "estapedio", que es el músculo);
   - "lens" → cristalino.
 
-  Con nombre en español quedan 2479 piezas; el resto muestra el inglés.
+  Con nombre en español quedan 3595 piezas; el resto muestra el inglés.
 - **UBERON.** Se asigna cuando el nombre inglés coincide con una etiqueta o un
-  sinónimo exacto (1166 piezas). Los pares craneales se buscan como "cranial
+  sinónimo exacto (1202 piezas). Los pares craneales se buscan como "cranial
   nerve II", etc.
 - **Estructura de bodysim**, para escalar la masa:
   - huesos, músculos y piel se asignan al esqueleto, la musculatura y la piel
     completos;
   - el resto, al órgano más cercano en la jerarquía is_a/part_of de UBERON.
-- **Simplificación** con meshoptimizer: de 5,3 a 1,06 millones de triángulos.
+- **Orígenes e inserciones.** Cada zona de anclaje de un músculo sobre el
+  hueso es una pieza: "Masseter.or" es el origen derecho del masetero y
+  "Pectoralis minor muscle.e1l", la segunda inserción izquierda del pectoral
+  menor. El visor pinta los orígenes en rojo y las inserciones en azul.
+  - Se toman del atlas tal cual, salvo el pectoral menor, que el atlas da
+    invertido (origen en la escápula). Puede haber otros casos: conviene
+    revisarlos contra un texto de referencia antes de usarlos en docencia.
+  - El **grupo funcional** (flexores, extensores, abductores, rotadores…)
+    sale del material con que el atlas colorea cada músculo y cada inserción.
+    Es una clasificación simplificada: un músculo puede tener varias acciones.
+- **Simplificación** con meshoptimizer: de 6,6 a 1,21 millones de triángulos.
   Cada capa tiene su presupuesto (`build_zanatomy.mjs`) y cada pieza conserva
   al menos 60 triángulos.
 

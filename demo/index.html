@@ -418,7 +418,9 @@ const uberonUrl = (id) => "http://purl.obolibrary.org/obo/" + id.replace(":", "_
 const LAYERS = [
   { key: "piel", name: "Piel", color: "#d9a589", on: true },
   { key: "esqueleto", name: "Esqueleto", color: "#e8dfcb", on: true },
+  { key: "articulaciones", name: "Articulaciones y ligamentos", color: "#dcd2bb", on: false },
   { key: "musculos", name: "Músculos", color: "#b5463c", on: false },
+  { key: "inserciones", name: "Orígenes e inserciones", color: "linear-gradient(90deg, #c8453b 50%, #3a6db3 50%)", on: false },
   { key: "cardiovascular", name: "Corazón y vasos", color: "#c62f2a", on: true },
   { key: "encefalo", name: "Encéfalo y médula", color: "#e3a99a", on: true },
   { key: "nervios", name: "Nervios", color: "#f0d36b", on: false },
@@ -432,15 +434,17 @@ const LAYERS = [
   { key: "grasa", name: "Grasa visceral (esquema)", color: "#e7b84a", on: true },
 ];
 const layerByKey = new Map(LAYERS.map((l) => [l.key, l]));
-const LOAD_ORDER = ["piel", "esqueleto", "encefalo", "digestivo", "respiratorio", "urinario", "reproductor", "endocrino", "sentidos", "cardiovascular", "nervios", "musculos", "linfatico"];
+const LOAD_ORDER = ["piel", "esqueleto", "encefalo", "digestivo", "respiratorio", "urinario", "reproductor", "endocrino", "sentidos", "cardiovascular", "nervios", "musculos", "linfatico", "articulaciones", "inserciones"];
 const VISCERA = ["respiratorio", "digestivo", "urinario", "reproductor", "endocrino"];
 // Vistas rápidas por sistema: capas visibles y opacidad de la piel.
 const QUICK_VIEWS = [
   { key: "general", name: "General", layers: ["piel", "esqueleto", "cardiovascular", "encefalo", "sentidos", ...VISCERA, "grasa"], skin: 0.25 },
   { key: "esqueleto", name: "Huesos", layers: ["piel", "esqueleto"], skin: 0.12 },
   { key: "musculos", name: "Músculos", layers: ["esqueleto", "musculos"], skin: 0 },
+  { key: "articulaciones", name: "Articulaciones", layers: ["piel", "esqueleto", "articulaciones"], skin: 0.12, requires: "articulaciones" },
+  { key: "inserciones", name: "Inserciones", layers: ["esqueleto", "inserciones"], skin: 0, requires: "inserciones" },
   { key: "vasos", name: "Vasos", layers: ["piel", "esqueleto", "cardiovascular"], skin: 0.12 },
-  { key: "nervios", name: "Nervios", layers: ["piel", "esqueleto", "encefalo", "nervios"], skin: 0.12 },
+  { key: "nervios", name: "Nervios", layers: ["piel", "esqueleto", "encefalo", "nervios"], skin: 0.12, requires: "nervios" },
   { key: "organos", name: "Órganos", layers: ["piel", ...VISCERA, "cardiovascular", "linfatico", "grasa"], skin: 0.2 },
   { key: "cabeza", name: "Encéfalo y sentidos", layers: ["piel", "encefalo", "sentidos", "nervios"], skin: 0.12, head: true },
 ];
@@ -587,7 +591,9 @@ function makeLayerMaterial(layer) {
     return material;
   }
   const bone = layer === "esqueleto";
-  return new THREE.MeshPhysicalMaterial({ roughness: bone ? 0.72 : 0.5, metalness: 0, clearcoat: bone ? 0 : 0.3, clearcoatRoughness: 0.45 });
+  // Las zonas de origen e inserción están pegadas al hueso: se dibujan delante de él.
+  const decal = layer === "inserciones" ? { polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 } : {};
+  return new THREE.MeshPhysicalMaterial({ roughness: bone ? 0.72 : 0.5, metalness: 0, clearcoat: bone ? 0 : 0.3, clearcoatRoughness: 0.45, ...decal });
 }
 const baseOpacity = (layer) => (layer === "piel" ? skinOpacity : 1);
 
@@ -694,7 +700,7 @@ function addLayer(key, meshes) {
     const instanceId = batch.addInstance(batch.addGeometry(geometry));
     const color = new THREE.Color(entry.color || "#d9b8a8");
     const part = {
-      info: { key: entry.key, name_es: entry.name_es, label_en: entry.label_en, uberon: entry.uberon, model_id: entry.model_id, layer: key, side: entry.side },
+      info: { key: entry.key, name_es: entry.name_es, label_en: entry.label_en, uberon: entry.uberon, model_id: entry.model_id, layer: key, side: entry.side, group: entry.group },
       batch, instanceId, geometry, center,
       position: center.clone(), scale: 1,
       radius: geometry.boundingSphere.radius,
@@ -980,7 +986,7 @@ function flyToHead() {
 
 // ---------- Panel de sistemas ----------
 function buildLayerList() {
-  el("quick").innerHTML = QUICK_VIEWS.map((v) => `<button type="button" class="preset" data-quick="${v.key}" aria-pressed="${v.key === activeQuick}">${v.name}</button>`).join("");
+  el("quick").innerHTML = QUICK_VIEWS.filter((v) => !v.requires || hasLayer(v.requires)).map((v) => `<button type="button" class="preset" data-quick="${v.key}" aria-pressed="${v.key === activeQuick}">${v.name}</button>`).join("");
   el("layers").innerHTML = LAYERS.filter((l) => hasLayer(l.key)).map((l) => `
     <li id="layer-row-${l.key}">
       <button type="button" class="layer" data-layer="${l.key}" aria-pressed="${layerVisible.get(l.key)}">
@@ -1059,7 +1065,11 @@ el("search").addEventListener("change", (event) => {
   if (!body) return;
   const query = event.target.value.trim().toLowerCase();
   const matches = (p) => displayName(p.info).toLowerCase();
-  const part = body.parts.find((p) => matches(p) === query) || body.parts.find((p) => matches(p).includes(query));
+  // Exacto, luego "empieza por" y luego "contiene", con las zonas de inserción al final
+  // (su nombre incluye el del músculo).
+  const found = body.parts.filter((p) => matches(p).includes(query));
+  const part = found.find((p) => matches(p) === query) || found.find((p) => matches(p).startsWith(query))
+    || found.find((p) => p.info.layer !== "inserciones") || found[0];
   if (!part) return;
   layerVisible.set(part.info.layer, true);
   part.hidden = false;
@@ -1105,6 +1115,7 @@ function renderInspector() {
     </div>
     ${massBlock}
     <dl class="facts">
+      ${info.group ? `<dt>Grupo funcional</dt><dd>${escapeHtml(capitalize(info.group))}</dd>` : ""}
       ${ownId ? `<dt>UBERON</dt><dd><a class="mono" href="${uberonUrl(ownId)}" target="_blank" rel="noopener">${ownId}</a></dd>` : ""}
       ${structure ? `<dt>En bodysim</dt><dd>${escapeHtml(structure.name_es)} <span class="mono">${structure.id}</span></dd>` : ""}
       <dt>Origen 3D</dt><dd>${escapeHtml(credit)}</dd>

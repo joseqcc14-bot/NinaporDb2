@@ -23,11 +23,25 @@
    "bytes": 2152457
   },
   {
+   "key": "inserciones",
+   "file": "inserciones.json",
+   "parts": 705,
+   "triangles": 77391,
+   "bytes": 1262853
+  },
+  {
+   "key": "articulaciones",
+   "file": "articulaciones.json",
+   "parts": 413,
+   "triangles": 63803,
+   "bytes": 955183
+  },
+  {
    "key": "musculos",
    "file": "musculos.json",
    "parts": 491,
    "triangles": 259616,
-   "bytes": 3325030
+   "bytes": 3334317
   },
   {
    "key": "cardiovascular",

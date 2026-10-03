@@ -11,8 +11,8 @@ from bodysim import load_anatomy
 
 MODELS = Path(__file__).resolve().parents[1] / "demo" / "models"
 LAYERS = {
-    "piel", "esqueleto", "musculos", "cardiovascular", "encefalo", "nervios", "sentidos",
-    "respiratorio", "digestivo", "urinario", "reproductor", "endocrino", "linfatico",
+    "piel", "esqueleto", "articulaciones", "musculos", "inserciones", "cardiovascular", "encefalo",
+    "nervios", "sentidos", "respiratorio", "digestivo", "urinario", "reproductor", "endocrino", "linfatico",
 }
 # Hombre: Z-Anatomy (derivado de BodyParts3D). Mujer: Human Reference Atlas.
 LICENSES = {"male": "CC BY-SA 4.0", "female": "CC BY 4.0"}
@@ -67,12 +67,13 @@ def test_body_matches_anatomy(sex):
 
 
 def test_male_atlas_is_complete():
-    """Z-Anatomy: esqueleto, músculos, vasos, nervios, encéfalo y sentidos, con nombres en español."""
+    """Z-Anatomy: huesos, articulaciones, músculos e inserciones, vasos, nervios, encéfalo y sentidos."""
     manifest, layers = _body("male")
     assert set(layers) == LAYERS
     parts = {info["key"]: info["parts"] for info in manifest["layers"]}
     assert parts["esqueleto"] > 250 and parts["musculos"] > 450 and parts["cardiovascular"] > 600
     assert parts["encefalo"] > 250 and parts["nervios"] > 200 and parts["sentidos"] >= 40
+    assert parts["articulaciones"] > 400 and parts["inserciones"] > 700
     meshes = _meshes(layers)
     named = sum(1 for mesh in meshes.values() if mesh["name_es"])
     assert named / len(meshes) > 0.95
@@ -85,6 +86,13 @@ def test_male_atlas_is_complete():
     assert meshes["Stapes.l"]["name_es"] == "estribo izquierdo"
     assert meshes["Iris.r"]["name_es"] == "iris derecho"
     assert meshes["Cochlea.r"]["layer"] == "sentidos"
+    assert meshes["Anterior cruciate ligament.r"]["name_es"] == "ligamento cruzado anterior derecho"
+    # Orígenes e inserciones: el pectoral menor va corregido (el atlas los invierte).
+    assert meshes["Brachialis muscle.or"]["name_es"] == "origen del músculo braquial derecho"
+    assert meshes["Brachialis muscle.or"]["group"] == "flexores"
+    assert meshes["Pectoralis minor muscle.or"]["name_es"].startswith("inserción")
+    assert meshes["Pectoralis minor muscle.e1r"]["name_es"].startswith("origen")
+    assert meshes["Short head of biceps brachii.r"]["name_es"] == "cabeza corta del músculo bíceps braquial derecha"
 
 
 def test_female_body():

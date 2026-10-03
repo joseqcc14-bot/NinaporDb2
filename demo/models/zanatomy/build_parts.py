@@ -48,8 +48,40 @@ SUBLAYERS = {
 LAYER_STRUCTURE = {
     "piel": "UBERON:0002097",
     "esqueleto": "UBERON:0004288",
+    "articulaciones": "UBERON:0004288",
     "musculos": "UBERON:0001134",
+    "inserciones": "UBERON:0001134",
 }
+
+# Inserciones musculares: "Masseter.or" es el origen derecho; "Pectoralis minor muscle.e1l",
+# la segunda inserción izquierda.
+ATTACHMENT = re.compile(r"\.([oe])(\d*)([lr]?)$")
+# Músculos en los que el atlas invierte origen e inserción (comprobado a mano).
+SWAPPED_ATTACHMENTS = {"Pectoralis minor muscle"}
+ATTACHMENT_COLORS = {"origen": "#c8453b", "inserción": "#3a6db3"}
+
+# Grupo funcional de cada músculo: el atlas lo codifica en el material ("Flexion",
+# "Origin-Abduction", "End-Extension fingers"...).
+FUNCTION_GROUPS = [
+    (r"flexion fingers", "flexores de los dedos"),
+    (r"extension fingers", "extensores de los dedos"),
+    (r"flexion hand", "flexores de la mano o del pie"),
+    (r"extension hand|extensor extremities", "extensores de la mano o del pie"),
+    (r"flexion", "flexores"),
+    (r"extension", "extensores"),
+    (r"abduct", "abductores"),
+    (r"adduct", "aductores"),
+    (r"external rotat", "rotadores externos"),
+    (r"internal rotat", "rotadores internos"),
+    (r"levator", "elevadores"),
+    (r"depressor", "depresores"),
+    (r"orbicular", "orbiculares y constrictores"),
+    (r"biarticular", "biarticulares"),
+    (r"mastica", "masticadores"),
+    (r"ingestion", "músculos de la ingestión"),
+    (r"phonation", "músculos de la fonación"),
+    (r"diaphragm", "músculos respiratorios"),
+]
 
 # Colores de atlas: por nombre de pieza primero, luego por material y por capa.
 NAME_COLORS = [
@@ -105,6 +137,8 @@ LAYER_COLORS = {
     "endocrino": "#d08a5c",
     "linfatico": "#7fb36b",
     "esqueleto": "#e8dfcb",
+    "articulaciones": "#dcd2bb",
+    "inserciones": "#c8453b",
     "piel": "#d9a589",
 }
 
@@ -121,6 +155,12 @@ def color_for(name: str, material: str | None, layer: str) -> str:
         if material and re.search(pattern, material, re.I):
             return color
     return LAYER_COLORS[layer]
+
+
+def function_group(material: str | None, layer: str) -> str | None:
+    if layer not in ("musculos", "inserciones") or not material:
+        return None
+    return next((group for pattern, group in FUNCTION_GROUPS if re.search(pattern, material, re.I)), None)
 
 
 def base_name(name: str) -> str:
@@ -220,16 +260,37 @@ def spanish_name(name: str, side: str | None, ta2: dict[str, str]) -> str | None
         return None
     spanish = found.strip().lower()
     spanish = re.sub(r"^musculo\b", "músculo", spanish).replace("glóbo", "globo").replace("cerebra media", "cerebral media")
+    spanish = re.sub(r"^(cabeza \w+) músculo del ", r"\1 del músculo ", spanish)  # errata de la TA2
     # La TA2 pone entre paréntesis las estructuras inconstantes: "(glándula parótida accesoria)".
     spanish = re.sub(r"^\(([^()]*)\)$", r"\1", spanish)
     # Números de par craneal, vértebra o segmento en mayúsculas: "nervio óptico (II)", "(segmento M1)".
     upper_codes = lambda m: re.sub(r"\b[a-z]{0,2}[ivx\d]+\b", lambda t: t.group(0).upper(), m.group(0))  # noqa: E731
     spanish = re.sub(r"\([^)]*\)", upper_codes, spanish)
+    spanish = re.sub(r"\b[ctls]\d{1,2}\b", lambda m: m.group(0).upper(), spanish)  # "núcleo pulposo T1-T2"
     name, code = re.match(r"(.*?)((?: \([^)]*\))?)$", spanish).groups()
     if side and not re.search(r"\b(izquierd|derech)", name):
         word = ("izquierd" if side == "L" else "derech") + ("a" if is_feminine(name) else "o")
         name += " " + word + ("s" if is_plural(name) else "")
     return name + code
+
+
+def attachment(name: str, side: str | None, ta2: dict[str, str]) -> tuple[str, str | None, str]:
+    """'Masseter.or' -> ('origen', 'origen del músculo masetero derecho', 'Origin of Masseter')."""
+    match = ATTACHMENT.search(name)
+    muscle = name[: match.start()]
+    kind = "origen" if match.group(1) == "o" else "inserción"
+    if muscle in SWAPPED_ATTACHMENTS:
+        kind = "inserción" if kind == "origen" else "origen"
+    number = f" ({int(match.group(2)) + 1})" if match.group(2) else ""
+    label_en = f"{'Origin' if kind == 'origen' else 'Insertion'} of {base_name(muscle)}{number}"
+    muscle_es = spanish_name(muscle + (f".{match.group(3)}" if match.group(3) else ""), side, ta2)
+    if not muscle_es:
+        return kind, None, label_en
+    if is_plural(muscle_es):
+        article = "de las " if is_feminine(muscle_es) else "de los "
+    else:
+        article = "de la " if is_feminine(muscle_es) else "del "
+    return kind, f"{kind} {article}{muscle_es}{number}", label_en
 
 
 def refine_layer(part: dict) -> str | None:
@@ -267,7 +328,21 @@ def main() -> None:
     parts = {}
     for part in raw:
         layer = refine_layer(part)
-        if layer is None:
+        if layer is None or part["name"] in parts:
+            continue
+        if layer == "inserciones":
+            # Zona de origen o inserción de un músculo sobre el hueso: sin término UBERON propio.
+            kind, name_es, label_en = attachment(part["name"], part["side"], ta2)
+            parts[part["name"]] = {
+                "layer": layer,
+                "name_es": name_es,
+                "label_en": label_en,
+                "uberon": None,
+                "model_id": LAYER_STRUCTURE[layer],
+                "side": part["side"],
+                "color": ATTACHMENT_COLORS[kind],
+                "group": function_group(part["material"], layer),
+            }
             continue
         base = base_name(part["name"])
         # "Optic nerve II" -> "optic nerve" o "cranial nerve II", que es como lo nombra UBERON.
@@ -286,6 +361,7 @@ def main() -> None:
             "model_id": model_id,
             "side": part["side"],
             "color": color_for(part["name"], part["material"], layer),
+            "group": function_group(part["material"], layer),
         }
     OUT.write_text(json.dumps(parts, ensure_ascii=False, indent=0, sort_keys=True) + "\n", encoding="utf-8")
     translated = sum(1 for p in parts.values() if p["name_es"])

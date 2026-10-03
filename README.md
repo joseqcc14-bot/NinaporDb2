@@ -158,8 +158,9 @@ dispositivo médico.
 5. **Visualización y forma externa:**
    - visor 3D al estilo de un atlas: hecho en [demo/](demo/README.md), escalado
      según el informe de cada individuo;
-   - atlas masculino completo con Z-Anatomy (CC BY-SA 4.0): hecho. Tiene 2556
-     piezas: huesos, músculos, vasos, nervios, encéfalo y sentidos;
+   - atlas masculino completo con Z-Anatomy (CC BY-SA 4.0): hecho. Tiene 3674
+     piezas: huesos, articulaciones, músculos con sus orígenes e inserciones,
+     vasos, nervios, encéfalo y sentidos;
    - falta el atlas femenino completo, pues el HRA solo trae órganos;
    - pendiente antes de cualquier uso comercial: verificar o sustituir el oído
      interno y el riñón, que Z-Anatomy pudo tomar de modelos con licencia no
