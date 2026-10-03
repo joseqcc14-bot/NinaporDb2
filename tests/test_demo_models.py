@@ -11,9 +11,11 @@ from bodysim import load_anatomy
 
 MODELS = Path(__file__).resolve().parents[1] / "demo" / "models"
 LAYERS = {
-    "piel", "esqueleto", "musculos", "nervioso", "cardiovascular", "respiratorio",
-    "digestivo", "urinario", "reproductor", "linfatico",
+    "piel", "esqueleto", "musculos", "cardiovascular", "encefalo", "nervios", "sentidos",
+    "respiratorio", "digestivo", "urinario", "reproductor", "endocrino", "linfatico",
 }
+# Hombre: Z-Anatomy (derivado de BodyParts3D). Mujer: Human Reference Atlas.
+LICENSES = {"male": "CC BY-SA 4.0", "female": "CC BY 4.0"}
 
 
 def _decode(entry):
@@ -22,20 +24,72 @@ def _decode(entry):
     return len(positions) // 3, indices
 
 
+def _body(sex):
+    manifest = json.loads((MODELS / sex / "manifest.json").read_text(encoding="utf-8"))
+    layers = {
+        layer["key"]: json.loads((MODELS / sex / layer["file"]).read_text(encoding="utf-8"))
+        for layer in manifest["layers"]
+    }
+    return manifest, layers
+
+
+def _meshes(layers):
+    return {mesh["key"]: mesh for data in layers.values() for mesh in data["meshes"]}
+
+
 @pytest.mark.parametrize("sex", ["male", "female"])
-def test_model_matches_anatomy(sex):
-    data = json.loads((MODELS / f"{sex}.json").read_text(encoding="utf-8"))
+def test_body_matches_anatomy(sex):
+    manifest, layers = _body(sex)
     anatomy = load_anatomy()
-    assert data["format"] == "bodysim-mesh-1" and "CC BY 4.0" in data["source"]
-    keys = [mesh["key"] for mesh in data["meshes"]]
+    assert manifest["format"] == "bodysim-body-1" and manifest["sex"] == sex
+    assert LICENSES[sex] in manifest["source"]
+    assert set(layers) <= LAYERS
+    keys = []
+    for info in manifest["layers"]:
+        data = layers[info["key"]]
+        assert data["format"] == "bodysim-mesh-1" and data["layer"] == info["key"]
+        assert LICENSES[sex] in data["source"]
+        assert len(data["meshes"]) == info["parts"]
+        assert (MODELS / sex / info["file"]).stat().st_size == info["bytes"]
+        triangles = 0
+        for mesh in data["meshes"]:
+            assert mesh["layer"] == info["key"], mesh["key"]
+            assert mesh["name_es"] or mesh["label_en"], mesh["key"]
+            assert mesh["model_id"] is None or mesh["model_id"] in anatomy, mesh["key"]
+            vertices, indices = _decode(mesh)
+            assert len(indices) % 3 == 0 and max(indices) < vertices, mesh["key"]
+            triangles += len(indices) // 3
+            keys.append(mesh["key"])
+        assert triangles == info["triangles"]
     assert len(keys) == len(set(keys))
-    for mesh in data["meshes"]:
-        assert mesh["layer"] in LAYERS, mesh["key"]
-        assert mesh["name_es"], mesh["key"]
-        assert mesh["model_id"] is None or mesh["model_id"] in anatomy, mesh["key"]
-        vertices, indices = _decode(mesh)
-        assert len(indices) % 3 == 0 and max(indices) < vertices, mesh["key"]
-    by_key = {mesh["key"]: mesh for mesh in data["meshes"]}
-    assert by_key["liver"]["model_id"] == "UBERON:0002107"
-    assert by_key["heart"]["model_id"] == "UBERON:0000948"
-    assert by_key["skin"]["layer"] == "piel"
+    low, high = manifest["bounds"]["min"], manifest["bounds"]["max"]
+    assert 1.5 < high[1] - low[1] < 1.9  # estatura de referencia del atlas, en metros
+
+
+def test_male_atlas_is_complete():
+    """Z-Anatomy: esqueleto, músculos, vasos, nervios, encéfalo y sentidos, con nombres en español."""
+    manifest, layers = _body("male")
+    assert set(layers) == LAYERS
+    parts = {info["key"]: info["parts"] for info in manifest["layers"]}
+    assert parts["esqueleto"] > 250 and parts["musculos"] > 450 and parts["cardiovascular"] > 600
+    assert parts["encefalo"] > 250 and parts["nervios"] > 200 and parts["sentidos"] >= 40
+    meshes = _meshes(layers)
+    named = sum(1 for mesh in meshes.values() if mesh["name_es"])
+    assert named / len(meshes) > 0.95
+    assert meshes["Liver"]["model_id"] == "UBERON:0002107"
+    assert meshes["Left ventricle"]["model_id"] == "UBERON:0000948"
+    assert meshes["Femur.r"]["layer"] == "esqueleto" and meshes["Femur.r"]["uberon"] == "UBERON:0000981"
+    assert meshes["Sciatic nerve.l"]["name_es"] == "nervio ciático izquierdo"
+    assert meshes["Optic nerve (II).r"]["name_es"] == "nervio óptico derecho (II)"
+    assert meshes["Optic nerve (II).r"]["uberon"] == "UBERON:0000941"
+    assert meshes["Stapes.l"]["name_es"] == "estribo izquierdo"
+    assert meshes["Iris.r"]["name_es"] == "iris derecho"
+    assert meshes["Cochlea.r"]["layer"] == "sentidos"
+
+
+def test_female_body():
+    _, layers = _body("female")
+    meshes = _meshes(layers)
+    assert meshes["liver"]["model_id"] == "UBERON:0002107"
+    assert meshes["heart"]["model_id"] == "UBERON:0000948"
+    assert meshes["skin"]["layer"] == "piel"

@@ -100,11 +100,12 @@ a { color: var(--accent); }
   min-width: 0;
 }
 .panel h2 { font-size: 0.95rem; margin: 0; font-weight: 700; }
-.systems { top: 70px; left: 16px; width: 236px; max-height: calc(100% - 300px); overflow: auto; }
+.systems { top: 70px; left: 16px; width: 252px; max-height: calc(100% - 330px); overflow: auto; }
 .inspector { top: 70px; right: 16px; width: 300px; max-height: calc(100% - 96px); overflow: auto; }
-.individual { left: 16px; bottom: 34px; width: 236px; max-height: 212px; overflow: auto; }
+.individual { left: 16px; bottom: 34px; width: 252px; max-height: 212px; overflow: auto; }
 .individual.expanded { width: min(560px, calc(100% - 360px)); max-height: calc(100% - 120px); z-index: 5; }
 
+.quick { display: flex; flex-wrap: wrap; gap: 5px; }
 .layer-list { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; }
 .layer {
   display: grid;
@@ -316,6 +317,7 @@ summary { cursor: pointer; color: var(--muted); font-size: 0.82rem; }
 
   <aside class="panel systems" aria-labelledby="systems-title">
     <h2 id="systems-title">Sistemas</h2>
+    <div class="quick" id="quick" role="group" aria-label="Vistas rápidas"></div>
     <ul class="layer-list" id="layers"></ul>
     <div class="search">
       <input id="search" list="structure-names" placeholder="Buscar estructura…" aria-label="Buscar estructura">
@@ -365,7 +367,7 @@ summary { cursor: pointer; color: var(--muted); font-size: 0.82rem; }
     <button type="button" data-tab="individuo" aria-pressed="false">Individuo</button>
   </nav>
 
-  <p class="credits">Modelos 3D: Human Reference Atlas (HuBMAP), órganos de referencia "united" v2.0, datos del Visible Human Project, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>. Masas: ICRP 89. Herramienta de investigación, no es un dispositivo médico.</p>
+  <p class="credits">Hombre: <a href="https://github.com/Z-Anatomy/Models-of-human-anatomy" target="_blank" rel="noopener">Z-Anatomy</a> (CC BY-SA 4.0), derivado de BodyParts3D, © DBCLS (CC BY-SA 2.1 JP). Mujer: Human Reference Atlas, HuBMAP (CC BY 4.0). Masas: ICRP 89. Herramienta de investigación, no es un dispositivo médico.</p>
 </div>
 
 <script src="model-data.js"></script>
@@ -412,60 +414,44 @@ function escapeHtml(text) {
 }
 const uberonUrl = (id) => "http://purl.obolibrary.org/obo/" + id.replace(":", "_");
 
-// ---------- Capas y colores ----------
+// ---------- Capas ----------
 const LAYERS = [
-  { key: "piel", name: "Piel", color: "#d8a589" },
-  { key: "esqueleto", name: "Esqueleto", color: "#e6dcc6" },
-  { key: "musculos", name: "Músculos", color: "#b0473d" },
-  { key: "nervioso", name: "Sistema nervioso", color: "#efd88f" },
-  { key: "cardiovascular", name: "Cardiovascular", color: "#c4302b" },
-  { key: "respiratorio", name: "Respiratorio", color: "#e3a3a0" },
-  { key: "digestivo", name: "Digestivo", color: "#c98a5e" },
-  { key: "urinario", name: "Urinario", color: "#d9b06a" },
-  { key: "reproductor", name: "Reproductor", color: "#d48aa0" },
-  { key: "linfatico", name: "Linfático", color: "#8e4a68" },
-  { key: "grasa", name: "Grasa visceral (esquema)", color: "#e7b84a" },
+  { key: "piel", name: "Piel", color: "#d9a589", on: true },
+  { key: "esqueleto", name: "Esqueleto", color: "#e8dfcb", on: true },
+  { key: "musculos", name: "Músculos", color: "#b5463c", on: false },
+  { key: "cardiovascular", name: "Corazón y vasos", color: "#c62f2a", on: true },
+  { key: "encefalo", name: "Encéfalo y médula", color: "#e3a99a", on: true },
+  { key: "nervios", name: "Nervios", color: "#f0d36b", on: false },
+  { key: "sentidos", name: "Órganos de los sentidos", color: "#cfe3ec", on: true },
+  { key: "respiratorio", name: "Respiratorio", color: "#e7aaa6", on: true },
+  { key: "digestivo", name: "Digestivo", color: "#cf8f78", on: true },
+  { key: "urinario", name: "Urinario", color: "#a3463a", on: true },
+  { key: "reproductor", name: "Reproductor", color: "#c97e8f", on: true },
+  { key: "endocrino", name: "Endocrino", color: "#d08a5c", on: true },
+  { key: "linfatico", name: "Linfático", color: "#7fb36b", on: false },
+  { key: "grasa", name: "Grasa visceral (esquema)", color: "#e7b84a", on: true },
 ];
 const layerByKey = new Map(LAYERS.map((l) => [l.key, l]));
-const COLORS = [
-  [/^skin$/, "#d8a589"],
-  [/__arterias$/, "#c4302b"],
-  [/__venas$/, "#2f5fb3"],
-  [/vertebra|sacrum|coccyx|pubis|ilium|ischium|hyoid|lower_limb/, "#e6dcc6"],
-  [/^Allen_brain/i, "#e7b7ab"],
-  [/spinal_cord|optic_chiasm/, "#f1dd9c"],
-  [/^eye_/, "#f3f1ea"],
-  [/muscles/, "#a8443b"],
-  [/^heart$/, "#a3262a"],
-  [/lungs/, "#e3a3a0"],
-  [/larynx|trachea|bronchi/, "#e8cbb4"],
-  [/^liver$/, "#7d2b22"],
-  [/gallbladder/, "#4d7d3a"],
-  [/biliary/, "#6f9a45"],
-  [/pancreas/, "#e6bd92"],
-  [/small_intestine/, "#e0a493"],
-  [/^colon$/, "#c98a73"],
-  [/tonsil/, "#d88c8c"],
-  [/kidney/, "#8c2d27"],
-  [/renal_pelvis|ureter|urethra/, "#e0bfa3"],
-  [/bladder/, "#dba98d"],
-  [/spleen/, "#6b2a40"],
-  [/thymus/, "#e4baa2"],
-  [/prostate/, "#b8697c"],
-  [/genital_duct/, "#d7a7a3"],
-  [/uterus/, "#c97e8f"],
-  [/ovary/, "#e6b9a6"],
-  [/fallopian/, "#dc9eaa"],
-  [/vagina/, "#c8838f"],
-  [/ligaments/, "#dcc0b0"],
-  [/mammary/, "#e9c3a8"],
+const LOAD_ORDER = ["piel", "esqueleto", "encefalo", "digestivo", "respiratorio", "urinario", "reproductor", "endocrino", "sentidos", "cardiovascular", "nervios", "musculos", "linfatico"];
+const VISCERA = ["respiratorio", "digestivo", "urinario", "reproductor", "endocrino"];
+// Vistas rápidas por sistema: capas visibles y opacidad de la piel.
+const QUICK_VIEWS = [
+  { key: "general", name: "General", layers: ["piel", "esqueleto", "cardiovascular", "encefalo", "sentidos", ...VISCERA, "grasa"], skin: 0.25 },
+  { key: "esqueleto", name: "Huesos", layers: ["piel", "esqueleto"], skin: 0.12 },
+  { key: "musculos", name: "Músculos", layers: ["esqueleto", "musculos"], skin: 0 },
+  { key: "vasos", name: "Vasos", layers: ["piel", "esqueleto", "cardiovascular"], skin: 0.12 },
+  { key: "nervios", name: "Nervios", layers: ["piel", "esqueleto", "encefalo", "nervios"], skin: 0.12 },
+  { key: "organos", name: "Órganos", layers: ["piel", ...VISCERA, "cardiovascular", "linfatico", "grasa"], skin: 0.2 },
+  { key: "cabeza", name: "Encéfalo y sentidos", layers: ["piel", "encefalo", "sentidos", "nervios"], skin: 0.12, head: true },
 ];
-const colorFor = (key) => (COLORS.find(([re]) => re.test(key)) || [null, "#d9b8a8"])[1];
-const LIVER_COLOR = new THREE.Color("#7d2b22");
+// Estructuras repartidas por todo el cuerpo: cada pieza crece sobre su propio centro.
+const DISTRIBUTED = new Set(["UBERON:0004288", "UBERON:0001134", "UBERON:0002097"]);
+const BILATERAL = new Set(D.structures.filter((s) => s.bilateral).map((s) => s.id));
+const LIVER_ID = FAT.liver;
 const FAT_COLOR = new THREE.Color("#e3c25e");
 const ACCENT = new THREE.Color("#39c6b5");
 
-// ---------- Estado ----------
+// ---------- Estado del individuo ----------
 const PRESETS = [
   { key: "ref", label: "Referencia", state: (sex) => ({ age: 35, height: sex === "male" ? 176 : 163, weight: sex === "male" ? 73 : 60 }) },
   { key: "obese", label: "Obesidad", state: (sex) => ({ age: 45, height: sex === "male" ? 175 : 163, weight: sex === "male" ? 112 : 95 }) },
@@ -501,36 +487,42 @@ const scene = new THREE.Scene();
 const pmrem = new THREE.PMREMGenerator(renderer);
 scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
 scene.environmentIntensity = 0.7;
-const key = new THREE.DirectionalLight(0xffffff, 1.6);
-key.position.set(1.5, 2.5, 3);
-scene.add(key);
-const rim = new THREE.DirectionalLight(0x9fd6ff, 0.9);
-rim.position.set(-2, 1.5, -3);
-scene.add(rim);
+const keyLight = new THREE.DirectionalLight(0xffffff, 1.6);
+keyLight.position.set(1.5, 2.5, 3);
+scene.add(keyLight);
+const rimLight = new THREE.DirectionalLight(0x9fd6ff, 0.9);
+rimLight.position.set(-2, 1.5, -3);
+scene.add(rimLight);
 
 const camera = new THREE.PerspectiveCamera(32, 1, 0.01, 30);
-const isMobile = () => canvas.clientWidth <= 760;
-// En móvil la cámara se aleja para que el cuerpo quepa entre la barra superior y la hoja inferior.
-const viewDistance = () => (isMobile() ? 4.9 : 3.4);
-const HOME = { position: new THREE.Vector3(0, 0.12, viewDistance()), target: new THREE.Vector3(0, 0.02, 0) };
-camera.position.copy(HOME.position);
 const controls = new OrbitControls(camera, canvas);
-controls.target.copy(HOME.target);
 controls.enableDamping = true;
 controls.dampingFactor = 0.08;
-controls.minDistance = 0.2;
-controls.maxDistance = 7;
+controls.minDistance = 0.12;
+controls.maxDistance = 8;
 controls.screenSpacePanning = true;
+const isMobile = () => canvas.clientWidth <= 760;
+const HOME = { target: new THREE.Vector3(0, 0.9, 0), height: 1.75 };
+const viewDistance = () => HOME.height * (isMobile() ? 2.75 : 1.9);
+camera.position.set(0, HOME.target.y + 0.08, viewDistance());
+controls.target.copy(HOME.target);
 
 const bodyGroup = new THREE.Group();
 scene.add(bodyGroup);
-let units = [];
-let skinMaterial = null;
-let visceralBlob = null;
-const layerVisible = new Map(LAYERS.map((l) => [l.key, true]));
-let skinOpacity = 0.32;
+const layerVisible = new Map(LAYERS.map((l) => [l.key, l.on]));
+let skinOpacity = 0.25;
+let activeQuick = "general";
+let body = null; // { sex, manifest, batches: Map, parts: [], loading: Map, failed: Set, blob }
 let selected = null;
 let hovered = null;
+let fade = false;
+let isolate = false;
+const focusMaterial = new THREE.MeshPhysicalMaterial({ roughness: 0.45, clearcoat: 0.35 });
+const focusMesh = new THREE.Mesh(new THREE.BufferGeometry(), focusMaterial);
+focusMesh.matrixAutoUpdate = false;
+focusMesh.visible = false;
+focusMesh.renderOrder = 20;
+bodyGroup.add(focusMesh);
 
 function resize() {
   const { clientWidth: w, clientHeight: h } = canvas;
@@ -545,8 +537,8 @@ function resize() {
 }
 window.addEventListener("resize", resize);
 
-// ---------- Carga de modelos ----------
-// models/<sexo>.json: por estructura, posiciones cuantizadas a 16 bits sobre su caja e índices, en base64.
+// ---------- Datos ----------
+// Cada capa: por pieza, posiciones cuantizadas a 16 bits sobre su caja e índices, en base64.
 function decodeBase64(text) {
   const binary = atob(text);
   const bytes = new Uint8Array(binary.length);
@@ -561,11 +553,10 @@ function decodeMesh(entry) {
   const index = entry.index_bits === 32 ? new Uint32Array(indexBuffer) : new Uint16Array(indexBuffer);
   return { positions, index };
 }
-async function fetchJson(url) {
+async function fetchJson(url, onBytes) {
   const response = await fetch(url);
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
-  const total = Number(response.headers.get("content-length")) || 0;
-  if (!response.body || !total) return response.json();
+  if (!onBytes || !response.body) return response.json();
   const reader = response.body.getReader();
   const chunks = [];
   let loaded = 0;
@@ -574,25 +565,19 @@ async function fetchJson(url) {
     if (done) break;
     chunks.push(value);
     loaded += value.length;
-    el("loading-bar").style.width = `${Math.min(100, (100 * loaded) / total)}%`;
+    onBytes(value.length);
   }
   const bytes = new Uint8Array(loaded);
   let offset = 0;
   for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.length; }
   return JSON.parse(new TextDecoder().decode(bytes));
 }
-const cache = new Map();
-function loadBody(sex) {
-  if (!cache.has(sex)) cache.set(sex, fetchJson(`models/${sex}.json`));
-  return cache.get(sex);
-}
 
-function makeMaterial(meshKey, layer) {
-  const color = new THREE.Color(colorFor(meshKey));
+// ---------- Materiales ----------
+function makeLayerMaterial(layer) {
   if (layer === "piel") {
-    const material = new THREE.MeshStandardMaterial({ color, roughness: 0.55, metalness: 0, transparent: true, depthWrite: false, opacity: skinOpacity });
+    const material = new THREE.MeshStandardMaterial({ roughness: 0.55, metalness: 0, transparent: true, depthWrite: false, opacity: skinOpacity });
     material.userData.inflate = { value: 0 };
-    material.userData.baseOpacity = skinOpacity;
     material.onBeforeCompile = (shader) => {
       shader.uniforms.uInflate = material.userData.inflate;
       shader.vertexShader = shader.vertexShader
@@ -602,88 +587,173 @@ function makeMaterial(meshKey, layer) {
     return material;
   }
   const bone = layer === "esqueleto";
-  const material = new THREE.MeshPhysicalMaterial({
-    color,
-    roughness: bone ? 0.72 : 0.5,
-    metalness: 0,
-    clearcoat: bone ? 0 : 0.35,
-    clearcoatRoughness: 0.45,
-  });
-  // Las mamas son sobre todo grasa bajo la piel: translúcidas para no tapar el tórax.
-  material.userData.baseOpacity = /mammary/.test(meshKey) ? 0.55 : 1;
-  return material;
+  return new THREE.MeshPhysicalMaterial({ roughness: bone ? 0.72 : 0.5, metalness: 0, clearcoat: bone ? 0 : 0.3, clearcoatRoughness: 0.45 });
+}
+const baseOpacity = (layer) => (layer === "piel" ? skinOpacity : 1);
+
+// ---------- Carga del cuerpo ----------
+let loadingBytes = { loaded: 0, total: 1 };
+function showLoading(text) {
+  el("loading").hidden = false;
+  el("loading-text").textContent = text;
+  el("loading-bar").style.width = "0%";
+}
+function onLoadingBytes(n) {
+  loadingBytes.loaded += n;
+  el("loading-bar").style.width = `${Math.min(100, (100 * loadingBytes.loaded) / loadingBytes.total)}%`;
+}
+const hasLayer = (key) => key === "grasa" ? Boolean(body?.manifest?.layers.some((l) => l.key === "digestivo")) : Boolean(body?.manifest?.layers.some((l) => l.key === key));
+
+function disposeBody() {
+  if (!body) return;
+  for (const batch of body.batches.values()) {
+    bodyGroup.remove(batch);
+    batch.dispose();
+    batch.material.dispose();
+  }
+  for (const part of body.parts) part.geometry.dispose();
+  if (body.blob) {
+    bodyGroup.remove(body.blob.mesh);
+    body.blob.mesh.geometry.dispose();
+    body.blob.mesh.material.dispose();
+  }
+  body = null;
+  selected = hovered = null;
+  fade = isolate = false;
+  focusMesh.visible = false;
 }
 
-async function showBody(sex) {
-  el("loading").hidden = false;
-  el("loading-text").textContent = "Cargando anatomía 3D…";
-  let data;
+async function openBody(sex) {
+  disposeBody();
+  const current = { sex, manifest: null, batches: new Map(), parts: [], loading: new Map(), failed: new Set(), blob: null };
+  body = current;
+  showLoading("Cargando anatomía 3D…");
   try {
-    data = await loadBody(sex);
+    current.manifest = await fetchJson(`models/${sex}/manifest.json`);
   } catch (error) {
-    cache.delete(sex);
     el("loading-text").textContent = "No se pudo cargar el modelo 3D. Comprueba la conexión y recarga la página.";
     return;
   }
-  if (sex !== state.sex) return;
-  const previousKey = selected?.userData.key;
-  for (const mesh of units) {
-    mesh.geometry.dispose();
-    mesh.material.dispose();
+  if (body !== current) return;
+  frameBody(current.manifest.bounds);
+  buildLayerList();
+  renderInspector();
+  // Primero piel y esqueleto, con barra de progreso; el resto llega en segundo plano.
+  const first = ["piel", "esqueleto"].filter((k) => hasLayer(k) && layerVisible.get(k));
+  loadingBytes = { loaded: 0, total: first.reduce((n, k) => n + current.manifest.layers.find((l) => l.key === k).bytes, 0) || 1 };
+  await Promise.all(first.map((k) => ensureLayer(k, onLoadingBytes)));
+  if (body !== current) return;
+  el("loading").hidden = true;
+  for (const key of LOAD_ORDER) if (layerVisible.get(key)) ensureLayer(key);
+}
+
+function ensureLayer(key, onBytes) {
+  const current = body;
+  if (!current || key === "grasa" || !hasLayer(key) || current.batches.has(key)) return Promise.resolve();
+  if (!current.loading.has(key)) {
+    current.failed.delete(key);
+    const info = current.manifest.layers.find((l) => l.key === key);
+    const promise = fetchJson(`models/${current.sex}/${info.file}`, onBytes)
+      .then((data) => { if (body === current) addLayer(key, data.meshes); })
+      .catch(() => current.failed.add(key))
+      .finally(() => {
+        current.loading.delete(key);
+        if (body === current) renderLayerRow(key);
+      });
+    current.loading.set(key, promise);
+    renderLayerRow(key);
   }
-  bodyGroup.clear();
-  units = [];
-  for (const entry of data.meshes) {
-    const { positions, index } = decodeMesh(entry);
+  return current.loading.get(key);
+}
+
+function addLayer(key, meshes) {
+  const decoded = meshes.map((entry) => ({ entry, ...decodeMesh(entry) }));
+  let vertexCount = 0;
+  let indexCount = 0;
+  for (const d of decoded) {
+    vertexCount += d.positions.length / 3;
+    indexCount += d.index.length;
+  }
+  const material = makeLayerMaterial(key);
+  const batch = new THREE.BatchedMesh(decoded.length, vertexCount, indexCount, material);
+  batch.name = key;
+  batch.userData.parts = [];
+  if (key === "piel") batch.renderOrder = 10;
+  const matrix = new THREE.Matrix4();
+  for (const { entry, positions, index } of decoded) {
     const geometry = new THREE.BufferGeometry();
     geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
     geometry.setIndex(new THREE.BufferAttribute(index, 1));
     geometry.computeVertexNormals();
     geometry.computeBoundingBox();
-    // Cada estructura gira y escala sobre su propio centro.
+    // Cada pieza se escala sobre su propio centro.
     const center = geometry.boundingBox.getCenter(new THREE.Vector3());
     geometry.translate(-center.x, -center.y, -center.z);
     geometry.computeBoundingBox();
-    const { key: meshKey, name_es, label_en, uberon, model_id, layer, side } = entry;
-    const info = { key: meshKey, name_es, label_en, uberon, model_id, layer, side };
-    const mesh = new THREE.Mesh(geometry, makeMaterial(info.key, info.layer));
-    mesh.position.copy(center);
-    if (info.layer === "piel") {
-      skinMaterial = mesh.material;
-      mesh.renderOrder = 10;
-    }
-    mesh.userData = { ...info, center, baseColor: mesh.material.color.clone() };
-    bodyGroup.add(mesh);
-    units.push(mesh);
+    geometry.computeBoundingSphere();
+    const instanceId = batch.addInstance(batch.addGeometry(geometry));
+    const color = new THREE.Color(entry.color || "#d9b8a8");
+    const part = {
+      info: { key: entry.key, name_es: entry.name_es, label_en: entry.label_en, uberon: entry.uberon, model_id: entry.model_id, layer: key, side: entry.side },
+      batch, instanceId, geometry, center,
+      position: center.clone(), scale: 1,
+      radius: geometry.boundingSphere.radius,
+      weight: positions.length / 3,
+      originalColor: color.clone(), baseColor: color, hidden: false,
+    };
+    batch.setColorAt(instanceId, color);
+    batch.setMatrixAt(instanceId, matrix.makeTranslation(center.x, center.y, center.z));
+    batch.userData.parts[instanceId] = part;
+    body.parts.push(part);
   }
-  addVisceralBlob();
-  el("loading").hidden = true;
-  buildLayerList();
+  bodyGroup.add(batch);
+  body.batches.set(key, batch);
+  if (key === "digestivo") addVisceralBlob();
+  computeGroups();
   buildSearch();
-  selectByKey(units.some((m) => m.userData.key === previousKey) ? previousKey : "liver", false);
+  if (!selected) {
+    const liver = body.parts.filter((p) => p.info.model_id === LIVER_ID).sort((a, b) => b.weight - a.weight)[0];
+    if (liver) select(liver, false);
+  }
   applyReport();
   applyVisibility();
 }
 
-// Grasa visceral: no hay malla en el atlas; un elipsoide translúcido alrededor del intestino la representa.
+// Órganos de varias piezas (lóbulos, segmentos) crecen juntos alrededor del centro del órgano.
+function computeGroups() {
+  const groups = new Map();
+  for (const part of body.parts) {
+    const id = part.info.model_id;
+    part.group = null;
+    if (!id || DISTRIBUTED.has(id) || part.info.layer === "piel") continue;
+    const key = id + (BILATERAL.has(id) ? (part.center.x < 0 ? "|R" : "|L") : "");
+    if (!groups.has(key)) groups.set(key, { sum: new THREE.Vector3(), weight: 0, center: new THREE.Vector3() });
+    const group = groups.get(key);
+    group.sum.addScaledVector(part.center, part.weight);
+    group.weight += part.weight;
+    part.group = group;
+  }
+  for (const group of groups.values()) group.center.copy(group.sum).divideScalar(group.weight);
+}
+
+// Grasa visceral: no hay malla en los atlas; un elipsoide translúcido alrededor del intestino la representa.
 function addVisceralBlob() {
-  const gut = units.filter((m) => /small_intestine|^colon$/.test(m.userData.key));
+  const gut = body.parts.filter((p) => /jejunum|ileum|small.intestine|colon|caecum|cecum/i.test(`${p.info.key} ${p.info.label_en}`));
   if (!gut.length) return;
   const box = new THREE.Box3();
-  for (const m of gut) box.union(m.geometry.boundingBox.clone().translate(m.position));
+  for (const p of gut) box.union(p.geometry.boundingBox.clone().translate(p.center));
   const size = box.getSize(new THREE.Vector3());
-  const material = new THREE.MeshStandardMaterial({ color: FAT_COLOR, roughness: 0.6, transparent: true, opacity: 0.42, depthWrite: false });
-  material.userData.baseOpacity = 0.42;
-  visceralBlob = new THREE.Mesh(new THREE.SphereGeometry(1, 48, 32), material);
-  visceralBlob.position.copy(box.getCenter(new THREE.Vector3()));
-  visceralBlob.userData = {
-    key: "visceral_fat", name_es: "grasa visceral (representación esquemática)", label_en: "visceral fat", uberon: FAT.visceral,
-    model_id: FAT.visceral, layer: "grasa", base: new THREE.Vector3(size.x * 0.62, size.y * 0.55, size.z * 0.62),
-    baseColor: FAT_COLOR.clone(), center: visceralBlob.position.clone(),
+  const material = new THREE.MeshStandardMaterial({ color: FAT_COLOR, roughness: 0.6, transparent: true, opacity: 0.4, depthWrite: false });
+  const mesh = new THREE.Mesh(new THREE.SphereGeometry(1, 48, 32), material);
+  mesh.position.copy(box.getCenter(new THREE.Vector3()));
+  mesh.renderOrder = 5;
+  bodyGroup.add(mesh);
+  body.blob = {
+    mesh,
+    base: new THREE.Vector3(size.x * 0.62, size.y * 0.55, size.z * 0.62),
+    info: { key: "visceral_fat", name_es: "grasa visceral (representación esquemática)", label_en: "visceral fat", uberon: FAT.visceral, model_id: FAT.visceral, layer: "grasa", side: null },
+    position: mesh.position, radius: Math.max(size.x, size.y, size.z) / 2, scale: 1, isBlob: true,
   };
-  visceralBlob.renderOrder = 5;
-  bodyGroup.add(visceralBlob);
-  units.push(visceralBlob);
 }
 
 // ---------- Modelo -> anatomía 3D ----------
@@ -704,8 +774,11 @@ function updateModel() {
   renderInspector();
 }
 
+const _matrix = new THREE.Matrix4();
+const _quaternion = new THREE.Quaternion();
+const _scale = new THREE.Vector3();
 function applyReport() {
-  if (!report || !units.length) return;
+  if (!report || !body) return;
   const reference = model.referencePerson(state.sex);
   const referenceComposition = model.bodyComposition(reference);
   const composition = report.composition;
@@ -713,86 +786,119 @@ function applyReport() {
   const frame = Math.sqrt((composition.fat_free_mass_kg / state.height) / (referenceComposition.fat_free_mass_kg / reference.height_cm));
   bodyGroup.scale.set(frame, sy, frame);
   const bodyVolume = frame * frame * sy;
-  for (const mesh of units) {
-    const info = mesh.userData;
-    if (mesh === visceralBlob) {
-      const organ = report.organs.get(FAT.visceral);
-      const s = Math.cbrt(organ.mass_g / organ.reference_g / bodyVolume);
-      mesh.scale.copy(info.base).multiplyScalar(s);
-      continue;
-    }
-    if (info.layer === "piel") continue;
-    const organ = info.model_id ? report.organs.get(info.model_id) : null;
+  const liverTint = Math.min(1, report.fat.liver_fat_fraction / 0.3) * 0.85;
+  for (const part of body.parts) {
+    const organ = part.info.model_id ? report.organs.get(part.info.model_id) : null;
+    part.position.copy(part.center);
+    part.scale = 1;
     // Estructuras con masa modelada: volumen proporcional a su masa. Las demás siguen al cuerpo.
-    mesh.scale.setScalar(organ ? Math.cbrt(organ.mass_g / organ.reference_g / bodyVolume) : 1);
+    if (organ && part.info.layer !== "piel") {
+      part.scale = Math.cbrt(organ.mass_g / organ.reference_g / bodyVolume);
+      if (part.group) part.position.sub(part.group.center).multiplyScalar(part.scale).add(part.group.center);
+    }
+    part.batch.setMatrixAt(part.instanceId, _matrix.compose(part.position, _quaternion, _scale.setScalar(part.scale)));
+    if (part.info.model_id === LIVER_ID) {
+      part.baseColor.copy(part.originalColor).lerp(FAT_COLOR, liverTint);
+      paintPart(part);
+    }
+  }
+  if (body.blob) {
+    const organ = report.organs.get(FAT.visceral);
+    body.blob.scale = Math.cbrt(organ.mass_g / organ.reference_g / bodyVolume);
+    body.blob.mesh.scale.copy(body.blob.base).multiplyScalar(body.blob.scale);
   }
   // Grasa subcutánea: la piel se separa del cuerpo según su masa respecto de la referencia.
+  const skin = body.batches.get("piel");
   const sat = report.organs.get(FAT.subcutaneous);
-  if (skinMaterial) skinMaterial.userData.inflate.value = THREE.MathUtils.clamp(0.016 * (sat.mass_g / sat.reference_g - 1), -0.006, 0.06);
-  // El hígado amarillea con su grasa.
-  const liverMesh = units.find((m) => m.userData.key === "liver");
-  if (liverMesh) liverMesh.userData.baseColor.copy(LIVER_COLOR).lerp(FAT_COLOR, Math.min(1, report.fat.liver_fat_fraction / 0.3) * 0.85);
-  paint();
+  if (skin) skin.material.userData.inflate.value = THREE.MathUtils.clamp(0.016 * (sat.mass_g / sat.reference_g - 1), -0.006, 0.06);
+  updateFocus();
 }
 
 // ---------- Visibilidad, selección y color ----------
-function applyVisibility() {
-  for (const mesh of units) mesh.visible = layerVisible.get(mesh.userData.layer) && !mesh.userData.hidden;
-  if (skinMaterial) skinMaterial.userData.baseOpacity = skinOpacity;
-  for (const button of document.querySelectorAll(".layer")) button.setAttribute("aria-pressed", String(layerVisible.get(button.dataset.layer)));
-  paint();
+const _color = new THREE.Color();
+function paintPart(part) {
+  if (!part) return;
+  const glow = part === selected ? 0.45 : part === hovered ? 0.2 : 0;
+  if (part.isBlob) {
+    part.mesh.material.emissive.copy(ACCENT).multiplyScalar(glow);
+    return;
+  }
+  part.batch.setColorAt(part.instanceId, _color.copy(part.baseColor).lerp(ACCENT, glow));
 }
 
-// Atenuar el resto: todo salvo la estructura seleccionada se vuelve casi transparente.
-let fade = false;
+function applyVisibility() {
+  if (!body) return;
+  for (const [key, batch] of body.batches) {
+    batch.visible = layerVisible.get(key) && !isolate;
+    const opacity = fade && selected ? Math.min(baseOpacity(key), 0.07) : baseOpacity(key);
+    const transparent = opacity < 1;
+    // Pasar de opaco a transparente cambia el programa del material (define OPAQUE): hay que recompilar.
+    if (batch.material.transparent !== transparent) batch.material.needsUpdate = true;
+    batch.material.opacity = opacity;
+    batch.material.transparent = transparent;
+    batch.material.depthWrite = !transparent;
+  }
+  for (const part of body.parts) {
+    // En los modos atenuar y aislar la pieza seleccionada se dibuja aparte, opaca.
+    const shownApart = part === selected && (fade || isolate);
+    part.batch.setVisibleAt(part.instanceId, !part.hidden && !shownApart);
+  }
+  if (body.blob) {
+    const blobLayerOn = layerVisible.get("grasa");
+    body.blob.mesh.visible = (blobLayerOn && !isolate) || (isolate && selected === body.blob);
+    body.blob.mesh.material.opacity = fade && selected && selected !== body.blob ? 0.05 : 0.4;
+  }
+  updateFocus();
+  for (const button of document.querySelectorAll(".layer")) button.setAttribute("aria-pressed", String(layerVisible.get(button.dataset.layer)));
+}
+
+function updateFocus() {
+  const show = Boolean(selected && !selected.isBlob && (fade || isolate) && !selected.hidden);
+  focusMesh.visible = show;
+  if (!show) return;
+  focusMesh.geometry = selected.geometry;
+  focusMaterial.color.copy(selected.baseColor);
+  focusMaterial.emissive.copy(ACCENT).multiplyScalar(0.3);
+  focusMesh.matrix.compose(selected.position, _quaternion, _scale.setScalar(selected.scale));
+  focusMesh.matrixWorldNeedsUpdate = true;
+}
+
+function select(part, announce = true) {
+  const previous = selected;
+  selected = part;
+  paintPart(previous);
+  paintPart(part);
+  applyVisibility();
+  renderInspector();
+  if (announce && part && window.matchMedia("(max-width: 760px)").matches) setTab("estructura");
+}
 function setFade(on) {
   fade = on;
+  applyVisibility();
   el("act-fade")?.setAttribute("aria-pressed", String(fade));
-  paint();
 }
-
-function paint() {
-  for (const mesh of units) {
-    const material = mesh.material;
-    material.color.copy(mesh.userData.baseColor);
-    const glow = mesh === selected ? 0.42 : mesh === hovered ? 0.18 : 0;
-    material.emissive.copy(ACCENT).multiplyScalar(glow);
-    const base = material.userData.baseOpacity ?? 1;
-    const opacity = fade && selected && mesh !== selected ? Math.min(base, 0.1) : base;
-    material.opacity = opacity;
-    material.transparent = opacity < 1;
-    material.depthWrite = opacity >= 1;
-  }
-}
-
-function select(mesh, announce = true) {
-  selected = mesh;
-  paint();
-  renderInspector();
-  if (announce && window.matchMedia("(max-width: 760px)").matches) setTab("estructura");
-}
-function selectByKey(meshKey, announce = true) {
-  select(units.find((m) => m.userData.key === meshKey) || null, announce);
-}
-
-function displayName(info) {
-  return capitalize(info.name_es || info.label_en || info.key);
-}
+const displayName = (info) => capitalize(info.name_es || info.label_en || info.key);
 
 // ---------- Interacción con el lienzo ----------
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
 let downAt = null;
 function pick(event) {
+  if (!body) return null;
   const rect = canvas.getBoundingClientRect();
   pointer.set(((event.clientX - rect.left) / rect.width) * 2 - 1, -((event.clientY - rect.top) / rect.height) * 2 + 1);
   raycaster.setFromCamera(pointer, camera);
-  // Con la piel translúcida se seleccionan los órganos que hay debajo.
-  const candidates = units.filter((m) => m.visible && !(m.userData.layer === "piel" && skinOpacity < 0.75));
+  // Con la piel translúcida se seleccionan las estructuras que hay debajo.
+  const candidates = [...body.batches.values()].filter((b) => b.visible && !(b.name === "piel" && skinOpacity < 0.75));
+  if (focusMesh.visible) candidates.push(focusMesh);
+  if (body.blob?.mesh.visible) candidates.push(body.blob.mesh);
   const hits = raycaster.intersectObjects(candidates, false);
   // El elipsoide de grasa visceral envuelve el intestino: se prefiere lo que hay dentro.
-  const hit = hits[0]?.object === visceralBlob && hits[1] ? hits[1] : hits[0];
-  return hit ? hit.object : null;
+  const hit = hits[0]?.object === body.blob?.mesh && hits[1] ? hits[1] : hits[0];
+  if (!hit) return null;
+  if (hit.object === focusMesh) return selected;
+  if (hit.object === body.blob?.mesh) return body.blob;
+  return hit.object.userData.parts[hit.batchId] || null;
 }
 canvas.addEventListener("pointerdown", (event) => { downAt = [event.clientX, event.clientY]; });
 canvas.addEventListener("pointerup", (event) => {
@@ -800,22 +906,39 @@ canvas.addEventListener("pointerup", (event) => {
   select(pick(event));
 });
 canvas.addEventListener("dblclick", (event) => {
-  const mesh = pick(event);
-  if (mesh) { select(mesh); focusOn(mesh); }
+  const part = pick(event);
+  if (part) { select(part); focusOn(part); }
 });
+let hoverQueued = null;
 canvas.addEventListener("pointermove", (event) => {
   if (event.pointerType !== "mouse" || event.buttons) return;
-  const mesh = pick(event);
-  if (mesh !== hovered) { hovered = mesh; paint(); }
-  const tip = el("tip");
-  tip.hidden = !mesh;
-  if (mesh) {
-    tip.textContent = displayName(mesh.userData);
-    tip.style.left = event.clientX + "px";
-    tip.style.top = event.clientY + "px";
-  }
+  if (hoverQueued) { hoverQueued = event; return; }
+  hoverQueued = event;
+  requestAnimationFrame(() => {
+    const e = hoverQueued;
+    hoverQueued = null;
+    const part = pick(e);
+    if (part !== hovered) {
+      const previous = hovered;
+      hovered = part;
+      paintPart(previous);
+      paintPart(part);
+    }
+    const tip = el("tip");
+    tip.hidden = !part;
+    if (part) {
+      tip.textContent = displayName(part.info);
+      tip.style.left = e.clientX + "px";
+      tip.style.top = e.clientY + "px";
+    }
+  });
 });
-canvas.addEventListener("pointerleave", () => { hovered = null; el("tip").hidden = true; paint(); });
+canvas.addEventListener("pointerleave", () => {
+  const previous = hovered;
+  hovered = null;
+  paintPart(previous);
+  el("tip").hidden = true;
+});
 
 // ---------- Cámara ----------
 let flight = null;
@@ -823,18 +946,25 @@ function flyTo(position, target) {
   const duration = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 650;
   flight = { from: camera.position.clone(), to: position, fromTarget: controls.target.clone(), toTarget: target, start: performance.now(), duration };
 }
-function worldCenter(mesh) {
-  return mesh.getWorldPosition(new THREE.Vector3());
+function partWorldCenter(part) {
+  return bodyGroup.localToWorld(part.position.clone());
 }
-function focusOn(mesh) {
-  const box = new THREE.Box3().setFromObject(mesh);
-  const radius = Math.max(0.06, box.getSize(new THREE.Vector3()).length() / 2);
-  const center = worldCenter(mesh);
+function focusOn(part) {
+  const radius = Math.max(0.03, part.radius * part.scale * Math.max(bodyGroup.scale.x, bodyGroup.scale.y));
+  const center = partWorldCenter(part);
   const direction = camera.position.clone().sub(controls.target).normalize();
-  flyTo(center.clone().add(direction.multiplyScalar(radius * 4.2 + 0.15)), center);
+  flyTo(center.clone().add(direction.multiplyScalar(radius * 4.2 + 0.12)), center);
   setFade(true);
 }
-const VIEWS = { front: [0, 0.035, 1], back: [0, 0.035, -1], left: [1, 0.035, 0], right: [-1, 0.035, 0], reset: [0, 0.035, 1] };
+function frameBody(bounds) {
+  const min = new THREE.Vector3(...bounds.min);
+  const max = new THREE.Vector3(...bounds.max);
+  HOME.target.copy(min).add(max).multiplyScalar(0.5);
+  HOME.height = max.y - min.y;
+  controls.target.copy(HOME.target);
+  camera.position.set(HOME.target.x, HOME.target.y + 0.05, HOME.target.z + viewDistance());
+}
+const VIEWS = { front: [0, 0.03, 1], back: [0, 0.03, -1], left: [1, 0.03, 0], right: [-1, 0.03, 0], reset: [0, 0.03, 1] };
 for (const button of document.querySelectorAll("[data-view]")) {
   button.addEventListener("click", () => {
     const position = new THREE.Vector3(...VIEWS[button.dataset.view]).normalize().multiplyScalar(viewDistance());
@@ -842,74 +972,123 @@ for (const button of document.querySelectorAll("[data-view]")) {
     if (button.dataset.view === "reset") setFade(false);
   });
 }
+function flyToHead() {
+  const top = HOME.target.y + HOME.height / 2;
+  const head = new THREE.Vector3(HOME.target.x, top - 0.13, HOME.target.z);
+  flyTo(head.clone().add(new THREE.Vector3(0.35, 0.05, 0.75)), head);
+}
 
-// ---------- Paneles ----------
+// ---------- Panel de sistemas ----------
 function buildLayerList() {
-  const counts = new Map();
-  for (const mesh of units) counts.set(mesh.userData.layer, (counts.get(mesh.userData.layer) || 0) + 1);
-  el("layers").innerHTML = LAYERS.filter((l) => counts.get(l.key)).map((l) => `
-    <li>
+  el("quick").innerHTML = QUICK_VIEWS.map((v) => `<button type="button" class="preset" data-quick="${v.key}" aria-pressed="${v.key === activeQuick}">${v.name}</button>`).join("");
+  el("layers").innerHTML = LAYERS.filter((l) => hasLayer(l.key)).map((l) => `
+    <li id="layer-row-${l.key}">
       <button type="button" class="layer" data-layer="${l.key}" aria-pressed="${layerVisible.get(l.key)}">
-        <i class="dot" style="background: ${l.color}"></i><span>${l.name}</span><span class="count">${counts.get(l.key)}</span>
+        <i class="dot" style="background: ${l.color}"></i><span>${l.name}</span><span class="count" id="layer-state-${l.key}"></span>
       </button>
       ${l.key === "piel" ? `<div class="skin-opacity"><label for="skin-opacity">Opacidad de la piel <output id="skin-out">${pct(skinOpacity)}</output></label><input type="range" id="skin-opacity" min="0" max="1" step="0.01" value="${skinOpacity}"></div>` : ""}
     </li>`).join("");
+  for (const l of LAYERS) renderLayerRow(l.key);
   el("skin-opacity")?.addEventListener("input", (event) => {
     skinOpacity = Number(event.target.value);
     el("skin-out").textContent = pct(skinOpacity);
+    activeQuick = null;
+    markQuick();
     applyVisibility();
   });
+}
+function renderLayerRow(key) {
+  const node = el(`layer-state-${key}`);
+  if (!node || !body) return;
+  const info = body.manifest.layers.find((l) => l.key === key);
+  if (key === "grasa") node.textContent = body.blob ? "1" : "";
+  else if (body.loading.has(key)) node.textContent = "cargando…";
+  else if (body.failed.has(key)) node.textContent = "error, reintentar";
+  else if (body.batches.has(key)) node.textContent = String(info.parts);
+  else node.textContent = `${info.parts} · ${nf(1).format(info.bytes / 1e6)} MB`;
+}
+function markQuick() {
+  for (const button of document.querySelectorAll("[data-quick]")) button.setAttribute("aria-pressed", String(button.dataset.quick === activeQuick));
 }
 el("layers").addEventListener("click", (event) => {
   const button = event.target.closest(".layer");
   if (!button) return;
-  layerVisible.set(button.dataset.layer, !layerVisible.get(button.dataset.layer));
+  const key = button.dataset.layer;
+  layerVisible.set(key, !layerVisible.get(key));
+  if (layerVisible.get(key)) ensureLayer(key);
+  activeQuick = null;
+  markQuick();
   applyVisibility();
 });
-el("show-all").addEventListener("click", () => {
-  for (const l of LAYERS) layerVisible.set(l.key, true);
-  for (const mesh of units) mesh.userData.hidden = false;
+el("quick").addEventListener("click", (event) => {
+  const button = event.target.closest("[data-quick]");
+  if (!button) return;
+  const view = QUICK_VIEWS.find((v) => v.key === button.dataset.quick);
+  for (const l of LAYERS) layerVisible.set(l.key, view.layers.includes(l.key));
+  skinOpacity = view.skin;
+  if (el("skin-opacity")) {
+    el("skin-opacity").value = skinOpacity;
+    el("skin-out").textContent = pct(skinOpacity);
+  }
+  isolate = false;
   fade = false;
+  for (const part of body?.parts || []) part.hidden = false;
+  for (const key of view.layers) ensureLayer(key);
+  activeQuick = view.key;
+  markQuick();
+  applyVisibility();
+  renderInspector();
+  if (view.head) flyToHead();
+  else flyTo(new THREE.Vector3(...VIEWS.front).normalize().multiplyScalar(viewDistance()).add(HOME.target), HOME.target.clone());
+});
+el("show-all").addEventListener("click", () => {
+  for (const l of LAYERS) if (l.on) layerVisible.set(l.key, true);
+  for (const part of body?.parts || []) part.hidden = false;
+  fade = false;
+  isolate = false;
+  for (const l of LAYERS) if (layerVisible.get(l.key)) ensureLayer(l.key);
   applyVisibility();
   renderInspector();
 });
 
 function buildSearch() {
-  const names = [...new Set(units.map((m) => displayName(m.userData)))].sort((a, b) => a.localeCompare(b, "es"));
+  const names = [...new Set(body.parts.map((p) => displayName(p.info)))].sort((a, b) => a.localeCompare(b, "es"));
   el("structure-names").innerHTML = names.map((n) => `<option value="${escapeHtml(n)}"></option>`).join("");
 }
 el("search").addEventListener("change", (event) => {
+  if (!body) return;
   const query = event.target.value.trim().toLowerCase();
-  const mesh = units.find((m) => displayName(m.userData).toLowerCase() === query)
-    || units.find((m) => displayName(m.userData).toLowerCase().includes(query));
-  if (!mesh) return;
-  layerVisible.set(mesh.userData.layer, true);
-  mesh.userData.hidden = false;
-  applyVisibility();
-  select(mesh);
-  focusOn(mesh);
+  const matches = (p) => displayName(p.info).toLowerCase();
+  const part = body.parts.find((p) => matches(p) === query) || body.parts.find((p) => matches(p).includes(query));
+  if (!part) return;
+  layerVisible.set(part.info.layer, true);
+  part.hidden = false;
+  isolate = false;
+  select(part);
+  focusOn(part);
   event.target.value = "";
 });
 
+// ---------- Ficha de la estructura ----------
 function renderInspector() {
   const box = el("inspector");
   if (!selected) {
     box.innerHTML = `<div class="card-title"><span class="eyebrow">Estructura</span><h2>Toca una estructura</h2></div>
-      <p class="hint">Arrastra para girar el cuerpo, usa la rueda o pellizca para acercar y toca un órgano, hueso o vaso para ver su ficha. Con doble clic la cámara se acerca a él.</p>
-      <p class="hint">Los sistemas se encienden y apagan en el panel de la izquierda; la opacidad de la piel deja ver lo que hay debajo.</p>`;
+      <p class="hint">Arrastra para girar el cuerpo, usa la rueda o pellizca para acercar y toca un hueso, músculo, vaso, nervio u órgano para ver su ficha. Con doble clic la cámara se acerca a él.</p>
+      <p class="hint">Las vistas rápidas de la izquierda muestran cada sistema; las capas que no estaban cargadas se descargan al encenderlas.</p>`;
     return;
   }
-  const info = selected.userData;
+  const info = selected.info;
   const layer = layerByKey.get(info.layer);
   const structure = info.model_id ? byId.get(info.model_id) : null;
   const organ = report && info.model_id ? report.organs.get(info.model_id) : null;
   let massBlock;
   if (organ) {
     const change = organ.mass_g / organ.reference_g - 1;
-    const paired = structure?.bilateral && !/visceral/.test(info.key);
     const pending = organ.verification === "pending" ? ' <span title="Valor de ICRP 89 pendiente de contrastar">*</span>' : "";
+    const whole = DISTRIBUTED.has(info.model_id) ? " (todo el cuerpo)" : structure?.bilateral ? " (ambos)" : "";
     massBlock = `<div class="mass-box">
-        <div class="mass-row"><span class="eyebrow">Masa de ${escapeHtml(structure.name_es)}${paired ? " (ambos)" : ""}</span><span class="delta ${change > 0.005 ? "up" : change < -0.005 ? "down" : ""}">${signed(change)}</span></div>
+        <div class="mass-row"><span class="eyebrow">Masa de ${escapeHtml(structure.name_es)}${whole}</span><span class="delta ${change > 0.005 ? "up" : change < -0.005 ? "down" : ""}">${signed(change)}</span></div>
         <div class="mass-row"><span class="mass-big">${mass(organ.mass_g)}</span><span class="note">referencia ${mass(organ.reference_g)}${pending}</span></div>
         ${extraNote(info)}
       </div>`;
@@ -917,38 +1096,44 @@ function renderInspector() {
     massBlock = `<p class="note">Esta estructura todavía no tiene masa en el modelo: se dibuja y escala con el cuerpo.</p>`;
   }
   const ownId = info.uberon || info.model_id;
+  const credit = selected.isBlob ? "esquema del modelo (no es una malla anatómica)" : body?.manifest?.source || "";
   box.innerHTML = `
     <div class="card-title">
       <span class="chip"><i style="background: ${layer?.color}"></i>${escapeHtml(layer?.name || "")}</span>
       <h2>${escapeHtml(displayName(info))}</h2>
-      ${info.label_en ? `<span class="sub">${escapeHtml(info.label_en)}</span>` : ""}
+      ${info.label_en && info.name_es ? `<span class="sub">${escapeHtml(info.label_en)}</span>` : ""}
     </div>
     ${massBlock}
     <dl class="facts">
       ${ownId ? `<dt>UBERON</dt><dd><a class="mono" href="${uberonUrl(ownId)}" target="_blank" rel="noopener">${ownId}</a></dd>` : ""}
       ${structure ? `<dt>En bodysim</dt><dd>${escapeHtml(structure.name_es)} <span class="mono">${structure.id}</span></dd>` : ""}
-      <dt>Origen 3D</dt><dd>${info.key === "visceral_fat" ? "esquema del modelo (no es una malla anatómica)" : "Human Reference Atlas, CC BY 4.0"}</dd>
+      <dt>Origen 3D</dt><dd>${escapeHtml(credit)}</dd>
     </dl>
     <div class="actions">
       <button type="button" class="btn" id="act-focus">Enfocar</button>
       <button type="button" class="btn" id="act-fade" aria-pressed="${fade}">Atenuar el resto</button>
       <button type="button" class="btn" id="act-hide">Ocultar</button>
-      <button type="button" class="btn" id="act-isolate">Aislar</button>
+      <button type="button" class="btn" id="act-isolate" aria-pressed="${isolate}">Aislar</button>
     </div>`;
   el("act-focus").onclick = () => focusOn(selected);
   el("act-fade").onclick = () => setFade(!fade);
-  el("act-hide").onclick = () => { selected.userData.hidden = true; applyVisibility(); select(null, false); };
+  el("act-hide").onclick = () => {
+    if (selected.isBlob) layerVisible.set("grasa", false);
+    else selected.hidden = true;
+    select(null, false);
+  };
   el("act-isolate").onclick = () => {
-    for (const mesh of units) mesh.userData.hidden = mesh !== selected;
+    isolate = !isolate;
     applyVisibility();
-    focusOn(selected);
+    renderInspector();
+    if (isolate) focusOn(selected);
   };
 }
 
 function extraNote(info) {
   if (!report) return "";
   const f = report.fat;
-  if (info.key === "liver") return `<span class="note">Grasa del hígado ${pct(f.liver_fat_fraction, 1)} (${f.liver_fat_measured ? "medida" : "supuesto sano"})${f.steatosis ? " · esteatosis" : ""}.</span>`;
+  if (info.model_id === LIVER_ID) return `<span class="note">Grasa del hígado ${pct(f.liver_fat_fraction, 1)} (${f.liver_fat_measured ? "medida" : "supuesto sano"})${f.steatosis ? " · esteatosis" : ""}.</span>`;
   if (info.key === "visceral_fat") return `<span class="note">${f.visceral_measured ? "Medida" : "Fracción típica para el sexo"} · ${pct(f.visceral_fraction)} del tejido adiposo.</span>`;
   if (info.layer === "piel") {
     const sat = report.organs.get(FAT.subcutaneous);
@@ -966,7 +1151,7 @@ function writeControls() {
   el("bf-on").checked = state.bfOn;
   el("vat-on").checked = state.vatOn;
   el("liver-on").checked = state.liverOn;
-  for (const button of document.querySelectorAll(".preset")) button.setAttribute("aria-pressed", String(button.dataset.key === activePreset));
+  for (const button of document.querySelectorAll("#presets .preset")) button.setAttribute("aria-pressed", String(button.dataset.key === activePreset));
 }
 function writeOutputs() {
   el("age-out").textContent = state.age + " años";
@@ -1051,7 +1236,7 @@ function setSex(sex) {
   if (sex === state.sex) return;
   state.sex = sex;
   applyPreset(activePreset || "ref");
-  showBody(sex);
+  openBody(sex);
 }
 el("sex-male").addEventListener("click", () => setSex("male"));
 el("sex-female").addEventListener("click", () => setSex("female"));
@@ -1065,13 +1250,17 @@ for (const button of document.querySelectorAll(".tabs button")) button.addEventL
 // ---------- Bucle de dibujo ----------
 const tag = el("tag");
 function placeTag() {
-  if (!selected || !selected.visible) { tag.hidden = true; return; }
-  const box = new THREE.Box3().setFromObject(selected);
-  const point = new THREE.Vector3((box.min.x + box.max.x) / 2, box.max.y, (box.min.z + box.max.z) / 2).project(camera);
+  if (!selected || !body || (!selected.isBlob && (selected.hidden || !layerVisible.get(selected.info.layer)) && !isolate)) {
+    tag.hidden = true;
+    return;
+  }
+  const top = selected.position.clone();
+  top.y += selected.isBlob ? selected.base.y * selected.scale : selected.radius * selected.scale;
+  const point = bodyGroup.localToWorld(top).project(camera);
   if (point.z > 1) { tag.hidden = true; return; }
   const rect = canvas.getBoundingClientRect();
   tag.hidden = false;
-  el("tag-text").textContent = displayName(selected.userData);
+  el("tag-text").textContent = displayName(selected.info);
   tag.style.transform = `translate(${((point.x + 1) / 2) * rect.width}px, ${((1 - point.y) / 2) * rect.height}px) translate(-50%, -100%)`;
 }
 function frame() {
@@ -1094,7 +1283,7 @@ writeControls();
 applyPreset("ref");
 renderInspector();
 requestAnimationFrame(frame);
-showBody(state.sex);
+openBody(state.sex);
 </script>
 </body>
 </html>

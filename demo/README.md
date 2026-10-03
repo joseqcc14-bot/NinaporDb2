@@ -1,13 +1,27 @@
 # Demo: cuerpo variabilístico en 3D
 
 Visor de anatomía 3D al estilo de los atlas interactivos:
-- un cuerpo masculino o femenino que se gira, se acerca y se recorre por sistemas
-  (piel, esqueleto, músculos, nervioso, cardiovascular, respiratorio, digestivo,
-  urinario, reproductor y linfático);
-- cada estructura se puede tocar para ver su ficha;
-- el panel "Individuo" cambia sexo, edad, talla, peso y grasa (medida o
-  estimada), y los órganos cambian de tamaño según la masa que calcula bodysim;
-- la piel se separa con la grasa subcutánea y el hígado amarillea con su grasa.
+
+- **Cuerpo masculino completo** (atlas Z-Anatomy, 2556 piezas):
+  - esqueleto con cada hueso, cartílago, ligamento y diente;
+  - 491 músculos y tendones;
+  - corazón y vasos de todo el cuerpo;
+  - encéfalo con giros, surcos, núcleos y ventrículos, y médula espinal;
+  - los 12 pares craneales y los nervios periféricos;
+  - ojo, oído y vías lagrimales;
+  - vísceras, glándulas endocrinas y ganglios linfáticos.
+- **Cuerpo femenino** (Human Reference Atlas): órganos, encéfalo, ojos, vasos
+  principales y parte del esqueleto. Todavía no tiene la musculatura ni los
+  nervios completos.
+- **Capas y vistas.** Cada sistema es una capa que se enciende o se apaga. Las
+  vistas rápidas (huesos, músculos, vasos, nervios, órganos, encéfalo y
+  sentidos) combinan capas y transparencia de la piel.
+- **Fichas.** Cada pieza se puede tocar o buscar por nombre (en español o en
+  inglés) para ver su ficha: término UBERON, estructura de bodysim y masa para
+  el individuo. "Aislar" y "Atenuar el resto" la destacan.
+- **Panel "Individuo".** Cambia sexo, edad, talla, peso y grasa (medida o
+  estimada). Los órganos cambian de tamaño según la masa que calcula bodysim, la
+  piel se separa con la grasa subcutánea y el hígado amarillea con su grasa.
 
 ## Abrirla
 
@@ -20,6 +34,16 @@ python -m http.server 8000 -d demo
 
 La primera carga descarga three.js desde jsDelivr.
 
+Las capas se descargan bajo demanda:
+
+- al abrir llegan la piel y el esqueleto;
+- las demás capas encendidas se descargan en segundo plano;
+- las que empiezan apagadas (músculos, 3,3 MB; nervios; linfático), solo al
+  encenderlas o al elegir una vista que las use.
+
+Cada capa se dibuja como un solo `BatchedMesh` de three.js. Así, las 2556
+piezas del atlas cuestan unas 13 llamadas de dibujo.
+
 ## Archivos
 
 - `index.html`: el visor.
@@ -27,13 +51,19 @@ La primera carga descarga three.js desde jsDelivr.
   paquete Python.
 - `model-data.js`: GENERADO por `python demo/build_data.py` a partir de los
   datos del paquete. Hay que regenerarlo cuando cambien esos datos.
-- `models/`: cuerpos 3D derivados del Human Reference Atlas (CC BY 4.0). En
-  [models/README.md](models/README.md) están su procedencia y cómo
-  regenerarlos.
+- `models/`: los dos cuerpos, una carpeta por sexo con un archivo por capa. El
+  hombre deriva de Z-Anatomy y BodyParts3D (CC BY-SA 4.0, share-alike, con
+  piezas posiblemente no comerciales). La mujer deriva del Human Reference
+  Atlas (CC BY 4.0). En [models/README.md](models/README.md) están la
+  procedencia, las licencias y cómo regenerarlos.
 
 ## Pruebas
 
 - `tests/test_demo_parity.py` comprueba con Node.js que la demo y el paquete dan
   los mismos números en 400 casos aleatorios.
-- `tests/test_demo_models.py` valida los modelos 3D: índices dentro de rango,
-  capas conocidas y estructuras que existen en bodysim.
+- `tests/test_demo_models.py` valida los modelos 3D:
+  - manifiestos coherentes con los archivos;
+  - índices dentro de rango;
+  - capas conocidas y estructuras que existen en bodysim;
+  - licencias;
+  - piezas clave del atlas masculino y sus nombres en español.

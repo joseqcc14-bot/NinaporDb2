@@ -156,11 +156,14 @@ dispositivo médico.
    anatómicos y fisiológicos sobre nodos UBERON, enlazada a SNOMED CT y MONDO
    por las referencias cruzadas que ya tenemos.
 5. **Visualización y forma externa:**
-   - visor 3D al estilo de un atlas: hecho en [demo/](demo/README.md), con los
-     cuerpos del Human Reference Atlas escalados según el informe de cada
-     individuo;
-   - falta el esqueleto y la musculatura completos (BodyParts3D o Z-Anatomy,
-     CC BY-SA);
+   - visor 3D al estilo de un atlas: hecho en [demo/](demo/README.md), escalado
+     según el informe de cada individuo;
+   - atlas masculino completo con Z-Anatomy (CC BY-SA 4.0): hecho. Tiene 2556
+     piezas: huesos, músculos, vasos, nervios, encéfalo y sentidos;
+   - falta el atlas femenino completo, pues el HRA solo trae órganos;
+   - pendiente antes de cualquier uso comercial: verificar o sustituir el oído
+     interno y el riñón, que Z-Anatomy pudo tomar de modelos con licencia no
+     comercial (ver [demo/models/README.md](demo/models/README.md#licencia));
    - superficie corporal paramétrica con
      [Anny](https://europe.naverlabs.com/blog/anny-a-free-to-use-3d-human-parametric-model-for-all-ages/)
      (Apache 2.0; edad, talla y peso como parámetros).

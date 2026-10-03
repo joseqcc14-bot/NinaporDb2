@@ -1,0 +1,110 @@
+{
+ "format": "bodysim-body-1",
+ "sex": "male",
+ "source": "Z-Anatomy (CC BY-SA 4.0), derivado de BodyParts3D (DBCLS, CC BY-SA 2.1 JP)",
+ "bounds": {
+  "min": [
+   -0.34005922079086304,
+   -0.0003824341984000057,
+   -0.1483440399169922
+  ],
+  "max": [
+   0.34005922079086304,
+   1.7433401346206665,
+   0.14564737677574158
+  ]
+ },
+ "layers": [
+  {
+   "key": "esqueleto",
+   "file": "esqueleto.json",
+   "parts": 277,
+   "triangles": 169941,
+   "bytes": 2152457
+  },
+  {
+   "key": "musculos",
+   "file": "musculos.json",
+   "parts": 491,
+   "triangles": 259616,
+   "bytes": 3325030
+  },
+  {
+   "key": "cardiovascular",
+   "file": "cardiovascular.json",
+   "parts": 673,
+   "triangles": 170538,
+   "bytes": 2365010
+  },
+  {
+   "key": "linfatico",
+   "file": "linfatico.json",
+   "parts": 163,
+   "triangles": 25556,
+   "bytes": 379821
+  },
+  {
+   "key": "encefalo",
+   "file": "encefalo.json",
+   "parts": 287,
+   "triangles": 130101,
+   "bytes": 1681575
+  },
+  {
+   "key": "nervios",
+   "file": "nervios.json",
+   "parts": 255,
+   "triangles": 89864,
+   "bytes": 1203284
+  },
+  {
+   "key": "sentidos",
+   "file": "sentidos.json",
+   "parts": 40,
+   "triangles": 39974,
+   "bytes": 497202
+  },
+  {
+   "key": "digestivo",
+   "file": "digestivo.json",
+   "parts": 46,
+   "triangles": 44951,
+   "bytes": 558756
+  },
+  {
+   "key": "respiratorio",
+   "file": "respiratorio.json",
+   "parts": 36,
+   "triangles": 34922,
+   "bytes": 439684
+  },
+  {
+   "key": "urinario",
+   "file": "urinario.json",
+   "parts": 8,
+   "triangles": 11442,
+   "bytes": 140634
+  },
+  {
+   "key": "reproductor",
+   "file": "reproductor.json",
+   "parts": 14,
+   "triangles": 9209,
+   "bytes": 116263
+  },
+  {
+   "key": "endocrino",
+   "file": "endocrino.json",
+   "parts": 10,
+   "triangles": 7890,
+   "bytes": 99213
+  },
+  {
+   "key": "piel",
+   "file": "piel.json",
+   "parts": 256,
+   "triangles": 69974,
+   "bytes": 946405
+  }
+ ]
+}
