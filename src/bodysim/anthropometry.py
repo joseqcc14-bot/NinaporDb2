@@ -27,14 +27,23 @@ def bsa_dubois(person: Person) -> float:
     return 0.007184 * person.weight_kg**0.425 * person.height_cm**0.725
 
 
-def fat_free_mass(person: Person) -> float:
-    """Masa libre de grasa (kg). Janmahasatian et al., Clin Pharmacokinet 2005;44:1051.
+def estimated_fat_free_mass(person: Person) -> float:
+    """Masa libre de grasa (kg) estimada por sexo, talla y peso.
 
-    Validada también en obesidad, a diferencia de las fórmulas lineales de masa magra.
+    Janmahasatian et al., Clin Pharmacokinet 2005;44:1051, validada con DXA también
+    en obesidad. No tiene en cuenta la edad ni el origen étnico: a igual IMC, las
+    personas mayores y las de origen asiático suelen tener más grasa.
     """
     if person.sex is Sex.MALE:
         return 9270.0 * person.weight_kg / (6680.0 + 216.0 * bmi(person))
     return 9270.0 * person.weight_kg / (8780.0 + 244.0 * bmi(person))
+
+
+def fat_free_mass(person: Person) -> float:
+    """Masa libre de grasa (kg): desde la grasa medida si existe; si no, estimada."""
+    if person.body_fat_fraction is not None:
+        return person.weight_kg * (1.0 - person.body_fat_fraction)
+    return estimated_fat_free_mass(person)
 
 
 def fat_mass(person: Person) -> float:
@@ -49,8 +58,18 @@ def blood_volume(person: Person) -> float:
     return 0.3561 * person.height_m**3 + 0.03308 * person.weight_kg + 0.1833
 
 
+# Agua por kg de masa libre de grasa en adultos: Wang et al., Am J Clin Nutr 1999;69:833.
+FAT_FREE_MASS_HYDRATION = 0.73
+
+
 def total_body_water(person: Person) -> float:
-    """Agua corporal total (L). Watson et al., Am J Clin Nutr 1980;33:27."""
+    """Agua corporal total (L).
+
+    Con la grasa medida, por la hidratación de la masa libre de grasa (los lípidos
+    no contienen agua). Si no, Watson et al., Am J Clin Nutr 1980;33:27.
+    """
+    if person.body_fat_fraction is not None:
+        return FAT_FREE_MASS_HYDRATION * fat_free_mass(person)
     if person.sex is Sex.MALE:
         return 2.447 - 0.09516 * person.age_years + 0.1074 * person.height_cm + 0.3362 * person.weight_kg
     return -2.097 + 0.1069 * person.height_cm + 0.2466 * person.weight_kg
@@ -64,6 +83,7 @@ class BodyComposition:
     fat_mass_kg: float
     blood_volume_l: float
     total_body_water_l: float
+    fat_measured: bool  # False: grasa estimada desde sexo, talla y peso
 
     @property
     def fat_fraction(self) -> float:
@@ -78,4 +98,5 @@ def body_composition(person: Person) -> BodyComposition:
         fat_mass_kg=fat_mass(person),
         blood_volume_l=blood_volume(person),
         total_body_water_l=total_body_water(person),
+        fat_measured=person.body_fat_fraction is not None,
     )

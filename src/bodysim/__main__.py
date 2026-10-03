@@ -1,4 +1,7 @@
-"""Informe anatómico de un individuo: ``python -m bodysim --sex female --age 40 --height 163 --weight 95``."""
+"""Informe anatómico de un individuo.
+
+Ejemplo: ``python -m bodysim --sex female --age 40 --height 163 --weight 95 --body-fat 45``.
+"""
 
 from __future__ import annotations
 
@@ -13,15 +16,21 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--age", type=float, required=True, help="años")
     parser.add_argument("--height", type=float, required=True, help="cm")
     parser.add_argument("--weight", type=float, required=True, help="kg")
+    parser.add_argument("--body-fat", type=float, help="%% de grasa medido; si se omite, se estima")
     args = parser.parse_args(argv)
 
-    person = Person(Sex(args.sex), args.age, args.height, args.weight)
+    body_fat = None if args.body_fat is None else args.body_fat / 100
+    try:
+        person = Person(Sex(args.sex), args.age, args.height, args.weight, body_fat_fraction=body_fat)
+    except ValueError as error:
+        parser.error(str(error))
     composition = body_composition(person)
     report = organ_masses(person)
     print(f"Anatomía: {load_anatomy().source_version}")
     print(
         f"IMC {composition.bmi:.1f} kg/m² | SC {composition.bsa_m2:.2f} m² | "
-        f"masa libre de grasa {composition.fat_free_mass_kg:.1f} kg | grasa {composition.fat_fraction:.0%} | "
+        f"masa libre de grasa {composition.fat_free_mass_kg:.1f} kg | "
+        f"grasa {composition.fat_fraction:.0%} ({'medida' if composition.fat_measured else 'estimada'}) | "
         f"volemia {composition.blood_volume_l:.2f} L | agua {composition.total_body_water_l:.1f} L"
     )
     print(f"\n{'estructura':<24}{'UBERON':<16}{'ref (g)':>10}{'masa (g)':>10}{'Δ':>7}  modelos 3D")

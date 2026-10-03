@@ -28,11 +28,16 @@ flowchart BT
 ## Principios
 
 1. **Las variables independientes nunca se derivan entre sí.** `Person` guarda
-   solo sexo, edad, talla, peso y genotipo. El IMC, la masa libre de grasa o la
-   masa de un órgano se calculan cada vez, así que no pueden quedar
-   desactualizados. Para estudiar una sola variable se usa
-   `dataclasses.replace(persona, weight_kg=...)`. La única restricción conjunta
-   es que el IMC sea compatible con la vida (entre 10 y 100).
+   solo sexo, edad, talla, peso, grasa corporal (opcional) y genotipo. El IMC,
+   la masa libre de grasa o la masa de un órgano se calculan cada vez, así que
+   no pueden quedar desactualizados. Para estudiar una sola variable se usa
+   `dataclasses.replace(persona, weight_kg=...)`.
+
+   Las únicas restricciones conjuntas exigen que la combinación sea compatible
+   con la vida:
+   - IMC de al menos 13 en hombres y 11 en mujeres (Henry 1990);
+   - si la grasa es medida, masa libre de grasa por m² de al menos ese IMC
+     mínimo × (1 − grasa esencial: 3 % en hombres, 12 % en mujeres).
 
 2. **Una sola llave por estructura: UBERON.** Se eligió UBERON por tres motivos:
    - es abierta (CC BY 3.0) y se publica cada mes;
@@ -78,7 +83,7 @@ masa = masa_ref(ICRP 89, sexo) × (X_individuo / X_referencia) ** b × Π factor
 
 | Base X | Estructuras | Ecuación |
 |---|---|---|
-| Masa libre de grasa | órganos y tejidos magros (por defecto) | Janmahasatian 2005 |
+| Masa libre de grasa | órganos y tejidos magros (por defecto) | peso × (1 − grasa medida), o Janmahasatian 2005 si no se midió |
 | Masa grasa | tejido adiposo, mama | peso − masa libre de grasa |
 | Volumen sanguíneo | sangre | Nadler 1962 |
 | Constante | encéfalo, médula espinal | — |
@@ -94,6 +99,43 @@ Limitaciones conocidas:
   edad de ICRP 89.
 - Algunas masas de ICRP incluyen la sangre contenida (pulmones). Por eso la
   "masa no asignada" del informe es aproximada.
+
+## Grasa corporal y peso
+
+El peso es una entrada, pero no se reparte por igual: lo que más varía entre
+personas de la misma talla es la grasa. El modelo lo trata así:
+
+1. **Grasa medida.** Si el individuo trae su fracción de grasa
+   (`body_fat_fraction`, de DXA, bioimpedancia o pliegues), la masa grasa es
+   peso × fracción y el resto es masa libre de grasa.
+2. **Grasa estimada.** Si no, la masa libre de grasa se estima desde sexo,
+   talla y peso con Janmahasatian 2005. Así, dos personas con igual talla y peso
+   tienen la misma composición.
+3. **Reparto.** El tejido adiposo y la mama escalan con la masa grasa. El resto
+   de órganos magros escala con la masa libre de grasa. El encéfalo no cambia.
+
+Ejemplo con la grasa estimada: una mujer de 163 cm pasa de 60 a 95 kg. De los
+35 kg ganados, 23,6 kg (67 %) son grasa y 11,4 kg (33 %) masa libre de grasa.
+Es coherente con la regla de Forbes (Hall 2007): cuanta más grasa tiene una
+persona, mayor es la proporción de grasa en el peso que gana.
+
+Limitaciones, en orden de importancia para simular enfermedad:
+
+- **Distribución de la grasa.** Hay un único compartimento de tejido adiposo.
+  No distingue grasa subcutánea, visceral ni ectópica (hígado, epicardio,
+  páncreas, músculo), que es la que más pesa en el riesgo metabólico y
+  cardiovascular.
+- **Reparto de la masa magra.** La masa libre de grasa extra se reparte en
+  proporción a todos los órganos magros. Ejemplo: un hombre de 180 cm y 90 kg
+  con 12 % de grasa frente a otro con 35 %. El primero obtiene más músculo,
+  como corresponde, pero también un hígado y un esqueleto un 35 % mayores, lo
+  que no es realista. Además, parte de la masa magra ganada en la obesidad es
+  agua y proteína del propio tejido adiposo.
+- **Estimación de la grasa.** La ecuación no tiene en cuenta la edad ni el
+  origen étnico.
+- **Volumen sanguíneo.** Nadler depende solo de talla y peso. Con el mismo
+  peso, el atleta y la persona sedentaria tienen la misma volemia, aunque la
+  sangre se relaciona más con la masa magra.
 
 ## Puntos de extensión
 

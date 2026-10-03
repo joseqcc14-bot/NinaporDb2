@@ -1,3 +1,5 @@
+from dataclasses import replace
+
 import pytest
 
 from bodysim import Person, Sex, body_composition
@@ -6,6 +8,7 @@ from bodysim.anthropometry import (
     bmi,
     bsa_dubois,
     bsa_mosteller,
+    estimated_fat_free_mass,
     fat_free_mass,
     fat_mass,
     total_body_water,
@@ -27,9 +30,19 @@ def test_body_surface_area():
 
 
 def test_fat_free_mass_janmahasatian():
-    assert fat_free_mass(MAN) == pytest.approx(9270 * 81 / 12080)  # 62.16 kg
-    assert fat_free_mass(WOMAN) == pytest.approx(9270 * 64 / 14880)  # 39.87 kg
+    assert estimated_fat_free_mass(MAN) == pytest.approx(9270 * 81 / 12080)  # 62.16 kg
+    assert estimated_fat_free_mass(WOMAN) == pytest.approx(9270 * 64 / 14880)  # 39.87 kg
+    assert fat_free_mass(MAN) == estimated_fat_free_mass(MAN)  # sin grasa medida se usa la estimación
     assert fat_mass(MAN) == pytest.approx(81 - 9270 * 81 / 12080)
+
+
+def test_measured_fat_replaces_the_estimate():
+    athlete = replace(MAN, body_fat_fraction=0.12)
+    assert fat_mass(athlete) == pytest.approx(81 * 0.12)
+    assert fat_free_mass(athlete) == pytest.approx(81 * 0.88)
+    assert total_body_water(athlete) == pytest.approx(0.73 * 81 * 0.88)
+    assert body_composition(athlete).fat_measured
+    assert not body_composition(MAN).fat_measured
 
 
 def test_blood_volume_nadler():

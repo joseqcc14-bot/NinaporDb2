@@ -1,9 +1,9 @@
 # bodysim: simulador paramétrico del cuerpo humano
 
-El objetivo es un cuerpo humano completo en el que sexo, edad, talla, peso y
-genotipo sean **variables independientes**, la anatomía se ajuste a ellas y,
-sobre esa base, se simulen la fisiología y las enfermedades de cualquier
-estructura, tanto de causa externa como genética.
+El objetivo es un cuerpo humano completo en el que sexo, edad, talla, peso,
+grasa corporal y genotipo sean **variables independientes**, la anatomía se
+ajuste a ellas y, sobre esa base, se simulen la fisiología y las enfermedades
+de cualquier estructura, tanto de causa externa como genética.
 
 Esta primera fase deja **empalmada la anatomía**. Cada estructura del modelo
 queda enlazada, con un identificador estándar, a los recursos anatómicos que ya
@@ -66,10 +66,12 @@ pip install -e ".[dev]"
 pytest
 ```
 
-Informe anatómico de una mujer de 163 cm y 95 kg:
+Informe anatómico de una mujer de 163 cm y 95 kg. Con `--body-fat` se indica
+el % de grasa medido; si se omite, se estima desde sexo, talla y peso:
 
 ```bash
 python -m bodysim --sex female --age 40 --height 163 --weight 95
+python -m bodysim --sex female --age 40 --height 163 --weight 95 --body-fat 45
 ```
 
 Desde Python:
@@ -94,7 +96,7 @@ anatomia.find_xref("FMA:7088").name_es                # 'corazón'
 
 ```text
 src/bodysim/
-  person.py          variables independientes del individuo (sexo, edad, talla, peso, genotipo)
+  person.py          variables independientes del individuo (sexo, edad, talla, peso, grasa, genotipo)
   anthropometry.py   composición corporal: IMC, superficie corporal, masa libre de grasa, volemia, agua
   anatomy.py         árbol anatómico enlazado a UBERON, FMA, SNOMED CT y los modelos 3D del HRA
   scaling.py         masa de cada órgano para un individuo + modificadores (genética y enfermedad)
@@ -124,6 +126,9 @@ docs/arquitectura.md
   `scaling.py`: órganos magros según la masa libre de grasa, encéfalo constante,
   sangre según la volemia y tejido adiposo según la masa grasa. Son un punto de
   partida que hay que calibrar con datos.
+- **Grasa corporal.** Si se mide, se usa; si no, se estima. Cómo entra en el
+  modelo y sus limitaciones (distribución visceral y reparto de la masa magra):
+  [docs/arquitectura.md](docs/arquitectura.md#grasa-corporal-y-peso).
 
 Este proyecto es una herramienta de investigación y desarrollo. No es un
 dispositivo médico.

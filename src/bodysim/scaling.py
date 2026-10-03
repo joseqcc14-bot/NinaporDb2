@@ -13,7 +13,10 @@ todos editables en ``SCALING_RULES``:
 - la sangre escala con el volumen sanguíneo (Nadler);
 - el tejido adiposo y la mama escalan con la masa grasa.
 
-La persona de referencia de cada sexo recupera exactamente los valores de ICRP 89.
+La masa grasa y la libre de grasa salen de la grasa medida del individuo si la
+tiene; si no, se estiman desde sexo, talla y peso. La del adulto de referencia
+siempre se estima, de modo que la persona de referencia de cada sexo recupera
+exactamente los valores de ICRP 89.
 """
 
 from __future__ import annotations
