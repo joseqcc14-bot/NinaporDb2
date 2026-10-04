@@ -146,6 +146,22 @@ def surface(mask: np.ndarray, origin: np.ndarray, spacing: np.ndarray, sigma: fl
     return positions, faces
 
 
+# Huesos de una sola pieza: si la segmentación deja fragmentos (p. ej., en la costura entre
+# bloques, donde un trozo puede quedar con la etiqueta de la costilla vecina), solo cuenta el mayor.
+SINGLE_PIECE = ("rib_", "humerus", "femur", "scapula", "clavicula", "sternum", "skull")
+
+
+def main_pieces(mask: np.ndarray, single: bool) -> np.ndarray:
+    """Quita fragmentos sueltos: deja el mayor, o los que superan el 10 % del mayor."""
+    components, count = ndimage.label(mask)
+    if count <= 1:
+        return mask
+    sizes = np.bincount(components.ravel())[1:]
+    if single:
+        return components == (np.argmax(sizes) + 1)
+    return np.isin(components, np.nonzero(sizes >= 0.1 * sizes.max())[0] + 1)
+
+
 def decode(entry: dict) -> tuple[np.ndarray, np.ndarray]:
     q = np.frombuffer(base64.b64decode(entry["positions"]), dtype=np.uint16).reshape(-1, 3)
     positions = np.array(entry["min"]) + q / 65535.0 * np.array(entry["extent"])
@@ -235,8 +251,8 @@ def limb_bones(ct_image, seg: np.ndarray, seg_image, labels: dict, threshold: fl
             axes.append(np.clip(np.round((mm - seg_origin[axis]) / seg_spacing[axis]).astype(int), 0, size - 1))
         return seg[np.ix_(*axes)]
 
-    def lowest(name):  # z (mm) del punto más bajo de una estructura segmentada
-        rows = np.nonzero((seg == ids[name]).any(axis=(1, 2)))[0]
+    def lowest(name):  # z (mm) del punto más bajo de un hueso segmentado (sin vóxeles sueltos)
+        rows = np.nonzero(main_pieces(seg == ids[name], single=True).any(axis=(1, 2)))[0]
         return seg_origin[2] + rows.min() * seg_spacing[2]
 
     found = []
@@ -363,7 +379,7 @@ def main() -> None:
         info = describe(name)
         if info is None:
             continue
-        mesh = surface(seg == label_id, origin, spacing, sigma)
+        mesh = surface(main_pieces(seg == label_id, single=name.startswith(SINGLE_PIECE)), origin, spacing, sigma)
         if mesh is None:
             continue
         uberon = names.get(info["label_en"].lower())

@@ -4,14 +4,14 @@
  "source": "Visible Human Project (U.S. National Library of Medicine), TC segmentada con TotalSegmentator; órganos: Human Reference Atlas, 3D Reference Organ Set, United Female (v2.0), CC BY 4.0",
  "bounds": {
   "min": [
-   -0.23775291442871094,
+   -0.23904749751091003,
    0,
-   -0.13499757647514343
+   -0.13499826192855835
   ],
   "max": [
-   0.23775291442871094,
-   1.7295057773590088,
-   0.13499757647514343
+   0.23904749751091003,
+   1.7320847511291504,
+   0.13499826192855835
   ]
  },
  "layers": [
@@ -20,14 +20,14 @@
    "file": "reproductor.json",
    "parts": 9,
    "triangles": 32540,
-   "bytes": 386129
+   "bytes": 386127
   },
   {
    "key": "sentidos",
    "file": "sentidos.json",
    "parts": 2,
    "triangles": 4973,
-   "bytes": 62208
+   "bytes": 62207
   },
   {
    "key": "encefalo",
@@ -40,64 +40,64 @@
    "key": "digestivo",
    "file": "digestivo.json",
    "parts": 11,
-   "triangles": 60381,
-   "bytes": 730985
+   "triangles": 60385,
+   "bytes": 731036
   },
   {
    "key": "urinario",
    "file": "urinario.json",
    "parts": 4,
    "triangles": 17997,
-   "bytes": 217834
+   "bytes": 217832
   },
   {
    "key": "cardiovascular",
    "file": "cardiovascular.json",
    "parts": 31,
-   "triangles": 102736,
-   "bytes": 1256941
+   "triangles": 109900,
+   "bytes": 1342845
   },
   {
    "key": "respiratorio",
    "file": "respiratorio.json",
    "parts": 8,
-   "triangles": 57813,
-   "bytes": 703984
+   "triangles": 57815,
+   "bytes": 704041
   },
   {
    "key": "linfatico",
    "file": "linfatico.json",
    "parts": 2,
    "triangles": 7864,
-   "bytes": 93333
+   "bytes": 93336
   },
   {
    "key": "esqueleto",
    "file": "esqueleto.json",
    "parts": 73,
-   "triangles": 196756,
-   "bytes": 2381078
+   "triangles": 196765,
+   "bytes": 2381715
   },
   {
    "key": "endocrino",
    "file": "endocrino.json",
    "parts": 3,
-   "triangles": 2948,
-   "bytes": 37161
+   "triangles": 8176,
+   "bytes": 99910
   },
   {
    "key": "musculos",
    "file": "musculos.json",
    "parts": 10,
-   "triangles": 39998,
-   "bytes": 485334
+   "triangles": 39994,
+   "bytes": 485319
   },
   {
    "key": "piel",
    "file": "piel.json",
    "parts": 1,
-   "triangles": 59990,
-   "bytes": 720735
+   "triangles": 59995,
+   "bytes": 720961
   }
  ]
 }

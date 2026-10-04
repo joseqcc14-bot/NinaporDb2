@@ -39,7 +39,7 @@ del sujeto.
 | reproductor | 14 | 9 |
 | endocrino | 10 | 3 |
 | linfático | 163 | 2 |
-| **total** | **3674 piezas, 1,21 M triángulos, 16,1 MB** | **158 piezas, 0,63 M triángulos, 7,7 MB** |
+| **total** | **3674 piezas, 1,21 M triángulos, 16,1 MB** | **158 piezas, 0,64 M triángulos, 7,8 MB** |
 
 El cuerpo femenino ya tiene el esqueleto completo, pero todavía no tiene
 nervios, ligamentos ni la mayoría de los músculos (ver más abajo).
@@ -194,10 +194,9 @@ ficha.
 
 ### Límites de esta versión
 
-- **Resolución.** Las estructuras de TotalSegmentator salen de su modelo
-  rápido, a 3 mm (en CPU, el de 1,5 mm tarda casi una hora); las superficies se
-  suavizan unos 2 mm. Los huesos de las extremidades y la piel salen de la TC a
-  1 mm.
+- **Resolución.** Las estructuras de TotalSegmentator salen de su modelo de
+  1,5 mm (en CPU, unos 45 minutos por bloques); las superficies se suavizan unos
+  2 mm. Los huesos de las extremidades salen de la TC a 1 mm.
 - **Huesos agrupados.** La TC de un cadáver tiene las articulaciones cerradas:
   cuando no se separan, tibia y fíbula, y radio y ulna, van juntos, y los huesos
   de cada mano y cada pie forman un grupo.
@@ -217,9 +216,9 @@ pip install idc-index pydicom SimpleITK
 python demo/models/ct/fetch_vhp.py female vhp_dicom
 python demo/models/ct/assemble_vhp.py vhp_dicom/* vhp_f.nii.gz
 python demo/models/ct/assemble_vhp.py vhp_dicom/* vhp_f_1p5mm.nii.gz --spacing 1.5
-# 2. Segmentación (en CPU, --force_split reduce la memoria):
+# 2. Segmentación por bloques (cabe en 16 GB de memoria; con GPU basta TotalSegmentator -i ... --ml):
 pip install TotalSegmentator
-TotalSegmentator -i vhp_f_1p5mm.nii.gz -o seg.nii.gz --ml --force_split   # --fast: modelo de 3 mm
+python demo/models/ct/segment_chunks.py vhp_f_1p5mm.nii.gz seg.nii.gz
 python -c "import json; from totalsegmentator.map_to_binary import class_map; json.dump(class_map['total'], open('labels_total.json', 'w'))"
 # 3. Órganos del HRA en una carpeta aparte. Archivos de ccf-releases:
 #    v2.0/models/3d-vh-f-united.glb.7z y v2.0/models/asct-b-3d-models-crosswalk.csv.
